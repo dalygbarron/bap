@@ -1,0 +1,5 @@
+Ok, I think what I need to do to deal with the issue of resizing is make it
+that the content is always rendered onto an intermediate surface which is of
+the game's logical screen size. Then, we render that surface onto the actual
+screen surface so that it maintains it's aspect ratio but fills the screen
+or close enough.

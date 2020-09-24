@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
         SDL_WINDOWPOS_UNDEFINED,
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        SDL_WINDOW_SHOWN
+        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
     );
     if (window == NULL) {
         printf("Window couldn't be created because: %s\n", SDL_GetError());
