@@ -1,19 +1,67 @@
-#include "View.hh"
 #include "Util.hh"
+#include "Screen.hh"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <stdio.h>
 
 const int SCREEN_WIDTH = 768;
 const int SCREEN_HEIGHT = 480;
+const int FPS_RATE = 5000;
 
+/**
+ * Contains the main loop and all that jazz. You obviously have to init sdl and
+ * all that first and do not even START me about reentrancy or I will shoot you
+ * in the fucking face.
+ * @param renderer is used to render stuff.
+ * @param start    is the screen that the program starts on.
+ * @return the number the program as a whole should return.
+ */
+int body(SDL_Renderer &renderer, Screen *start) {
+    bool running = true;
+    int time = SDL_GetTicks();
+    int updateTimer = 0;
+    int fpsTimer = 0;
+    int startIteration = 0;
+    int iteration = 0;
+    while (running) {
+	SDL_Event event;
+        while (SDL_PollEvent(&event) != 0) {
+	    if (event.type == SDL_QUIT) running = false;
+	}
+	int currentTime = SDL_GetTicks();
+	updateTimer += currentTime - time;
+	fpsTimer += currentTime - time;
+	time = currentTime;
+	while (updateTimer >= start->getTimestep()) {
+            start->update();
+	    updateTimer -= start->getTimestep();
+	}
+	if (fpsTimer >= FPS_RATE) {
+	    printf("FPS: %f\n", (float)(iteration - startIteration) / (FPS_RATE / 1000));
+	    startIteration = iteration;
+	    fpsTimer = 0;
+	}
+	SDL_RenderClear(&renderer);
+	start->render(renderer);
+	SDL_RenderPresent(&renderer);
+	iteration++;
+    }
+    return 0;
+}
+
+/**
+ * The start of the program.
+ * @param argc is the number of arguments.
+ * @param argv is the list of arguments.
+ * @return the return code of the program.
+ */
 int main(int argc, char **argv) {
-    SDL_Window *window = NULL;
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDl could not initialise because: %s\n", SDL_GetError());
         return 1;
     }
-    window = SDL_CreateWindow(
-        "Brexit",
+    SDL_Window *window = SDL_CreateWindow(
+        "Brexit Simulator",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         SCREEN_WIDTH,
@@ -24,16 +72,25 @@ int main(int argc, char **argv) {
         printf("Window couldn't be created because: %s\n", SDL_GetError());
         return 1;
     }
-    SDL_Texture texture = Util::loadTexture("picture.png");
-    View view(*window, *texture);
-    SDL_FillRect(
-        view.screenSurface,
-        NULL,
-        SDL_MapRGB(view.screenSurface->format, 0x87, 0xaa, 0xff)
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+	printf("SDL_image couldn't init because: %s\n", IMG_GetError());
+	return 1;
+    }
+    SDL_Renderer *renderer = SDL_CreateRenderer(
+	window,
+	-1,
+	SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     );
-    SDL_UpdateWindowSurface(window);
-    SDL_Delay(2000);
+    if (renderer == NULL) {
+	printf("Couldn't start renderer because: %s\n", SDL_GetError());
+	return 1;
+    }
+    SDL_Texture *texture = Util::loadTexture("picture.png", *renderer);
+    TestScreen *start = new TestScreen(768, *texture);
+    body(*renderer, start);
+    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    IMG_Quit();
     SDL_Quit();
     return 0;
 }

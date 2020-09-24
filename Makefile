@@ -1,7 +1,7 @@
-OBJS = src/main.cc src/View.cc
+OBJS = src/main.cc src/Util.cc src/TestScreen.cc
 OBJ_NAME = main
-CC=gcc
-LINKER_FLAGS=-lSDL2
+CC=g++
+LINKER_FLAGS=-lSDL2 -lSDL2_image
 
 all: $(OBJS)
 	$(CC) $(OBJS) $(LINKER_FLAGS) -o $(OBJ_NAME)
