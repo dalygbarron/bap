@@ -41,7 +41,7 @@ int body(SDL_Renderer &renderer, Screen *start) {
 	    startIteration = iteration;
 	    fpsTimer = 0;
 	}
-	SDL_RenderClear(&renderer);
+	//SDL_RenderClear(&renderer);
 	start->render(renderer);
 	SDL_RenderPresent(&renderer);
 	iteration++;

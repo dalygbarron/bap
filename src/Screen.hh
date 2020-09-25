@@ -10,10 +10,10 @@
 class Screen {
     public:
 	/**
-	 * Tells you how many milliseconds each frame of this screen is supposed to
-	 * be. The way they are going to be run is that they will not be fixed
-	 * at their timestep but in aggregate the right amount of them will
-	 * have been run to get it up to speed.
+	 * Tells you how many milliseconds each frame of this screen is
+         * supposed to be. The way they are going to be run is that they will
+         * not be fixed at their timestep but in aggregate the right amount of
+         * them will have been run to get it up to speed.
 	 * @return the amount of time each one should last for in milliseconds.
 	 */
 	virtual int getTimestep() const = 0;
@@ -35,6 +35,44 @@ class Screen {
  * A screen that does nothing except execute a script and set up other screens.
  */
 class BlankScreen: public Screen {
+    public:
+	int getTimestep() const override;
+
+	int update() override;
+
+	void render(SDL_Renderer &renderer) const override;
+};
+
+/**
+ * A screen that contains some gui elements and nothing else and lets you fuck
+ * around with them until one is activated in which case the screen ends and
+ * returns a thingy telling you what knob was activated.
+ */
+class KnobScreen: public Screen {
+    public:
+	int getTimestep() const override;
+
+	int update() override;
+
+	void render(SDL_Renderer &renderer) const override;
+};
+
+/**
+ * A screen that contains a platform level that you can play around in.
+ */
+class PlatformScreen: public Screen {
+    public:
+	int getTimestep() const override;
+
+	int update() override;
+
+	void render(SDL_Renderer &renderer) const override;
+};
+
+/**
+ * A screen where you design a platform level.
+ */
+class DesignScreen: public Screen {
     public:
 	int getTimestep() const override;
 
@@ -71,18 +109,6 @@ class TestScreen: public Screen {
     private:
 	Bullet *bullets;
 	SDL_Texture &atlas;
-};
-
-/**
- * A screen that contains a level that you can play around in.
- */
-class LevelScreen: public Screen {
-    public:
-	int getTimestep() const override;
-
-	int update() override;
-
-	void render(SDL_Renderer &renderer) const override;
 };
 
 #endif
