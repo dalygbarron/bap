@@ -85,6 +85,7 @@ int main(int argc, char **argv) {
 	printf("Couldn't start renderer because: %s\n", SDL_GetError());
 	return 1;
     }
+    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
     SDL_Texture *texture = Util::loadTexture("picture.png", *renderer);
     TestScreen *start = new TestScreen(768, *texture);
     body(*renderer, start);
