@@ -17,6 +17,6 @@ Level::~Level() {
     delete this->front;
 }
 
-void Level::render(Graphics &graphics) {
+void Level::render(Graphics const &graphics) {
 
 }
