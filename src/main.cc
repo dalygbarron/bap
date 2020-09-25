@@ -9,6 +9,28 @@ const int SCREEN_HEIGHT = 480;
 const int FPS_RATE = 5000;
 
 /**
+ * Loads in the texture atlas thingy that the game is going to use.
+ * @param renderer  is the renderer which is needed to load textures.
+ * @param picFile   is the path to the picture for the atlas.
+ * @param atlasFile is the path to the file that defines where each sprite is.
+ * @return the created atlas, unless it fucked up in which case it will return
+ *         null.
+ */
+Atlas *loadAtlas(
+    SDL_Renderer &renderer,
+    std::string picFile,
+    std::string atlasFile
+) {
+    SDL_Texture *texture = Util::loadTexture(picFile.c_str(), renderer);
+    if (texture) {
+        Atlas *atlas = new Atlas(*texture);
+        atlas->addSprite("nerd", {0, 0, 30, 40});
+        return atlas;
+    }
+    return NULL;
+}
+
+/**
  * Contains the main loop and all that jazz. You obviously have to init sdl and
  * all that first and do not even START me about reentrancy or I will shoot you
  * in the fucking face.
@@ -37,7 +59,10 @@ int body(SDL_Renderer &renderer, Screen *start) {
 	    updateTimer -= start->getTimestep();
 	}
 	if (fpsTimer >= FPS_RATE) {
-	    printf("FPS: %f\n", (float)(iteration - startIteration) / (FPS_RATE / 1000));
+	    printf(
+                "FPS: %f\n",
+                (float)(iteration - startIteration) / (FPS_RATE / 1000)
+            );
 	    startIteration = iteration;
 	    fpsTimer = 0;
 	}
@@ -86,8 +111,8 @@ int main(int argc, char **argv) {
 	return 1;
     }
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-    SDL_Texture *texture = Util::loadTexture("picture.png", *renderer);
-    TestScreen *start = new TestScreen(768, *texture);
+    Atlas *atlas = loadAtlas(*renderer, "picture.png", "nerd.xml");
+    TestScreen *start = new TestScreen(*atlas, 768);
     body(*renderer, start);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

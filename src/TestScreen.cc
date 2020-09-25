@@ -3,13 +3,12 @@
 #define STEP 17
 #define SECOND_STEP 0.017
 
-TestScreen::TestScreen(int n, SDL_Texture &atlas):
-    n(n),
-    atlas(atlas)
+TestScreen::TestScreen(Atlas const &atlas, int n):
+    Screen(atlas),
+    n(n)
 {
-    int width;
-    int height;
-    SDL_QueryTexture(&atlas, NULL, NULL, &width, &height);
+    int width = atlas.getWidth();
+    int height = atlas.getHeight();
     this->bullets = new Bullet[n];
     for (int i = 0; i < n; i++) {
 	this->bullets[i].alive = true;
@@ -51,15 +50,11 @@ int TestScreen::update() {
 void TestScreen::render(SDL_Renderer &renderer) const {
     SDL_Rect placement;
     for (int i = 0; i < this->n; i++) {
-	placement.x = this->bullets[i].x - this->bullets[i].sprite.w / 2;
-	placement.y = this->bullets[i].y - this->bullets[i].sprite.h / 2;
-	placement.w = this->bullets[i].sprite.w;
-	placement.h = this->bullets[i].sprite.h;
-        SDL_RenderCopy(
-            &renderer,
-            &this->atlas,
-            &this->bullets[i].sprite,
-            &placement
+        this->atlas.draw(
+            renderer,
+            this->bullets[i].x,
+            this->bullets[i].y,
+            this->bullets[i].sprite
         );
     }
 }
