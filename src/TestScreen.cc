@@ -3,12 +3,12 @@
 #define STEP 17
 #define SECOND_STEP 0.017
 
-TestScreen::TestScreen(Atlas const &atlas, int n):
-    Screen(atlas),
+TestScreen::TestScreen(Sack const &sack, int n):
+    Screen(sack),
     n(n)
 {
-    int width = atlas.getWidth();
-    int height = atlas.getHeight();
+    int width = sack.atlas.getWidth();
+    int height = sack.atlas.getHeight();
     this->bullets = new Bullet[n];
     for (int i = 0; i < n; i++) {
 	this->bullets[i].alive = true;
@@ -50,7 +50,7 @@ int TestScreen::update() {
 void TestScreen::render(SDL_Renderer &renderer) const {
     SDL_Rect placement;
     for (int i = 0; i < this->n; i++) {
-        this->atlas.draw(
+        this->sack.atlas.draw(
             renderer,
             this->bullets[i].x,
             this->bullets[i].y,

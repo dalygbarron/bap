@@ -1,5 +1,5 @@
 #include "Screen.hh"
 
-Screen::Screen(Atlas const &atlas): atlas(atlas) {
+Screen::Screen(Sack const &sack): sack(sack) {
     // nothing else.
 }

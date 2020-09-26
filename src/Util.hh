@@ -17,6 +17,10 @@ namespace Util {
      *         will fail.
      */
     SDL_Texture *loadTexture(std::string file, SDL_Renderer &renderer);
+
+    Atlas *loadAtlas(SDL_Texture &texture, char const *file);
+
+
 };
 
 #endif

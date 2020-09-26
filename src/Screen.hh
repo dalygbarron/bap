@@ -1,7 +1,7 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#include "Atlas.hh"
+#include "Sack.hh"
 #include "Bullet.hh"
 
 /**
@@ -12,9 +12,9 @@ class Screen {
     public:
         /**
          * Makes all screens have access to the sprite atlas thing.
-         * @param atlas is the sprite atlas thing.
+         * @param sack contains all the dependencies.
          */
-        Screen(Atlas const &atlas);
+        Screen(Sack const &sack);
 
 	/**
 	 * Tells you how many milliseconds each frame of this screen is
@@ -38,7 +38,7 @@ class Screen {
 	virtual void render(SDL_Renderer &renderer) const = 0;
 
     protected:
-        Atlas const &atlas;
+        Sack const &sack;
 };
 
 /**
@@ -100,10 +100,10 @@ class TestScreen: public Screen {
 
 	/**
 	 * Creates a nice test screen.
-         * @param atlas is the texture atlas.
-	 * @param n     is the number of objects to test.
+         * @param sack contains all the dependencies.
+	 * @param n    is the number of objects to test.
 	 */
-        TestScreen(Atlas const &atlas, int n);
+        TestScreen(Sack const &sack, int n);
 
 	/**
 	 * Deletes the bullet array.

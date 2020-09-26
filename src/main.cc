@@ -4,30 +4,31 @@
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
 
-const int SCREEN_WIDTH = 768;
-const int SCREEN_HEIGHT = 480;
-const int FPS_RATE = 5000;
+int const SCREEN_WIDTH = 768;
+int const SCREEN_HEIGHT = 480;
+int const  FPS_RATE = 5000;
+char const *PIC_FILE = "assets/coom.png";
+char const *SPRITE_FILE = "assets/cooxr.csv";
+char const *FREAK_FILE = "assets/freak.csv";
+char const *BULLET_FILE = "assets/bullet.csv";
 
-/**
- * Loads in the texture atlas thingy that the game is going to use.
- * @param renderer  is the renderer which is needed to load textures.
- * @param picFile   is the path to the picture for the atlas.
- * @param atlasFile is the path to the file that defines where each sprite is.
- * @return the created atlas, unless it fucked up in which case it will return
- *         null.
- */
-Atlas *loadAtlas(
+Sack *loadSack(
     SDL_Renderer &renderer,
-    std::string picFile,
-    std::string atlasFile
+    char const *picFile,
+    char const *atlasFile,
+    char const *freakFile,
+    char const *bulletFile
 ) {
     SDL_Texture *texture = Util::loadTexture(picFile.c_str(), renderer);
-    if (texture) {
-        Atlas *atlas = new Atlas(*texture);
-        atlas->addSprite("nerd", {0, 0, 30, 40});
-        return atlas;
-    }
-    return NULL;
+    if (!texture) goto fail;
+    // TODO: load in freak file and bullet file.
+    Atlas *atlas = Util::loadAtlas(*texture, renderer);
+    if (!atlas) goto failWithTexture;
+    // TODO: load in sprites.
+    atlas->addSprite("nerd", {0, 0, 30, 40});
+    return sack;
+    failWithTexture: SDL_DeleteTexture(texture);
+    fail: return NULL;
 }
 
 /**
@@ -93,30 +94,44 @@ int main(int argc, char **argv) {
         SCREEN_HEIGHT,
         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
     );
-    if (window == NULL) {
+    if (!window) {
         printf("Window couldn't be created because: %s\n", SDL_GetError());
-        return 1;
+        goto endSDL;
     }
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
 	printf("SDL_image couldn't init because: %s\n", IMG_GetError());
-	return 1;
+	goto endSDL;
     }
     SDL_Renderer *renderer = SDL_CreateRenderer(
 	window,
 	-1,
 	SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     );
-    if (renderer == NULL) {
+    if (!renderer) {
 	printf("Couldn't start renderer because: %s\n", SDL_GetError());
-	return 1;
+        goto endWindow;
     }
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-    Atlas *atlas = loadAtlas(*renderer, "picture.png", "nerd.xml");
-    TestScreen *start = new TestScreen(*atlas, 768);
+    Sack *sack = loadSack(
+        *renderer,
+        PIC_FILE,
+        SPRITE_FILE,
+        FREAK_FILE,
+        BULLET_FILE
+    );
+    if (!sack) {
+        printf("Couldn't load sack\n");
+        goto endRenderer;
+    }
+    TestScreen *start = new TestScreen(*sack, 768);
     body(*renderer, start);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    IMG_Quit();
-    SDL_Quit();
-    return 0;
+    delete sack;
+    endRenderer:
+        SDL_DestroyRenderer(renderer);
+    endWindow:
+        SDL_DestroyWindow(window);
+    endSDL:
+        IMG_Quit();
+        SDL_Quit();
+        return 0;
 }
