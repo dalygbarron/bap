@@ -1,12 +1,12 @@
 #include "Util.hh"
 
-SDL_Texture *Util::loadTexture(std::string file, SDL_Renderer &renderer) {
+SDL_Texture *Util::loadTexture(char const *file, SDL_Renderer &renderer) {
     SDL_Texture *newTexture = NULL;
-    SDL_Surface *loadedSurface = IMG_Load(file.c_str());
+    SDL_Surface *loadedSurface = IMG_Load(file);
     if (loadedSurface == NULL) {
 	printf(
 	    "Loading image '%s' failed because: %s\n",
-	    file.c_str(),
+	    file,
 	    IMG_GetError()
 	);
 	return NULL;

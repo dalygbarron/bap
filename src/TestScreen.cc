@@ -7,8 +7,8 @@ TestScreen::TestScreen(Sack const &sack, int n):
     Screen(sack),
     n(n)
 {
-    int width = sack.atlas.getWidth();
-    int height = sack.atlas.getHeight();
+    int width = sack.atlas->getWidth();
+    int height = sack.atlas->getHeight();
     this->bullets = new Bullet[n];
     for (int i = 0; i < n; i++) {
 	this->bullets[i].alive = true;
@@ -50,7 +50,7 @@ int TestScreen::update() {
 void TestScreen::render(SDL_Renderer &renderer) const {
     SDL_Rect placement;
     for (int i = 0; i < this->n; i++) {
-        this->sack.atlas.draw(
+        this->sack.atlas->draw(
             renderer,
             this->bullets[i].x,
             this->bullets[i].y,

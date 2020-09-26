@@ -19,16 +19,13 @@ Sack *loadSack(
     char const *freakFile,
     char const *bulletFile
 ) {
-    SDL_Texture *texture = Util::loadTexture(picFile.c_str(), renderer);
-    if (!texture) goto fail;
-    // TODO: load in freak file and bullet file.
-    Atlas *atlas = Util::loadAtlas(*texture, renderer);
-    if (!atlas) goto failWithTexture;
-    // TODO: load in sprites.
-    atlas->addSprite("nerd", {0, 0, 30, 40});
+    SDL_Texture *texture = Util::loadTexture(picFile, renderer);
+    if (!texture) return NULL;
+    Atlas *atlas = new Atlas(*texture);
+    Sack *sack = new Sack(atlas);
+    sack->loadFreaks(freakFile);
+    sack->loadBullets(bulletFile);
     return sack;
-    failWithTexture: SDL_DeleteTexture(texture);
-    fail: return NULL;
 }
 
 /**
@@ -96,11 +93,11 @@ int main(int argc, char **argv) {
     );
     if (!window) {
         printf("Window couldn't be created because: %s\n", SDL_GetError());
-        goto endSDL;
+        return 1;
     }
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
 	printf("SDL_image couldn't init because: %s\n", IMG_GetError());
-	goto endSDL;
+        return 1;
     }
     SDL_Renderer *renderer = SDL_CreateRenderer(
 	window,
@@ -109,7 +106,7 @@ int main(int argc, char **argv) {
     );
     if (!renderer) {
 	printf("Couldn't start renderer because: %s\n", SDL_GetError());
-        goto endWindow;
+        return 1;
     }
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
     Sack *sack = loadSack(
@@ -121,17 +118,14 @@ int main(int argc, char **argv) {
     );
     if (!sack) {
         printf("Couldn't load sack\n");
-        goto endRenderer;
+        return 1;
     }
     TestScreen *start = new TestScreen(*sack, 768);
     body(*renderer, start);
     delete sack;
-    endRenderer:
-        SDL_DestroyRenderer(renderer);
-    endWindow:
-        SDL_DestroyWindow(window);
-    endSDL:
-        IMG_Quit();
-        SDL_Quit();
-        return 0;
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    IMG_Quit();
+    SDL_Quit();
+    return 0;
 }

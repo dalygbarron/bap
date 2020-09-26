@@ -16,11 +16,7 @@ namespace Util {
      * @return the created texture in the case that it was ok, otherwise it
      *         will fail.
      */
-    SDL_Texture *loadTexture(std::string file, SDL_Renderer &renderer);
-
-    Atlas *loadAtlas(SDL_Texture &texture, char const *file);
-
-
+    SDL_Texture *loadTexture(char const *file, SDL_Renderer &renderer);
 };
 
 #endif

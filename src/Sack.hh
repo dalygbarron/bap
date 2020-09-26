@@ -15,13 +15,25 @@ class Sack {
     public:
         std::vector<Freak> freaks;
         std::vector<Bullet> bullets;
-        Atlas const &atlas;
+        Atlas *atlas;
 
         /**
          * Creates the sack and sets the atlas.
          * @param atlas is the thingy with the sprites.
          */
-        Sack(Atlas const &atlas);
+        Sack(Atlas *atlas);
+
+        /**
+         * Loads in freaks from a file.
+         * @param file is the path to the file to load from.
+         */
+        void loadFreaks(char const *file);
+
+        /**
+         * Loads in bullets from a file.
+         * @param file is the path to the file to load from.
+         */
+        void loadBullets(char const *file);
 };
 
 #endif
