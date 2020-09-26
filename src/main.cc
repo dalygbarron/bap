@@ -12,6 +12,17 @@ char const *SPRITE_FILE = "assets/cooxr.csv";
 char const *FREAK_FILE = "assets/freak.csv";
 char const *BULLET_FILE = "assets/bullet.csv";
 
+/**
+ * Loads in a sack.
+ * @param renderer   is the renderer which is needed to load textures.
+ * @param picFile    is the path to the game's texture atlas picture.
+ * @param atlasFile  is the path to the file that describes the game's sprites.
+ * @param freakFile  is the path to the file that contains the game's freaks.
+ * @param bulletFile is the path to the file that contains the game's bullets.
+ * @return the sack unless it was unable to load the texture which I think it
+ *         the only thing that absolutely has to succeed. If other stuff fucks
+ *         up it will just run without it and crash later lol.
+ */
 Sack *loadSack(
     SDL_Renderer &renderer,
     char const *picFile,
