@@ -6,19 +6,21 @@ Bullet::Bullet(std::string name, SDL_Rect sprite, float speed) {
     this->speed = speed;
 }
 
-void Bullet::update(float delta, Instance<Bullet> *instance) {
-    Vec velocityPresent = instance->velocity;
-    Vec acceleratorPresent = instance->accelerator;
-    velocityPresent.mult(delta);
-    acceleratorPresent.mult(delta);
-    instance->position.add(velocityPresent);
-    instance->velocity.add(acceleratorPresent);
+std::string Bullet::getName() const {
+    return this->name;
+}
+
+SDL_Rect Bullet::getSprite() const {
+    return this->sprite;
+}
+
+float Bullet::getSpeed() const {
+    return this->speed;
 }
 
 void Bullet::render(
-    SDL_Renderer &renderer,
     Atlas const &atlas,
-    Instance<Bullet> *instance
+    Instance<Bullet> const &instance
 ) {
     atlas.draw(
         renderer,

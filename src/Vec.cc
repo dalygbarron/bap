@@ -35,6 +35,13 @@ void Vec::div(Vec other) {
     this->y /= other.y;
 }
 
+void Vec::wrap(Vec other) {
+    if (this->x >= other.x) this->x -= other.x;
+    else if (this->x < 0) this->x += other.x
+    if (this->y >= other.y) this->y -= other.y;
+    else if (this->y < 0) this->y += other.y;
+}
+
 void Vec::normal() {
     float length = this->length();
     if (length == 0) return;

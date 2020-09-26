@@ -49,6 +49,13 @@ class Vec {
         void div(Vec other);
 
         /**
+         * Makes this vector be wrapped between another vector and the origin
+         * point.
+         * @param bounds is the vector to be wrapped in.
+         */
+        void wrap(Vec bounds);
+
+        /**
          * Normalises this vector so that it's length is 1.
          */
         void normal();

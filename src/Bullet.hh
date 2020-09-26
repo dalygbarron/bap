@@ -1,10 +1,10 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-#include "Instanceable.hh"
+#include "Instance.hh"
 #include <SDL2/SDL.h>
 
-class Bullet: public Instanceable {
+class Bullet {
     public:
         /**
          * Creates a bullet by giving it it's stuff.
@@ -14,13 +14,31 @@ class Bullet: public Instanceable {
          */
         Bullet(std::string name, SDL_Rect sprite, float speed);
 
-        virtual void update(float delta, Instance<Bullet> *instance) override;
-        
-        virtual void render(
-            SDL_Renderer &renderer,
-            SDL_Texture &texture,
-            Instance<Bullet> *instance
-        ) override;
+        /**
+         * Gives you the name of the bullet.
+         * @return the name.
+         */
+        std::string getName() const;
+
+        /**
+         * Gives you the sprite.
+         * @return a copy of the sprite rect.
+         */
+        SDL_Rect getSprite() const;
+
+        /**
+         * Gives you the speed.
+         * @return the speed.
+         */
+        float getSpeed() const;
+
+        /**
+         * Renders an instance onto the screen somewhere.
+         * @param atlas    is the sprite atlas which also contains the renderer
+         *                 and stuff.
+         * @param instance is the instance to draw.
+         */
+        void render(Atlas const &atlas, Instance<Bullet> const &instance);
 
     private:
         std::string name;
