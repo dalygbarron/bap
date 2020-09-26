@@ -12,7 +12,14 @@ template <class T> class Instance {
         bool alive;
         Vec position;
         Vec velocity;
+        Vec accelerator;
         T const *model;
+
+        void update(float delta) {
+            this->model->update(delta, this);
+        };
+
+
 };
 
 #endif

@@ -9,7 +9,7 @@ TestScreen::TestScreen(Sack const &sack, int n):
 {
     int width = sack.atlas->getWidth();
     int height = sack.atlas->getHeight();
-    this->bullets = new Bullet[n];
+    this->bullets = new Instance<Bullet>[n];
     for (int i = 0; i < n; i++) {
 	this->bullets[i].alive = true;
 	this->bullets[i].x = rand() % 768;

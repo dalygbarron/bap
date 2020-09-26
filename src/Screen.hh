@@ -117,7 +117,7 @@ class TestScreen: public Screen {
 	void render(SDL_Renderer &renderer) const override;
 
     private:
-	Bullet *bullets;
+        Instance<Bullet> *bullets;
 };
 
 #endif
