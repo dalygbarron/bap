@@ -19,13 +19,14 @@ float Bullet::getSpeed() const {
 }
 
 void Bullet::render(
+    SDL_Renderer &renderer,
     Atlas const &atlas,
     Instance<Bullet> const &instance
-) {
+) const {
     atlas.draw(
         renderer,
-        instance->position.x,
-        instance->position.y,
-        &this->sprite
+        instance.position.x,
+        instance.position.y,
+        this->sprite
     );
 }

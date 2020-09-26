@@ -1,6 +1,9 @@
 #ifndef FREAK_H
 #define FREAK_H
 
+#include <SDL2/SDL.h>
+#include <unordered_map>
+
 /**
  * A character that can move around in the level.
  */
@@ -19,7 +22,12 @@ class Freak {
          * @param gravity   is a multiplier for the effect of gravity.
          * @param behaviour is how this freak behaves.
          */
-        Freak(std::string name, SDL_Rect sprite, float gravity, Behaviour behaviour);
+        Freak(
+            std::string name,
+            SDL_Rect sprite,
+            float gravity,
+            Behaviour behaviour
+        );
 
         /**
          * Takes a string and converts it to it's corresponding behaviour.
@@ -33,8 +41,6 @@ class Freak {
         SDL_Rect sprite;
         float gravity;
         Behaviour behaviour;
-
-
 };
 
 #endif

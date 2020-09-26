@@ -1,4 +1,5 @@
 #include "Vec.hh"
+#include <cmath>
 
 Vec::Vec() {
     this->x = 0;
@@ -37,7 +38,7 @@ void Vec::div(Vec other) {
 
 void Vec::wrap(Vec other) {
     if (this->x >= other.x) this->x -= other.x;
-    else if (this->x < 0) this->x += other.x
+    else if (this->x < 0) this->x += other.x;
     if (this->y >= other.y) this->y -= other.y;
     else if (this->y < 0) this->y += other.y;
 }

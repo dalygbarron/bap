@@ -9,8 +9,8 @@ int const SCREEN_HEIGHT = 480;
 int const  FPS_RATE = 5000;
 char const *PIC_FILE = "assets/coom.png";
 char const *SPRITE_FILE = "assets/cooxr.csv";
-char const *FREAK_FILE = "assets/freak.csv";
-char const *BULLET_FILE = "assets/bullet.csv";
+char const *FREAK_FILE = "assets/freaks.csv";
+char const *BULLET_FILE = "assets/bullets.csv";
 
 /**
  * Loads in a sack.

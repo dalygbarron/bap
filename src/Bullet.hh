@@ -2,7 +2,9 @@
 #define BULLET_H
 
 #include "Instance.hh"
+#include "Atlas.hh"
 #include <SDL2/SDL.h>
+#include <string>
 
 class Bullet {
     public:
@@ -34,11 +36,14 @@ class Bullet {
 
         /**
          * Renders an instance onto the screen somewhere.
-         * @param atlas    is the sprite atlas which also contains the renderer
-         *                 and stuff.
+         * @param atlas    is the sprite atlas which also draws stuff.
          * @param instance is the instance to draw.
          */
-        void render(Atlas const &atlas, Instance<Bullet> const &instance);
+        void render(
+            SDL_Renderer &renderer,
+            Atlas const &atlas,
+            Instance<Bullet> const &instance
+        ) const;
 
     private:
         std::string name;
