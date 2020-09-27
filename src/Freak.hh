@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <unordered_map>
+#include <string>
 
 /**
  * A character that can move around in the level.

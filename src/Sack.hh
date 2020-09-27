@@ -34,6 +34,16 @@ class Sack {
          * @param file is the path to the file to load from.
          */
         void loadBullets(char const *file);
+
+        /**
+         * Plays a song unless it is already playing in which case it does
+         * nothing.
+         * @param file is the path to the file to play.
+         */
+        void playSong(char const *file);
+
+    private:
+        std::string song;
 };
 
 #endif

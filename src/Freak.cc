@@ -9,7 +9,7 @@ Freak::Freak(
     std::string name,
     SDL_Rect sprite,
     float gravity,
-    Behaviour
+    Behaviour behaviour
 ) {
     this->name = name;
     this->sprite = sprite;

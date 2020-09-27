@@ -2,6 +2,11 @@
 #include "Screen.hh"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
+#ifdef __EMSCRIPTEN__
+    #include <emscripten.h>
+    #include <emscripten/html5.h>
+#endif
 #include <stdio.h>
 
 int const SCREEN_WIDTH = 768;
@@ -11,6 +16,20 @@ char const *PIC_FILE = "assets/coom.png";
 char const *SPRITE_FILE = "assets/cooxr.csv";
 char const *FREAK_FILE = "assets/freaks.csv";
 char const *BULLET_FILE = "assets/bullets.csv";
+
+/**
+ * Gotta do this shit for emscripten, annoying I know.
+ */
+struct ProgramState {
+    bool running;
+    int time;
+    int updateTimer;
+    int fpsTimer;
+    int startIteration;
+    int iteration;
+    SDL_Renderer *renderer;
+    Screen *screen;
+};
 
 /**
  * Loads in a sack.
@@ -41,48 +60,37 @@ Sack *loadSack(
 }
 
 /**
- * Contains the main loop and all that jazz. You obviously have to init sdl and
- * all that first and do not even START me about reentrancy or I will shoot you
- * in the fucking face.
- * @param renderer is used to render stuff.
- * @param start    is the screen that the program starts on.
- * @return the number the program as a whole should return.
+ * The main loop of the program.
+ * @param data is meant to be a program state object which contains all the
+ *             variables the loop needs between iterations.
  */
-int body(SDL_Renderer &renderer, Screen *start) {
-    bool running = true;
-    int time = SDL_GetTicks();
-    int updateTimer = 0;
-    int fpsTimer = 0;
-    int startIteration = 0;
-    int iteration = 0;
-    while (running) {
-	SDL_Event event;
-        while (SDL_PollEvent(&event) != 0) {
-	    if (event.type == SDL_QUIT) running = false;
-	}
-	int currentTime = SDL_GetTicks();
-	updateTimer += currentTime - time;
-	fpsTimer += currentTime - time;
-	time = currentTime;
-	while (updateTimer >= start->getTimestep()) {
-            start->update();
-	    updateTimer -= start->getTimestep();
-	}
-	if (fpsTimer >= FPS_RATE) {
-            SDL_LogInfo(
-                SDL_LOG_CATEGORY_APPLICATION,
-                "%.1f fps\n",
-                (float)(iteration - startIteration) / (FPS_RATE / 1000)
-            );
-	    startIteration = iteration;
-	    fpsTimer = 0;
-	}
-	//SDL_RenderClear(&renderer);
-	start->render(renderer);
-	SDL_RenderPresent(&renderer);
-	iteration++;
+void loop(void *data) {
+    struct ProgramState *program = (struct ProgramState *)data;
+    SDL_Event event;
+    while (SDL_PollEvent(&event) != 0) {
+        if (event.type == SDL_QUIT) program->running = false;
     }
-    return 0;
+    int currentTime = SDL_GetTicks();
+    program->updateTimer += currentTime - program->time;
+    program->fpsTimer += currentTime - program->time;
+    program->time = currentTime;
+    while (program->updateTimer >= program->screen->getTimestep()) {
+        program->screen->update();
+        program->updateTimer -= program->screen->getTimestep();
+    }
+    if (program->fpsTimer >= FPS_RATE) {
+        SDL_LogInfo(
+            SDL_LOG_CATEGORY_APPLICATION,
+            "%.1f fps\n",
+            (float)(program->iteration - program->startIteration) / (FPS_RATE / 1000)
+        );
+        program->startIteration = program->iteration;
+        program->fpsTimer = 0;
+    }
+    //SDL_RenderClear(&renderer);
+    program->screen->render(*program->renderer);
+    SDL_RenderPresent(program->renderer);
+    program->iteration++;
 }
 
 /**
@@ -153,11 +161,24 @@ int main(int argc, char **argv) {
         return 1;
     }
     TestScreen *start = new TestScreen(*sack, 768);
-    body(*renderer, start);
-    delete sack;
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    IMG_Quit();
-    SDL_Quit();
+    struct ProgramState *program = new ProgramState();
+    program->running = true;
+    program->time = SDL_GetTicks();
+    program->updateTimer = 0;
+    program->fpsTimer = 0;
+    program->startIteration = 0;
+    program->iteration = 0;
+    program->renderer = renderer;
+    program->screen = start;
+    #ifdef __EMSCRIPTEN__
+    // Receives a function to call and some user data to provide it.
+    emscripten_set_main_loop_arg(loop, program, 0, false);
+    #else
+    while (program.running) {
+        loop(&program);
+        // TODO: not go too fast when vsync ain't there for us.
+        // SDL_Delay(time_to_next_frame());
+    }
+    #endif
     return 0;
 }

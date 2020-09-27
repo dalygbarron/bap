@@ -47,3 +47,7 @@ void Sack::loadBullets(char const *file) {
         );
     }
 }
+
+void Sack::playSong(char const *file) {
+    if 
+}
