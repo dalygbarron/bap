@@ -18,7 +18,7 @@ TestScreen::TestScreen(Sack const &sack, int n):
 	this->bullets[i].velocity.y = rand() % 20 - 10;
 	this->bullets[i].accelerator.x = rand() % 20 - 10;
 	this->bullets[i].accelerator.y = rand() % 20 - 10;
-        // TODO: set model.
+        this->bullets[i].model = &sack.bullets.at(0);
     }
 }
     
@@ -39,7 +39,6 @@ int TestScreen::update() {
 }
 
 void TestScreen::render(SDL_Renderer &renderer) const {
-    SDL_Rect placement;
     for (int i = 0; i < this->n; i++) {
         this->sack.atlas->draw(
             renderer,

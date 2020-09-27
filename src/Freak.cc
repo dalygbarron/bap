@@ -19,7 +19,11 @@ Freak::Freak(
 
 Freak::Behaviour Freak::stringToBehaviour(std::string string) {
     if (BEHAVIOURS.count(string) > 0) return BEHAVIOURS.at(string);
-    printf("'%s' is not a valid behaviour name\n", string.c_str());
+    SDL_LogError(
+        SDL_LOG_CATEGORY_APPLICATION,
+        "'%s' is not a valid behaviour name\n",
+        string.c_str()
+    );
     return Behaviour::STATIC;
 }
 

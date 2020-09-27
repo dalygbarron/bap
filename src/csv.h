@@ -32,6 +32,8 @@
 #ifndef CSV_H
 #define CSV_H
 
+#define CSV_IO_NO_THREAD
+
 #include <vector>
 #include <string>
 #include <cstring>

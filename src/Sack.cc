@@ -1,5 +1,4 @@
 #include "Sack.hh"
-#define CSV_IO_NO_THREAD
 #include "csv.h"
 
 Sack::Sack(Atlas *atlas): atlas(atlas) {
@@ -15,9 +14,7 @@ void Sack::loadFreaks(char const *file) {
         "behaviour",
         "gravity"
     );
-    std::string name;
-    std::string sprite;
-    std::string behaviour;
+    std::string name, sprite, behaviour;
     float gravity;
     while (csv.read_row(name, sprite, behaviour, gravity)) {
         SDL_Rect actualSprite = this->atlas->getSprite(sprite.c_str());

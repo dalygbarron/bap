@@ -16,6 +16,12 @@ class Atlas {
         Atlas(SDL_Texture &texture);
 
         /**
+         * Loads in sprites from a file yeeach.
+         * @param file is the path to the file to load them from.
+         */
+        void loadSprites(char const *file);
+
+        /**
          * Adds a sprite to the atlas.
          * @param name   is the name of the sprite.
          * @param sprite is the outline of the sprite.

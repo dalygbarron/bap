@@ -33,6 +33,7 @@ Sack *loadSack(
     SDL_Texture *texture = Util::loadTexture(picFile, renderer);
     if (!texture) return NULL;
     Atlas *atlas = new Atlas(*texture);
+    atlas->loadSprites(atlasFile);
     Sack *sack = new Sack(atlas);
     sack->loadFreaks(freakFile);
     sack->loadBullets(bulletFile);
@@ -68,8 +69,9 @@ int body(SDL_Renderer &renderer, Screen *start) {
 	    updateTimer -= start->getTimestep();
 	}
 	if (fpsTimer >= FPS_RATE) {
-	    printf(
-                "FPS: %f\n",
+            SDL_LogInfo(
+                SDL_LOG_CATEGORY_APPLICATION,
+                "%.1f fps\n",
                 (float)(iteration - startIteration) / (FPS_RATE / 1000)
             );
 	    startIteration = iteration;
@@ -91,11 +93,15 @@ int body(SDL_Renderer &renderer, Screen *start) {
  */
 int main(int argc, char **argv) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("SDl could not initialise because: %s\n", SDL_GetError());
+        SDL_LogCritical(
+            SDL_LOG_CATEGORY_APPLICATION,
+            "SDL could not initialise because: %s\n",
+            SDL_GetError()
+        );
         return 1;
     }
     SDL_Window *window = SDL_CreateWindow(
-        "Brexit Simulator",
+        "BAP",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         SCREEN_WIDTH,
@@ -103,11 +109,19 @@ int main(int argc, char **argv) {
         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
     );
     if (!window) {
-        printf("Window couldn't be created because: %s\n", SDL_GetError());
+        SDL_LogCritical(
+            SDL_LOG_CATEGORY_APPLICATION,
+            "Window couldn't be created because: %s\n",
+            SDL_GetError()
+        );
         return 1;
     }
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-	printf("SDL_image couldn't init because: %s\n", IMG_GetError());
+        SDL_LogCritical(
+            SDL_LOG_CATEGORY_APPLICATION,
+            "SDL_image couldn't init because: %s\n",
+            IMG_GetError()
+        );
         return 1;
     }
     SDL_Renderer *renderer = SDL_CreateRenderer(
@@ -116,7 +130,11 @@ int main(int argc, char **argv) {
 	SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     );
     if (!renderer) {
-	printf("Couldn't start renderer because: %s\n", SDL_GetError());
+        SDL_LogCritical(
+            SDL_LOG_CATEGORY_APPLICATION,
+            "Couldn't start renderer because: %s\n",
+            SDL_GetError()
+        );
         return 1;
     }
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -128,7 +146,10 @@ int main(int argc, char **argv) {
         BULLET_FILE
     );
     if (!sack) {
-        printf("Couldn't load sack\n");
+        SDL_LogCritical(
+            SDL_LOG_CATEGORY_APPLICATION,
+            "Couldn't load sack\n"
+        );
         return 1;
     }
     TestScreen *start = new TestScreen(*sack, 768);
