@@ -2,3 +2,7 @@ main
 *.swp
 *.swn
 *.swo
+main.data
+main.wasm
+main.js
+main.html

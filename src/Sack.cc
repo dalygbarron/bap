@@ -48,6 +48,19 @@ void Sack::loadBullets(char const *file) {
     }
 }
 
-void Sack::playSong(char const *file) {
-    if 
+void Sack::playSong(char const *file) const {
+    if (!this->music || strcmp(this->song.c_str(), file) != 0) {
+        if (this->music) Mix_FreeMusic(this->music);
+        this->music = Mix_LoadMUS(file);
+        if (this->music) {
+            Mix_PlayMusic(this->music, -1);
+            this->song = file;
+        } else {
+            SDL_LogError(
+                SDL_LOG_CATEGORY_APPLICATION,
+                "Couldn't load music '%s'",
+                file
+            );
+        }
+    }
 }

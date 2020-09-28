@@ -174,8 +174,8 @@ int main(int argc, char **argv) {
     // Receives a function to call and some user data to provide it.
     emscripten_set_main_loop_arg(loop, program, 0, false);
     #else
-    while (program.running) {
-        loop(&program);
+    while (program->running) {
+        loop(program);
         // TODO: not go too fast when vsync ain't there for us.
         // SDL_Delay(time_to_next_frame());
     }

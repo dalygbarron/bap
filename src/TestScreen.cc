@@ -20,6 +20,7 @@ TestScreen::TestScreen(Sack const &sack, int n):
 	this->bullets[i].accelerator.y = rand() % 20 - 10;
         this->bullets[i].model = &sack.bullets.at(0);
     }
+    sack.playSong("assets/apacho.it");
 }
     
 TestScreen::~TestScreen() {

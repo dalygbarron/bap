@@ -4,6 +4,7 @@
 #include "Atlas.hh"
 #include "Freak.hh"
 #include "Bullet.hh"
+#include <SDL2/SDL_mixer.h>
 #include <vector>
 
 
@@ -40,10 +41,11 @@ class Sack {
          * nothing.
          * @param file is the path to the file to play.
          */
-        void playSong(char const *file);
+        void playSong(char const *file) const;
 
     private:
-        std::string song;
+        mutable std::string song = "";
+        mutable Mix_Music *music = NULL;
 };
 
 #endif
