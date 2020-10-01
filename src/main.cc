@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
     if (!window) {
         SDL_LogCritical(
             SDL_LOG_CATEGORY_APPLICATION,
-            "Window couldn't be created because: %s\n",
+            "Window couldn't be created because: %s",
             SDL_GetError()
         );
         return 1;
@@ -127,10 +127,17 @@ int main(int argc, char **argv) {
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
         SDL_LogCritical(
             SDL_LOG_CATEGORY_APPLICATION,
-            "SDL_image couldn't init because: %s\n",
+            "SDL_image couldn't init because: %s",
             IMG_GetError()
         );
         return 1;
+    }
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        SDL_LogCritical(
+            SDL_LOG_CATEGORY_APPLICATION,
+            "SDL_Mixer couldn't init because: %s",
+            Mix_GetError()
+        );
     }
     SDL_Renderer *renderer = SDL_CreateRenderer(
 	window,
