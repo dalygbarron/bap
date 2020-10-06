@@ -82,7 +82,8 @@ void loop(void *data) {
         SDL_LogInfo(
             SDL_LOG_CATEGORY_APPLICATION,
             "%.1f fps\n",
-            (float)(program->iteration - program->startIteration) / (FPS_RATE / 1000)
+            (float)(program->iteration - program->startIteration) /
+                (FPS_RATE / 1000)
         );
         program->startIteration = program->iteration;
         program->fpsTimer = 0;
