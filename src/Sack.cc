@@ -1,8 +1,13 @@
 #include "Sack.hh"
 #include "csv.h"
 
+void write(WrenVM *vm, const char *text) {
+    printf("%s", text);
+}
+
 Sack::Sack(Atlas *atlas): atlas(atlas) {
-    // that is all.
+    wrenInitConfiguration(&this->scriptConfig);
+    this->scriptConfig.writeFn = &write;
 }
 
 void Sack::loadFreaks(char const *file) {
@@ -63,4 +68,14 @@ void Sack::playSong(char const *file) const {
             );
         }
     }
+}
+
+WrenVM *Sack::createScript(std::string path) {
+    WrenVM* vm = wrenNewVM(&this->scriptConfig);
+    WrenInterpretResult result = wrenInterpret(
+        vm,
+        "nerd",
+        "System.print(\"I am running in a VM!\")"
+    );
+    return vm;
 }

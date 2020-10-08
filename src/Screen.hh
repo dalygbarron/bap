@@ -3,6 +3,8 @@
 
 #include "Sack.hh"
 #include "Bullet.hh"
+#include "wren.hpp"
+
 
 /**
  * Like a state that the game can be in. Screens can be stacked and return info
@@ -118,6 +120,7 @@ class TestScreen: public Screen {
 
     private:
         Instance<Bullet> *bullets;
+        WrenVM *script;
 };
 
 #endif

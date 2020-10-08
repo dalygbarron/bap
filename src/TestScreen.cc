@@ -1,27 +1,7 @@
 #include "Screen.hh"
-#include "tinyscheme-1.40/scheme.h"
 
 #define STEP 17
 #define SECOND_STEP 0.017
-
-void loadScript() {
-     scheme * env;
-     FILE *fptr;
-     // initialize the scheme invironment
-     env = scheme_init_new();
-     // set output to go to STDOUT by default
-     scheme_set_output_port_file(env, stdout);
-     // Load the init file
-     fptr = fopen("assets/scm/init.scm", "r");
-     scheme_load_file(env, fptr);
-     fclose(fptr);
-     // Load my scheme program
-     fptr = fopen("assets/scm/talk.scm", "r");
-     scheme_load_file(env, fptr);
-     fclose(fptr);
-     // de-initialize the scheme environment
-     scheme_deinit(env);
-}
 
 TestScreen::TestScreen(Sack const &sack, int n):
     Screen(sack),
@@ -41,10 +21,10 @@ TestScreen::TestScreen(Sack const &sack, int n):
         this->bullets[i].model = &sack.bullets.at(0);
     }
     sack.playSong("assets/blowItUp.ogg");
-    loadScript();
 }
     
 TestScreen::~TestScreen() {
+    wrenFreeVM(this->script);
     delete this->bullets;
 }
 

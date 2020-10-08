@@ -1,5 +1,6 @@
 #include "Screen.hh"
+#include <stdio.h>
 
 Screen::Screen(Sack const &sack): sack(sack) {
-    // nothing else.
+    // that is all.
 }
