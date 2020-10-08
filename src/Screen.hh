@@ -48,25 +48,21 @@ class Screen {
  */
 class BlankScreen: public Screen {
     public:
+        /**
+         * Creates the blank screen by providing the script it will run.
+         * @param sack   contains shiet.
+         * @param script is the path to the script it will run.
+         */
+        BlankScreen(Sack const &sack, std::string script);
+
 	int getTimestep() const override;
 
 	int update() override;
 
 	void render(SDL_Renderer &renderer) const override;
-};
 
-/**
- * A screen that contains some gui elements and nothing else and lets you fuck
- * around with them until one is activated in which case the screen ends and
- * returns a thingy telling you what knob was activated.
- */
-class KnobScreen: public Screen {
-    public:
-	int getTimestep() const override;
-
-	int update() override;
-
-	void render(SDL_Renderer &renderer) const override;
+    private:
+        WrenVM *script;
 };
 
 /**
