@@ -1,3 +1,4 @@
+#ifdef BFERBGUI
 #include "Level.hh"
 
 Level::Level(int width, int height, SDL_Rect bounds):
@@ -20,3 +21,4 @@ Level::~Level() {
 void Level::render(Graphics const &graphics) {
 
 }
+#endif

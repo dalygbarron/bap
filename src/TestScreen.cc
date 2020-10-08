@@ -1,5 +1,5 @@
 #include "Screen.hh"
-#include "tinyscheme/scheme.h"
+#include "tinyscheme-1.40/scheme.h"
 
 #define STEP 17
 #define SECOND_STEP 0.017

@@ -1,6 +1,9 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+#include "Graphics.hh"
+#include <SDL2/SDL.h>
+
 /**
  * A nice platforming level.
  */
