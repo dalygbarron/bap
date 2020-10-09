@@ -168,7 +168,7 @@ int main(int argc, char **argv) {
         );
         return 1;
     }
-    TestScreen *start = new TestScreen(*sack, 768);
+    BlankScreen *start = new BlankScreen(*sack, "assets/wren/talk.wren");
     struct ProgramState *program = new ProgramState();
     program->running = true;
     program->time = SDL_GetTicks();

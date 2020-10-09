@@ -3,8 +3,8 @@
 #define STEP 17
 #define SECOND_STEP 0.017
 
-BlankScreen::BlankScreen(std::string script): Screen(sack) {
-    this->script = this->loadScript(script);
+BlankScreen::BlankScreen(Sack const &sack, std::string script): Screen(sack) {
+    this->script = sack.createScript(script);
 }
 
 int BlankScreen::getTimestep() const {
@@ -13,6 +13,7 @@ int BlankScreen::getTimestep() const {
 
 int BlankScreen::update() {
 
+    return 0;
 }
 
 void BlankScreen::render(SDL_Renderer &renderer) const {

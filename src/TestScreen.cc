@@ -24,7 +24,6 @@ TestScreen::TestScreen(Sack const &sack, int n):
 }
     
 TestScreen::~TestScreen() {
-    wrenFreeVM(this->script);
     delete this->bullets;
 }
 

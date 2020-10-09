@@ -5,9 +5,30 @@ void write(WrenVM *vm, const char *text) {
     printf("%s", text);
 }
 
+void error(
+    WrenVM *vm,
+    WrenErrorType errorType,
+    char const *module,
+    int const line,
+    char const *msg
+) {
+    switch (errorType) {
+        case WREN_ERROR_COMPILE:
+            printf("[%s line %d] [Error] %s\n", module, line, msg);
+            break;
+        case WREN_ERROR_STACK_TRACE:
+            printf("[%s line %d] in %s\n", module, line, msg);
+            break;
+        case WREN_ERROR_RUNTIME:
+            printf("[Runtime Error] %s\n", msg);
+            break;
+    }
+}
+
 Sack::Sack(Atlas *atlas): atlas(atlas) {
     wrenInitConfiguration(&this->scriptConfig);
     this->scriptConfig.writeFn = &write;
+    this->scriptConfig.errorFn = &error;
 }
 
 void Sack::loadFreaks(char const *file) {
@@ -70,12 +91,24 @@ void Sack::playSong(char const *file) const {
     }
 }
 
-WrenVM *Sack::createScript(std::string path) {
+WrenVM *Sack::createScript(std::string path) const {
     WrenVM* vm = wrenNewVM(&this->scriptConfig);
     WrenInterpretResult result = wrenInterpret(
         vm,
         "nerd",
-        "System.print(\"I am running in a VM!\")"
+        "System.print(\"I am running in a VM!\")\nFiber.yield()\nSystem.print(\"herd\")"
     );
-    return vm;
+
+    switch (result) {
+        case WREN_RESULT_COMPILE_ERROR:
+            printf("Compile Error!\n");
+            break;
+        case WREN_RESULT_RUNTIME_ERROR:
+            printf("Runtime Error!\n");
+            break;
+        case WREN_RESULT_SUCCESS:
+            return vm;
+    }
+    wrenFreeVM(vm);
+    return NULL;
 }
