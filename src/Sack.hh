@@ -4,7 +4,7 @@
 #include "Atlas.hh"
 #include "Freak.hh"
 #include "Bullet.hh"
-#include "wren.hpp"
+#include "janet.h"
 #include <SDL2/SDL_mixer.h>
 #include <vector>
 
@@ -49,12 +49,11 @@ class Sack {
          * @param path is the path to the script file to read.
          * @return the created script.
          */
-        WrenVM *createScript(std::string path) const;
+        // WrenVM *createScript(std::string path) const;
 
     private:
         mutable std::string song = "";
         mutable Mix_Music *music = NULL;
-        mutable WrenConfiguration scriptConfig;
 };
 
 #endif

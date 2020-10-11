@@ -17,6 +17,13 @@ namespace Util {
      *         will fail.
      */
     SDL_Texture *loadTexture(char const *file, SDL_Renderer &renderer);
+
+    /**
+     * Reads you a whole file.
+     * @param file is the file to read.
+     * @return a string object of the file so no ownership shit to deal with.
+     */
+    std::string readWholeFile(char const *file);
 };
 
 #endif

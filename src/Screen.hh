@@ -3,7 +3,7 @@
 
 #include "Sack.hh"
 #include "Bullet.hh"
-#include "wren.hpp"
+#include "janet.h"
 
 
 /**
@@ -62,7 +62,7 @@ class BlankScreen: public Screen {
 	void render(SDL_Renderer &renderer) const override;
 
     private:
-        WrenVM *script;
+        // WrenVM *script;
 };
 
 /**
@@ -116,7 +116,6 @@ class TestScreen: public Screen {
 
     private:
         Instance<Bullet> *bullets;
-        WrenVM *script;
 };
 
 #endif

@@ -1,7 +1,7 @@
 MAIN_INPUTS=$(wildcard src/*.cc)
-WREN_INPUTS=$(wildcard src/wren/optional/*.c) $(wildcard src/wren/vm/*.c)
+C_INPUTS=src/janet.c
 MAIN_OBJS=$(addsuffix .o, $(MAIN_INPUTS))
-WREN_OBJS=$(addsuffix .o, $(WREN_INPUTS))
+C_OBJS=$(addsuffix .o, $(C_INPUTS))
 OBJ_NAME = main.html
 #CCC=g++
 #CC=gcc
@@ -17,8 +17,8 @@ COMPILER_FLAGS=-I src/wren/optional -I src/wren/vm -I src/wren/include
 %.cc.o: %.cc
 	$(CCC) -c $^ $(COMPILER_FLAGS) -o $@
 
-$(OBJ_NAME): $(MAIN_OBJS) $(WREN_OBJS) assets/*
-	$(CCC) $(MAIN_OBJS) $(WREN_OBJS) $(LINKER_FLAGS) -o $(OBJ_NAME)
+$(OBJ_NAME): $(MAIN_OBJS) $(C_OBJS) assets/*
+	$(CCC) $(MAIN_OBJS) $(C_OBJS) $(LINKER_FLAGS) -o $(OBJ_NAME)
 
 all: $(OBJ_NAME)
 
@@ -26,4 +26,4 @@ run: all
 	./$(OBJ_NAME)
 
 clean:
-	rm src/*.o src/tinyscheme-1.40/*.o $(OBJ_NAME)
+	rm src/*.o $(OBJ_NAME)

@@ -1,5 +1,6 @@
 #include "Util.hh"
 #include "Screen.hh"
+#include "janet.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
@@ -154,6 +155,7 @@ int main(int argc, char **argv) {
         return 1;
     }
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    janet_init();
     Sack *sack = loadSack(
         *renderer,
         PIC_FILE,
@@ -188,5 +190,6 @@ int main(int argc, char **argv) {
         // SDL_Delay(time_to_next_frame());
     }
     #endif
+    janet_deinit();
     return 0;
 }
