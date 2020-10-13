@@ -6,9 +6,10 @@
 
 BlankScreen::BlankScreen(Sack const &sack, std::string script): Screen(sack) {
     JanetTable *env = janet_core_env(NULL);
-    janet_dostring(env, Util::readWholeFile("assets/janet/talk.janet").c_str(), "main", NULL);
-    JANET_API JanetFiber *fiber = janet_root_fiber();
-    printf("%d\n", fiber);
+    Janet out;
+    janet_dostring(env, Util::readWholeFile("assets/janet/talk.janet").c_str(), "main", &out);
+    int janet_checktype(Janet x, JanetType type);
+
     while (janet_fiber_status(fiber) != JANET_STATUS_DEAD) {
         janet_continue(fiber, janet_wrap_nil(), NULL);
         printf("nerd\n");
