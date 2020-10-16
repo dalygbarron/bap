@@ -8,11 +8,12 @@ BlankScreen::BlankScreen(Sack const &sack, std::string script): Screen(sack) {
     JanetTable *env = janet_core_env(NULL);
     Janet out;
     janet_dostring(env, Util::readWholeFile("assets/janet/talk.janet").c_str(), "main", &out);
-    int janet_checktype(Janet x, JanetType type);
-
+    if (!janet_checktype(out, JANET_FUNCTION)) {
+        fprintf(stderr, "SCript needs a function retard\n");
+    }
+    JanetFiber *fiber = janet_fiber(janet_unwrap_function(out), 0, 0, NULL);
     while (janet_fiber_status(fiber) != JANET_STATUS_DEAD) {
         janet_continue(fiber, janet_wrap_nil(), NULL);
-        printf("nerd\n");
     }
 }
 
