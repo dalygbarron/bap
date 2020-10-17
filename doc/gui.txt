@@ -1,0 +1,20 @@
+Ok so the gui system is always going to be immediate mode, but there is going
+to be a 'blank screen' whose job is to run a script that draws arbitrary stuff
+so those scripts kind of work like a more fixed style fo gui. But for things
+like the level editor it will be normal immediate mode shiet.
+
+So whether script or engine it works exactly the same except with the script of
+course it has to go through the api, it adds the calls to some kind of gui
+object thingy which contains list of the shit to draw / handle clicks for.
+
+Things like scrollable panels or selection lists will have to be done by
+passing a reference to a variable though I dunno how that will work exactly
+with scripts. If I can pass a reference to a variable inside the script then
+that will be cool.
+
+When something like a button is acticvated it will have to return an id number
+or something so it will be the responsibility of the user to stop those
+clashing.
+
+Ok so really I should start this by creating a test version of the level editor
+screen that just display some gui thingies.

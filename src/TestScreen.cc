@@ -1,7 +1,6 @@
 #include "Screen.hh"
 
 #define STEP 17
-#define SECOND_STEP 0.017
 
 TestScreen::TestScreen(Sack const &sack, int n):
     Screen(sack),
@@ -33,7 +32,7 @@ int TestScreen::getTimestep() const {
 
 int TestScreen::update() {
     for (int i = 0; i < this->n; i++) {
-        this->bullets[i].update(SECOND_STEP);
+        this->bullets[i].update(MILL_TO_SEC(STEP));
         this->bullets[i].position.wrap({768, 480});
     }
     return 0;

@@ -5,6 +5,7 @@
 #include "Bullet.hh"
 #include "janet.h"
 
+#define MILL_TO_SEC(X) ((float)X / 1000)
 
 /**
  * Like a state that the game can be in. Screens can be stacked and return info
@@ -82,6 +83,12 @@ class PlatformScreen: public Screen {
  */
 class DesignScreen: public Screen {
     public:
+        /**
+         * Creates the screen and a default level to edit.
+         * @param sack is the sack.
+         */
+        DesignScreen(Sack const &sack);
+
 	int getTimestep() const override;
 
 	int update() override;

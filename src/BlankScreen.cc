@@ -1,8 +1,7 @@
 #include "Screen.hh"
 #include "Util.hh"
 
-#define STEP 17
-#define SECOND_STEP 0.017
+#define STEP 33
 
 BlankScreen::BlankScreen(Sack const &sack, std::string script): Screen(sack) {
     JanetTable *env = janet_core_env(NULL);
