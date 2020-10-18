@@ -1,12 +1,10 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <vector>
-
 /**
- * Stores gui shiet.
+ * Contains nice functions for rendering gui stuff.
  */
-class Gui {
+namespace Gui {
     public:
         /**
          * Creates the gui thingy.
@@ -33,7 +31,6 @@ class Gui {
 
 
     private:
-        SDL_Rect bounds;
         int result;
 
         /**

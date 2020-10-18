@@ -27,3 +27,5 @@ Yeah so when a parent function receives this list of instructions they are at
 origin 0 so it offsets them to be in the right place. I guess instead of an
 array it will have to be some kind of object that also contains the bounds of
 the object so that a parent can fit it with siblings.
+
+
