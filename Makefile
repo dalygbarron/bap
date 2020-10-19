@@ -11,13 +11,16 @@ CC=emcc
 LINKER_FLAGS=-s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' --preload-file assets -O2
 COMPILER_FLAGS=-I src/wren/optional -I src/wren/vm -I src/wren/include
 
+assets/coom.png assets/cooxr.csv: sprites/*.png
+	rat -o assets/coom.png -f assets/cooxr.csv -d 1024:1024 -w csv sprites/*.png
+
 %.c.o: %.c
 	$(CC) -c $^ $(COMPILER_FLAGS) -o $@
 
 %.cc.o: %.cc
 	$(CCC) -c $^ $(COMPILER_FLAGS) -o $@
 
-$(OBJ_NAME): $(MAIN_OBJS) $(C_OBJS) assets/*
+$(OBJ_NAME): $(MAIN_OBJS) $(C_OBJS) assets/* assets/coom.png assets/cooxr.csv
 	$(CCC) $(MAIN_OBJS) $(C_OBJS) $(LINKER_FLAGS) -o $(OBJ_NAME)
 
 all: $(OBJ_NAME)

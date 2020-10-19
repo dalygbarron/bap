@@ -52,10 +52,10 @@ class Renderer {
 
     private:
         SDL_Renderer &renderer;
-        SDL_Rect guiBackground;
-        SDL_Rect guiSelect;
+        SDL_Rect background;
+        SDL_Rect select;
         SDL_Rect font;
-        int guiBorderSize;
+        int borderSize;
 };
 
 #endif
