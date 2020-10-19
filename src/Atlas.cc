@@ -56,3 +56,16 @@ void Atlas::draw(
         &placement
     );
 }
+
+void Atlas::draw(
+    SDL_Renderer &renderer,
+    SDL_Rect const &destination,
+    SDL_Rect const &sprite
+) const {
+    SDL_RenderCopy(
+        &renderer,
+        &this->texture,
+        &sprite,
+        &destination
+    );
+}

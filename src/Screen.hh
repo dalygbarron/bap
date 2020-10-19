@@ -3,6 +3,7 @@
 
 #include "Sack.hh"
 #include "Bullet.hh"
+#include "Renderer.hh"
 #include "janet.h"
 
 #define MILL_TO_SEC(X) ((float)X / 1000)
@@ -38,7 +39,7 @@ class Screen {
 	 * Renders the screen.
 	 * @param renderer is the renderer that does some stuff.
 	 */
-	virtual void render(SDL_Renderer &renderer) const = 0;
+	virtual void render(Renderer const &renderer) const = 0;
 
     protected:
         Sack const &sack;
@@ -60,7 +61,7 @@ class BlankScreen: public Screen {
 
 	int update() override;
 
-	void render(SDL_Renderer &renderer) const override;
+	void render(Renderer const &renderer) const override;
 
     private:
         // WrenVM *script;
@@ -75,7 +76,7 @@ class PlatformScreen: public Screen {
 
 	int update() override;
 
-	void render(SDL_Renderer &renderer) const override;
+	void render(Renderer const &renderer) const override;
 };
 
 /**
@@ -93,7 +94,7 @@ class DesignScreen: public Screen {
 
 	int update() override;
 
-	void render(SDL_Renderer &renderer) const override;
+	void render(Renderer const &renderer) const override;
 };
 
 /**
@@ -119,7 +120,7 @@ class TestScreen: public Screen {
 
 	int update() override;
 
-	void render(SDL_Renderer &renderer) const override;
+	void render(Renderer const &renderer) const override;
 
     private:
         Instance<Bullet> *bullets;

@@ -61,6 +61,18 @@ class Atlas {
             SDL_Rect const &sprite
         ) const;
 
+        /**
+         * Draws a sprite and stretches it to the given bounds.
+         * @param renderer is the sdl renderer.
+         * @param destination is the rectangle to draw it to.
+         * @param sprite is the sprite to draw.
+         */
+        void draw(
+            SDL_Renderer &renderer,
+            SDL_Rect const &destination,
+            SDL_Rect const &sprite
+        ) const;
+
     private:
         std::map<std::string, SDL_Rect> sprites;
         SDL_Texture &texture;

@@ -11,9 +11,9 @@ int DesignScreen::getTimestep() const {
 }
 
 int DesignScreen::update() {
-
+    return 0;
 }
 
-void DesignScreen::render(SDL_Renderer &renderer) const {
+void DesignScreen::render(Renderer const &renderer) const {
 
 }

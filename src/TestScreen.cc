@@ -38,12 +38,10 @@ int TestScreen::update() {
     return 0;
 }
 
-void TestScreen::render(SDL_Renderer &renderer) const {
+void TestScreen::render(Renderer const &renderer) const {
     for (int i = 0; i < this->n; i++) {
-        this->sack.atlas->draw(
-            renderer,
-            this->bullets[i].position.x,
-            this->bullets[i].position.y,
+        renderer.sprite(
+            this->bullets[i].position,
             this->bullets[i].model->getSprite()
         );
     }

@@ -24,6 +24,22 @@ namespace Util {
      * @return a string object of the file so no ownership shit to deal with.
      */
     std::string readWholeFile(char const *file);
+
+    /**
+     * Returns the lower of two options.
+     * @param a is the first option.
+     * @param b is the second option.
+     * @return the lower of a and b.
+     */
+    int min(int a, int b);
+
+    /**
+     * Returns the higher of two options.
+     * @param a is the first option.
+     * @param b is the second option.
+     * @return the higher of a and b.
+     */
+    int max(int a, int b);
 };
 
 #endif

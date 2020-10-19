@@ -21,15 +21,17 @@ char const *BULLET_FILE = "assets/bullets.csv";
 /**
  * Gotta do this shit for emscripten, annoying I know.
  */
-struct ProgramState {
-    bool running;
-    int time;
-    int updateTimer;
-    int fpsTimer;
-    int startIteration;
-    int iteration;
-    SDL_Renderer *renderer;
-    Screen *screen;
+class ProgramState {
+    public:
+        bool running;
+        int time;
+        int updateTimer;
+        int fpsTimer;
+        int startIteration;
+        int iteration;
+        SDL_Renderer *realRenderer;
+        Renderer *renderer;
+        Screen *screen;
 };
 
 /**
@@ -66,7 +68,7 @@ Sack *loadSack(
  *             variables the loop needs between iterations.
  */
 void loop(void *data) {
-    struct ProgramState *program = (struct ProgramState *)data;
+    struct ProgramState *program = (ProgramState *)data;
     SDL_Event event;
     while (SDL_PollEvent(&event) != 0) {
         if (event.type == SDL_QUIT) program->running = false;
@@ -89,9 +91,9 @@ void loop(void *data) {
         program->startIteration = program->iteration;
         program->fpsTimer = 0;
     }
-    //SDL_RenderClear(&renderer);
+    // SDL_RenderClear(&renderer);
     program->screen->render(*program->renderer);
-    SDL_RenderPresent(program->renderer);
+    SDL_RenderPresent(program->realRenderer);
     program->iteration++;
 }
 
@@ -171,14 +173,22 @@ int main(int argc, char **argv) {
         return 1;
     }
     BlankScreen *start = new BlankScreen(*sack, "assets/wren/talk.wren");
-    struct ProgramState *program = new ProgramState();
+    ProgramState *program = new ProgramState();
+    program->renderer = new Renderer(
+        *renderer,
+        *sack->atlas,
+        sack->atlas->getSprite("background"),
+        sack->atlas->getSprite("select"),
+        sack->atlas->getSprite("font"),
+        5
+    );
+    program->realRenderer = renderer;
     program->running = true;
     program->time = SDL_GetTicks();
     program->updateTimer = 0;
     program->fpsTimer = 0;
     program->startIteration = 0;
     program->iteration = 0;
-    program->renderer = renderer;
     program->screen = start;
     #ifdef __EMSCRIPTEN__
     // Receives a function to call and some user data to provide it.
