@@ -177,6 +177,7 @@ int main(int argc, char **argv) {
     program->renderer = new Renderer(
         *renderer,
         *sack->atlas,
+        sack->atlas->getSprite("background"),
         sack->atlas->getSprite("panel"),
         sack->atlas->getSprite("select"),
         sack->atlas->getSprite("font"),
