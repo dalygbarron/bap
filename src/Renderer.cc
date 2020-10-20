@@ -136,33 +136,10 @@ void Renderer::text(Vec origin, char const *text) const {
     }
 }
 
-void Renderer::addOperation(Operation operation) {
-    this->operations.push(operation);
-}
-
-void Renderer::processOperations() {
-    while (!this->operations.empty()) {
-        Operation operation = this->operations.front();
-        this->operations.pop();
-        switch (operation.type) {
-            case BORDER:
-                this->border(
-                    operation.bounds,
-                    operation.sprite,
-                    operation.width
-                );
-                break;
-            case RECT:
-                this->rect(operation.bounds, operation.sprite);
-                break;
-            case PANEL:
-                this->panel(operation.bounds);
-                break;
-            case TEXT:
-                this->text(
-                    Vec(operation.bounds.x, operation.bounds.y),
-                    operation.text
-                );
-        }
-    }
+void Renderer::sprite(Vec pos, SDL_Rect const &sprite) const {
+    this->atlas.draw(
+        this->renderer,
+        {pos.iX() - sprite.w / 2, pos.iY() - sprite.h / 2, sprite.w, sprite.h},
+        sprite
+    );
 }

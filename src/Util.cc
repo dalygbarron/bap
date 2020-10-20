@@ -7,7 +7,8 @@ SDL_Texture *Util::loadTexture(char const *file, SDL_Renderer &renderer) {
     SDL_Texture *newTexture = NULL;
     SDL_Surface *loadedSurface = IMG_Load(file);
     if (loadedSurface == NULL) {
-	printf(
+	fprintf(
+            stderr,
 	    "Loading image '%s' failed because: %s\n",
 	    file,
 	    IMG_GetError()
@@ -16,7 +17,7 @@ SDL_Texture *Util::loadTexture(char const *file, SDL_Renderer &renderer) {
     }
     newTexture = SDL_CreateTextureFromSurface(&renderer, loadedSurface);
     if (newTexture == NULL) {
-	printf("Creating texture failed because: %s\n", SDL_GetError());
+	fprintf(stderr, "Creating texture failed because: %s\n", SDL_GetError());
 	return NULL;
     }
     SDL_FreeSurface(loadedSurface);
@@ -30,6 +31,10 @@ std::string Util::readWholeFile(char const *file) {
     std::vector<char> bytes(fileSize);
     ifs.read(bytes.data(), fileSize);
     return std::string(bytes.data(), fileSize);
+}
+
+
+JanetFiber *Util::readJanetFiber(char const *file) {
 }
 
 int Util::min(int a, int b) {

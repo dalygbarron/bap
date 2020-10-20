@@ -4,16 +4,7 @@
 #define STEP 33
 
 BlankScreen::BlankScreen(Sack const &sack, std::string script): Screen(sack) {
-    JanetTable *env = janet_core_env(NULL);
-    Janet out;
-    janet_dostring(env, Util::readWholeFile("assets/janet/talk.janet").c_str(), "main", &out);
-    if (!janet_checktype(out, JANET_FUNCTION)) {
-        fprintf(stderr, "SCript needs a function retard\n");
-    }
-    JanetFiber *fiber = janet_fiber(janet_unwrap_function(out), 0, 0, NULL);
-    while (janet_fiber_status(fiber) != JANET_STATUS_DEAD) {
-        janet_continue(fiber, janet_wrap_nil(), NULL);
-    }
+    this->script =this->loadFiber(script.c_str());
 }
 
 int BlankScreen::getTimestep() const {
@@ -21,7 +12,10 @@ int BlankScreen::getTimestep() const {
 }
 
 int BlankScreen::update() {
-    return 0;
+    if (janet_fiber_status(this->script) != JANET_STATUS_DEAD) {
+        Janet out;
+        janet_continue(this->script, janet_wrap_nil(), &out);
+        return 0;
+    }
+    return 1;
 }
-
-void BlankScreen::render(Renderer const &renderer) const {}

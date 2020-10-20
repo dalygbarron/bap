@@ -14,6 +14,6 @@ int DesignScreen::update() {
     return 0;
 }
 
-void DesignScreen::render(Renderer const &renderer) const {
+void DesignScreen::customRender(Renderer const &renderer) const {
 
 }

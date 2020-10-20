@@ -1,6 +1,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include "janet.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <string>
@@ -24,6 +25,17 @@ namespace Util {
      * @return a string object of the file so no ownership shit to deal with.
      */
     std::string readWholeFile(char const *file);
+
+    /**
+     * Takes a path to a script file and converts it into a janet fiber under
+     * the assumption that the script in the file evaluates to a function which
+     * can be turned into a fiber.
+     * @param file is the path to the file.
+     * @return a pointer to the fiber or null if you fucked up bad. I dunno if
+     *         you have to free it or not, should probably look into that.
+     *         I guess just try freeing it and see what happens wahoooooo.
+     */
+    JanetFiber *readJanetFiber(char const *file);
 
     /**
      * Returns the lower of two options.

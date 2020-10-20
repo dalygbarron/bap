@@ -5,6 +5,7 @@
 #include "Bullet.hh"
 #include "Renderer.hh"
 #include "janet.h"
+#include <queue>
 
 #define MILL_TO_SEC(X) ((float)X / 1000)
 
@@ -15,10 +16,40 @@
 class Screen {
     public:
         /**
+         * Represents a deferred drawing operation.
+         */
+        class DrawOperation {
+            public:
+                enum {
+                    BORDER,
+                    RECT,
+                    PANEL,
+                    TEXT
+                } type;
+                SDL_Rect sprite;
+                SDL_Rect bounds;
+                int width;
+                char const *text;
+        };
+
+        /**
          * Makes all screens have access to the sprite atlas thing.
          * @param sack contains all the dependencies.
          */
         Screen(Sack const &sack);
+
+	/**
+	 * Renders the screen.
+	 * @param renderer is the renderer that does some stuff.
+	 */
+	void render(Renderer const &renderer);
+
+        /**
+         * Renders the stuff that you actually want to render in the given
+         * screen.
+         * @param renderer is used for rendering stuff.
+         */
+        virtual void customRender(Renderer const &renderer) const;
 
 	/**
 	 * Tells you how many milliseconds each frame of this screen is
@@ -35,14 +66,18 @@ class Screen {
 	 */
 	virtual int update() = 0;
 
-	/**
-	 * Renders the screen.
-	 * @param renderer is the renderer that does some stuff.
-	 */
-	virtual void render(Renderer const &renderer) const = 0;
-
     protected:
         Sack const &sack;
+        std::queue<DrawOperation> drawQueue;
+
+        /**
+         * Loads a script that contains a function that takes a pointer to this
+         * screen as an argument.
+         * @param file is the path to the file containing the script.
+         * @return the fiber unless you really fuck up in which case it returns
+         *         null.
+         */
+        JanetFiber *loadFiber(char const *file);
 };
 
 /**
@@ -61,10 +96,8 @@ class BlankScreen: public Screen {
 
 	int update() override;
 
-	void render(Renderer const &renderer) const override;
-
     private:
-        // WrenVM *script;
+        JanetFiber *script;
 };
 
 /**
@@ -76,7 +109,7 @@ class PlatformScreen: public Screen {
 
 	int update() override;
 
-	void render(Renderer const &renderer) const override;
+	void customRender(Renderer const &renderer) const override;
 };
 
 /**
@@ -94,7 +127,7 @@ class DesignScreen: public Screen {
 
 	int update() override;
 
-	void render(Renderer const &renderer) const override;
+	void customRender(Renderer const &renderer) const override;
 };
 
 /**
@@ -120,7 +153,7 @@ class TestScreen: public Screen {
 
 	int update() override;
 
-	void render(Renderer const &renderer) const override;
+	void customRender(Renderer const &renderer) const override;
 
     private:
         Instance<Bullet> *bullets;

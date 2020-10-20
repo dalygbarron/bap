@@ -1,4 +1,6 @@
-(fn []
+(fn [screen]
+    (print "gergerg")
+    (myfun screen)
     (print "Hello you stupid mother fuckers")
     (yield 1)
     (print (+ 5 (* 4 3)))

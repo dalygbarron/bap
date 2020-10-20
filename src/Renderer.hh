@@ -9,23 +9,6 @@
  */
 class Renderer {
     public:
-        /**
-         * Represents a deferred drawing operation.
-         */
-        class Operation {
-            public:
-                enum {
-                    BORDER,
-                    RECT,
-                    PANEL,
-                    TEXT
-                } type;
-                SDL_Rect sprite;
-                SDL_Rect bounds;
-                int width;
-                char const *text;
-        };
-
         Atlas const &atlas;
 
         /**
@@ -91,18 +74,6 @@ class Renderer {
          */
         void sprite(Vec pos, SDL_Rect const &sprite) const;
 
-        /**
-         * Adds an operation to process later.
-         * @param operation is the operation to add.
-         */
-        void addOperation(Operation operation);
-
-        /**
-         * Processes all the operations in the queue of operations then empties
-         * the queue.
-         */
-        void processOperations();
-
     private:
         SDL_Renderer &renderer;
         SDL_Rect background;
@@ -110,7 +81,6 @@ class Renderer {
         SDL_Rect select;
         SDL_Rect font;
         int borderSize;
-        std::queue<Operation> operations;
 };
 
 #endif

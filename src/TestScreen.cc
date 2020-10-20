@@ -38,7 +38,7 @@ int TestScreen::update() {
     return 0;
 }
 
-void TestScreen::render(Renderer const &renderer) const {
+void TestScreen::customRender(Renderer const &renderer) const {
     for (int i = 0; i < this->n; i++) {
         renderer.sprite(
             this->bullets[i].position,

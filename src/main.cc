@@ -34,6 +34,23 @@ class ProgramState {
         Screen *screen;
 };
 
+static Janet myfun(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    void *screen = janet_unwrap_pointer(argv[0]);
+    printf("ay %d\n", screen);
+    return janet_wrap_nil();
+}
+
+static const JanetReg cfuns[] = {
+    {"myfun", myfun, "(main/myfun)\n\nPrints a hello message."},
+    {NULL, NULL, NULL}
+};
+
+void initScripts() {
+    JanetTable *env = janet_core_env(NULL);
+    janet_cfuns(env, "main", cfuns);
+}
+
 /**
  * Loads in a sack.
  * @param renderer   is the renderer which is needed to load textures.
@@ -91,7 +108,6 @@ void loop(void *data) {
         program->startIteration = program->iteration;
         program->fpsTimer = 0;
     }
-    // SDL_RenderClear(&renderer);
     program->screen->render(*program->renderer);
     SDL_RenderPresent(program->realRenderer);
     program->iteration++;
@@ -158,6 +174,7 @@ int main(int argc, char **argv) {
     }
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
     janet_init();
+    initScripts();
     Sack *sack = loadSack(
         *renderer,
         PIC_FILE,
@@ -172,7 +189,7 @@ int main(int argc, char **argv) {
         );
         return 1;
     }
-    BlankScreen *start = new BlankScreen(*sack, "assets/wren/talk.wren");
+    BlankScreen *start = new BlankScreen(*sack, "assets/janet/talk.janet");
     ProgramState *program = new ProgramState();
     program->renderer = new Renderer(
         *renderer,
