@@ -25,6 +25,18 @@ class Vec {
         Vec(float x, float y);
 
         /**
+         * Gives you the x as an int.
+         * @return int of x.
+         */
+        int iX() const;
+
+        /**
+         * Gives you y as an int.
+         * @return int of y.
+         */
+        int iY() const;
+
+        /**
          * Adds another vector to this vector.
          * @param other is the vector to add.
          */
@@ -65,14 +77,14 @@ class Vec {
          * calculate.
          * @return the length of the vector squared.
          */
-        float squareLength();
+        float squareLength() const;
 
         /**
          * Tells you the length of this vector which is the distance from the
          * origin point to the point at the end of this vector.
          * @return the length of the vector.
          */
-        float length();
+        float length() const;
 };
 
 #endif

@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
         sack->atlas->getSprite("panel"),
         sack->atlas->getSprite("select"),
         sack->atlas->getSprite("font"),
-        5
+        4
     );
     program->realRenderer = renderer;
     program->running = true;

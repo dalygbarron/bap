@@ -24,9 +24,4 @@ int BlankScreen::update() {
     return 0;
 }
 
-void BlankScreen::render(Renderer const &renderer) const {
-    SDL_Rect bounds = {30, 50, 500, 431};
-    for (int i = 0; i < 10; i++) {
-        bounds = renderer.panel(bounds);
-    }
-}
+void BlankScreen::render(Renderer const &renderer) const {}

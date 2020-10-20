@@ -41,3 +41,7 @@ int Util::max(int a, int b) {
     if (a > b) return a;
     return b;
 }
+
+bool Util::white(char c) {
+    return c == ' ' || c == '\n';
+}

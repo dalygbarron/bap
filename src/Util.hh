@@ -40,6 +40,13 @@ namespace Util {
      * @return the higher of a and b.
      */
     int max(int a, int b);
+
+    /**
+     * Tells you if the given character is whitespace.
+     * @param c is the character to check.
+     * @return true if it is whitespace.
+     */
+    bool white(char c);
 };
 
 #endif

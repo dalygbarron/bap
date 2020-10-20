@@ -61,9 +61,10 @@ SDL_Rect Renderer::border(SDL_Rect bounds, SDL_Rect sprite, int width) const {
     );
     this->atlas.draw(
         this->renderer,
-        {bounds.x + bounds.h - width, bounds.y + width, width, bounds.h - width * 2},
-        {sprite.x + sprite.h - width, sprite.y + width, width, sprite.h - width * 2}
+        {bounds.x + bounds.w - width, bounds.y + width, width, bounds.h - width * 2},
+        {sprite.x + sprite.w - width, sprite.y + width, width, sprite.h - width * 2}
     );
+    return {bounds.x + width, bounds.y + width, bounds.w - width * 2, bounds.h - width * 2};
 }
 
 void Renderer::rect(SDL_Rect bounds, SDL_Rect sprite) const {
@@ -77,6 +78,32 @@ void Renderer::rect(SDL_Rect bounds, SDL_Rect sprite) const {
                 sprite
             );
         }
+        if (hSegments * sprite.w < bounds.w) {
+            int delta = bounds.w - (hSegments * sprite.w);
+            this->atlas.draw(
+                this->renderer,
+                {bounds.x + sprite.w * hSegments, bounds.y + sprite.h * y, delta, sprite.h},
+                {sprite.x, sprite.y, delta, sprite.h}
+            );
+        }
+    }
+    if (vSegments * sprite.h < bounds.h) {
+        int vDelta = bounds.h - (vSegments * sprite.h);
+        for (int x = 0; x < hSegments; x++) {
+            this->atlas.draw(
+                this->renderer,
+                {bounds.x + sprite.w * x, bounds.y + sprite.h * vSegments, sprite.w, vDelta},
+                {sprite.x, sprite.y, sprite.w, vDelta}
+            );
+        }
+        if (hSegments * sprite.w < bounds.w) {
+            int delta = bounds.w - (hSegments * sprite.w);
+            this->atlas.draw(
+                this->renderer,
+                {bounds.x + sprite.w * hSegments, bounds.y + sprite.h * vSegments, delta, vDelta},
+                {sprite.x, sprite.y, delta, vDelta}
+            );
+        }
     }
 }
 
@@ -88,4 +115,54 @@ SDL_Rect Renderer::panel(SDL_Rect bounds) const {
     SDL_Rect inner = this->border(bounds, this->panelBorder, this->borderSize);
     if (inner.w || inner.h) this->rect(inner, this->background);
     return inner;
+}
+
+void Renderer::text(Vec origin, char const *text) const {
+    float originX = origin.x;
+    Vec character(this->font.w / 16, this->font.h / 16);
+    for (int i = 0; text[i]; i++) {
+        char c = text[i];
+        if (c == '\n') {
+            origin.x = originX;
+            origin.y += character.y;
+            continue;
+        }
+        this->atlas.draw(
+            this->renderer,
+            {origin.iX(), origin.iY(), character.iX(), character.iY()},
+            {font.x + character.iX() * (c % 16), font.y + character.iY() * (c / 16), character.iX(), character.iY()}
+        );
+        origin.x += character.iX();
+    }
+}
+
+void Renderer::addOperation(Operation operation) {
+    this->operations.push(operation);
+}
+
+void Renderer::processOperations() {
+    while (!this->operations.empty()) {
+        Operation operation = this->operations.front();
+        this->operations.pop();
+        switch (operation.type) {
+            case BORDER:
+                this->border(
+                    operation.bounds,
+                    operation.sprite,
+                    operation.width
+                );
+                break;
+            case RECT:
+                this->rect(operation.bounds, operation.sprite);
+                break;
+            case PANEL:
+                this->panel(operation.bounds);
+                break;
+            case TEXT:
+                this->text(
+                    Vec(operation.bounds.x, operation.bounds.y),
+                    operation.text
+                );
+        }
+    }
 }

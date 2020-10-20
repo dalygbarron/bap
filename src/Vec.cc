@@ -16,6 +16,15 @@ Vec::Vec(float x, float y) {
     this->y = y;
 }
 
+int Vec::iX() const {
+    return static_cast<int>(this->x);
+}
+
+int Vec::iY() const {
+    return static_cast<int>(this->y);
+}
+
+
 void Vec::add(Vec other) {
     this->x += other.x;
     this->y += other.y;
@@ -50,10 +59,10 @@ void Vec::normal() {
     this->y /= length;
 }
 
-float Vec::squareLength() {
+float Vec::squareLength() const {
     return this->x * this->x + this->y * this->y;
 }
 
-float Vec::length() {
+float Vec::length() const {
     return sqrt(this->squareLength());
 }
