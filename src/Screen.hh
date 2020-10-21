@@ -114,10 +114,12 @@ class Screen {
          * Loads a script that contains a function that takes a pointer to this
          * screen as an argument.
          * @param file is the path to the file containing the script.
+         * @param argc is the number of extra arguments to the script.
+         * @param argv is the values of the extra arguments to the script.
          * @return the fiber unless you really fuck up in which case it returns
          *         null.
          */
-        JanetFiber *loadFiber(char const *file);
+        JanetFiber *loadFiber(char const *file, int argc, char const **argv);
 };
 
 /**
@@ -129,8 +131,15 @@ class BlankScreen: public Screen {
          * Creates the blank screen by providing the script it will run.
          * @param sack   contains shiet.
          * @param script is the path to the script it will run.
+         * @param argc   is the number of arguments to the script to add.
+         * @param argv   is the list of arguments to the script.
          */
-        BlankScreen(Sack const &sack, std::string script);
+        BlankScreen(
+            Sack const &sack,
+            char const *script,
+            int argc,
+            char const **argv
+        );
 
 	int getTimestep() const override;
 

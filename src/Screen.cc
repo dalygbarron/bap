@@ -44,7 +44,7 @@ int Screen::customUpdate() {
 
 void Screen::customRender(Renderer const &renderer) const {}
 
-JanetFiber *Screen::loadFiber(char const *file) {
+JanetFiber *Screen::loadFiber(char const *file, int argc, char const **argv) {
     Janet out;
     JanetTable *env = janet_core_env(NULL);
     janet_dostring(env, Util::readWholeFile(file).c_str(), "screen", &out);
@@ -52,8 +52,12 @@ JanetFiber *Screen::loadFiber(char const *file) {
         fprintf(stderr, "SCript needs a function retard\n");
         return NULL;
     }
-    Janet pointer = janet_wrap_pointer(this);
-    return janet_fiber(janet_unwrap_function(out), 0, 1, &pointer);
+    Janet args[argc + 2];
+    args[0] = janet_wrap_pointer(this);
+    for (int i = 1; i <= argc; i++) {
+        args[i] = janet_wrap_string(janet_cstring(argv[i - 1]));
+    }
+    return janet_fiber(janet_unwrap_function(out), 0, argc + 1, args);
 }
 
 Janet Screen::drawBorder(int32_t argc, Janet *argv) {

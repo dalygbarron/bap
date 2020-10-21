@@ -1,9 +1,10 @@
 (import assets/janet/junk :as junk)
 
-(fn [screen]
+(fn [screen message]
     (def width [50 50])
     (var pos @[300 300])
     (var vel @[5 -9])
+    (print message)
     (while true
            (junk/add-array pos vel)
            (drawBorder screen

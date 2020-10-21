@@ -3,8 +3,13 @@
 
 #define STEP 33
 
-BlankScreen::BlankScreen(Sack const &sack, std::string script): Screen(sack) {
-    this->script = this->loadFiber(script.c_str());
+BlankScreen::BlankScreen(
+    Sack const &sack,
+    char const *script,
+    int argc,
+    char const **argv
+): Screen(sack) {
+    this->script = this->loadFiber(script, argc, argv);
 }
 
 int BlankScreen::getTimestep() const {

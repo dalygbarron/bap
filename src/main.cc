@@ -173,7 +173,13 @@ int main(int argc, char **argv) {
         );
         return 1;
     }
-    BlankScreen *start = new BlankScreen(*sack, "assets/janet/talk.janet");
+    char const *message = "you are a nerd";
+    BlankScreen *start = new BlankScreen(
+        *sack,
+        "assets/janet/talk.janet",
+        1,
+        &message
+    );
     ProgramState *program = new ProgramState();
     program->renderer = new Renderer(
         *renderer,
