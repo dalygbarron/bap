@@ -30,7 +30,7 @@ int TestScreen::getTimestep() const {
     return STEP;
 }
 
-int TestScreen::update() {
+int TestScreen::customUpdate() {
     for (int i = 0; i < this->n; i++) {
         this->bullets[i].update(MILL_TO_SEC(STEP));
         this->bullets[i].position.wrap({768, 480});

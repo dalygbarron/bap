@@ -5,7 +5,7 @@
 #include "Bullet.hh"
 #include "Renderer.hh"
 #include "janet.h"
-#include <queue>
+#include <vector>
 
 #define MILL_TO_SEC(X) ((float)X / 1000)
 
@@ -38,11 +38,23 @@ class Screen {
          */
         Screen(Sack const &sack);
 
+        /**
+         * Generic updating logic.
+         * @return response code thing.
+         */
+        int update();
+
 	/**
 	 * Renders the screen.
 	 * @param renderer is the renderer that does some stuff.
 	 */
 	void render(Renderer const &renderer);
+
+	/**
+	 * Updates the screen for one timestep's worth.
+	 * @return a code meaning that the screen is finished in some way.
+	 */
+	virtual int customUpdate();
 
         /**
          * Renders the stuff that you actually want to render in the given
@@ -60,15 +72,43 @@ class Screen {
 	 */
 	virtual int getTimestep() const = 0;
 
-	/**
-	 * Updates the screen for one timestep's worth.
-	 * @return a code meaning that the screen is finished in some way.
-	 */
-	virtual int update() = 0;
+        /**
+         * Adds a border to draw to the screen's draw queue from janet.
+         * @param argc is the number of arguments it is called with.
+         * @param argv is the list of argumnets given.
+         */
+        static Janet drawBorder(int32_t argc, Janet *argv);
+
+        /**
+         * Adds a rect to draw to the screen's draw queue from janet.
+         * @param argc is the number of arguments it is called with.
+         * @param argv is the list of argumnets given.
+         */
+        static Janet drawRect(int32_t argc, Janet *argv);
+        
+        /**
+         * Adds a panel to draw to the screen's draw queue from janet.
+         * @param argc is the number of arguments it is called with.
+         * @param argv is the list of argumnets given.
+         */
+        static Janet drawPanel(int32_t argc, Janet *argv);
+
+        /**
+         * Adds a Text draw to the screen draw queue from janet.
+         * @param argc is the number of arguments it is called with.
+         * @param argv is the list of argumnets given.
+         */
+        static Janet drawText(int32_t argc, Janet *argv);
+
+        /**
+         * Adds all of the screen janet script functions to the screen module
+         * of janet.
+         */
+        static void initScripting();
 
     protected:
         Sack const &sack;
-        std::queue<DrawOperation> drawQueue;
+        std::vector<DrawOperation> drawQueue;
 
         /**
          * Loads a script that contains a function that takes a pointer to this
@@ -94,7 +134,7 @@ class BlankScreen: public Screen {
 
 	int getTimestep() const override;
 
-	int update() override;
+	int customUpdate() override;
 
     private:
         JanetFiber *script;
@@ -107,7 +147,7 @@ class PlatformScreen: public Screen {
     public:
 	int getTimestep() const override;
 
-	int update() override;
+	int customUpdate() override;
 
 	void customRender(Renderer const &renderer) const override;
 };
@@ -125,7 +165,7 @@ class DesignScreen: public Screen {
 
 	int getTimestep() const override;
 
-	int update() override;
+	int customUpdate() override;
 
 	void customRender(Renderer const &renderer) const override;
 };
@@ -151,7 +191,7 @@ class TestScreen: public Screen {
 
 	int getTimestep() const override;
 
-	int update() override;
+	int customUpdate() override;
 
 	void customRender(Renderer const &renderer) const override;
 

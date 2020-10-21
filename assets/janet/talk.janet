@@ -1,15 +1,21 @@
+(import assets/janet/junk :as junk)
+
 (fn [screen]
-    (print "gergerg")
-    (myfun screen)
-    (print "Hello you stupid mother fuckers")
-    (yield 1)
-    (print (+ 5 (* 4 3)))
-    (yield 2)
-    (print "I am gonna kill you all wahooo")
-    (yield 1)
-    (var sum 0)
-    (for i 0 10
-         (+= sum i)
-         (if (= (% i 2) 0)
-             (print ".")))
-    (print sum))
+    (def width [50 50])
+    (var pos @[300 300])
+    (var vel @[5 -9])
+    (while true
+           (junk/add-array pos vel)
+           (drawBorder screen
+                       [(pos 0) (pos 1) (width 0) (width 1)]
+                       [85 120 32 32]
+                       4)
+           (if (< (pos 0) 0)
+               (set (vel 0) (math/abs (vel 0))))
+           (if (< (pos 1) 0)
+               (set (vel 1) (math/abs (vel 1))))
+           (if (> (pos 0) (- 768 (width 0)))
+               (set (vel 0) (* -1 (math/abs (vel 0)))))
+           (if (> (pos 1) (- 480 (width 1)))
+               (set (vel 1) (* -1 (math/abs (vel 1)))))
+           (yield 1)))

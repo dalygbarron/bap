@@ -34,9 +34,6 @@ std::string Util::readWholeFile(char const *file) {
 }
 
 
-JanetFiber *Util::readJanetFiber(char const *file) {
-}
-
 int Util::min(int a, int b) {
     if (a < b) return a;
     return b;

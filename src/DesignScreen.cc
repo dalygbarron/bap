@@ -10,7 +10,7 @@ int DesignScreen::getTimestep() const {
     return STEP;
 }
 
-int DesignScreen::update() {
+int DesignScreen::customUpdate() {
     return 0;
 }
 

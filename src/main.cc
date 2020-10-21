@@ -12,7 +12,7 @@
 
 int const SCREEN_WIDTH = 768;
 int const SCREEN_HEIGHT = 480;
-int const  FPS_RATE = 5000;
+float const  FPS_RATE = 5000;
 char const *PIC_FILE = "assets/coom.png";
 char const *SPRITE_FILE = "assets/cooxr.csv";
 char const *FREAK_FILE = "assets/freaks.csv";
@@ -33,23 +33,6 @@ class ProgramState {
         Renderer *renderer;
         Screen *screen;
 };
-
-static Janet myfun(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    void *screen = janet_unwrap_pointer(argv[0]);
-    printf("ay %d\n", screen);
-    return janet_wrap_nil();
-}
-
-static const JanetReg cfuns[] = {
-    {"myfun", myfun, "(main/myfun)\n\nPrints a hello message."},
-    {NULL, NULL, NULL}
-};
-
-void initScripts() {
-    JanetTable *env = janet_core_env(NULL);
-    janet_cfuns(env, "main", cfuns);
-}
 
 /**
  * Loads in a sack.
@@ -108,6 +91,7 @@ void loop(void *data) {
         program->startIteration = program->iteration;
         program->fpsTimer = 0;
     }
+    SDL_RenderClear(program->realRenderer);
     program->screen->render(*program->renderer);
     SDL_RenderPresent(program->realRenderer);
     program->iteration++;
@@ -174,7 +158,7 @@ int main(int argc, char **argv) {
     }
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
     janet_init();
-    initScripts();
+    Screen::initScripting();
     Sack *sack = loadSack(
         *renderer,
         PIC_FILE,
@@ -208,16 +192,14 @@ int main(int argc, char **argv) {
     program->startIteration = 0;
     program->iteration = 0;
     program->screen = start;
-    #ifdef __EMSCRIPTEN__
-    // Receives a function to call and some user data to provide it.
-    emscripten_set_main_loop_arg(loop, program, 0, false);
-    #else
     while (program->running) {
         loop(program);
-        // TODO: not go too fast when vsync ain't there for us.
-        // SDL_Delay(time_to_next_frame());
+        #ifdef __EMSCRIPTEN__
+        emscripten_sleep(10);
+        #else
+        SDL_Delay(10);
+        #endif
     }
-    #endif
     janet_deinit();
     return 0;
 }

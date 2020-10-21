@@ -4,7 +4,10 @@ main
 *.swn
 *.swo
 *.o
+*.ow
 *.js
 *.wasm
 *.data
-main.html
+assets/coom.png
+assets/cooxr.csv
+index.html
