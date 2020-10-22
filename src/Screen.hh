@@ -101,6 +101,13 @@ class Screen {
         static Janet drawText(int32_t argc, Janet *argv);
 
         /**
+         * Gives you a sprite by it's name.
+         * @param argc is the number of arguments it is called with.
+         * @param argv is the list of argumnets given.
+         */
+        static Janet getSprite(int32_t argc, Janet *argv);
+
+        /**
          * Adds all of the screen janet script functions to the screen module
          * of janet.
          */

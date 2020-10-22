@@ -85,9 +85,38 @@ Janet Screen::drawBorder(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+Janet Screen::drawRect(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    void *screenPointer = janet_unwrap_pointer(argv[0]);
+}
+
+Janet Screen::drawPanel(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    void *screenPointer = janet_unwrap_pointer(argv[0]);
+}
+
+Janet Screen::drawText(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    void *screenPointer = janet_unwrap_pointer(argv[0]);
+}
+
+Janet Screen::getSprite(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    void *screenPointer = janet_unwrap_pointer(argv[0]);
+    char const *name = (char const *)janet_unwrap_string(argv[1]);
+    SDL_Rect sprite = ((Screen *)screenPointer)->sack.atlas->getSprite(name);
+    Janet list[4];
+    list[0] = janet_wrap_integer(sprite.x);
+    list[1] = janet_wrap_integer(sprite.y);
+    list[2] = janet_wrap_integer(sprite.w);
+    list[3] = janet_wrap_integer(sprite.h);
+    return janet_wrap_tuple(janet_tuple_n(list, 4));
+}
+
 void Screen::initScripting() {
     JanetReg const cFunctions[] = {
-        {"drawBorder", drawBorder, "(screen/drawBorder)\n\nDraws a border at the given place."},
+        {"draw-border", drawBorder, "(screen/draw-border)\nDraws a border at the given place."},
+        {"get-sprite", getSprite, "(screen/get-sprite)\nGives you the bounds of a sprite in a tuple like (x y w h)"},
         {NULL, NULL, NULL}
     };
     JanetTable *env = janet_core_env(NULL);
