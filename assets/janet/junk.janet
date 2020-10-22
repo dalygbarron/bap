@@ -12,6 +12,11 @@
       [a b]
       (vectored (+ (a index) (b index))))
 
+(defn sub-vec
+      "Subtracts one vector from another and returns the result"
+      [a b]
+      (vectored (- (a index) (b index))))
+
 (defn sign-vec
       "Makes the items in a vector be signed as requested in another one"
       [in signs]
