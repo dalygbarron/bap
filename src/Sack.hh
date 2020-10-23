@@ -18,12 +18,16 @@ class Sack {
         std::vector<Freak> freaks;
         std::vector<Bullet> bullets;
         Atlas *atlas;
+        int const width;
+        int const height;
 
         /**
          * Creates the sack and sets the atlas.
          * @param atlas is the thingy with the sprites.
+         * @param width is the screen width.
+         * @param height is the screen height.
          */
-        Sack(Atlas *atlas);
+        Sack(Atlas *atlas, int width, int height);
 
         /**
          * Loads in freaks from a file.
@@ -43,13 +47,6 @@ class Sack {
          * @param file is the path to the file to play.
          */
         void playSong(char const *file) const;
-
-        /**
-         * Creates a script with the default config.
-         * @param path is the path to the script file to read.
-         * @return the created script.
-         */
-        // WrenVM *createScript(std::string path) const;
 
     private:
         mutable std::string song = "";

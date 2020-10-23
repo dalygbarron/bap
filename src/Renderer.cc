@@ -117,9 +117,9 @@ SDL_Rect Renderer::panel(SDL_Rect bounds) const {
     return inner;
 }
 
-void Renderer::text(Vec origin, char const *text) const {
+void Renderer::text(Vec origin, char const *text, SDL_Rect font) const {
     float originX = origin.x;
-    Vec character(this->font.w / 16, this->font.h / 16);
+    Vec character(font.w / 16, font.h / 16);
     for (int i = 0; text[i]; i++) {
         char c = text[i];
         if (c == '\n') {
@@ -134,6 +134,10 @@ void Renderer::text(Vec origin, char const *text) const {
         );
         origin.x += character.iX();
     }
+}
+
+void Renderer::text(Vec origin, char const *text) const {
+    this->text(origin, text, this->font);
 }
 
 void Renderer::sprite(Vec pos, SDL_Rect const &sprite) const {

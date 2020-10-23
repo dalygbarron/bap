@@ -1,7 +1,11 @@
 #include "Sack.hh"
 #include "csv.h"
 
-Sack::Sack(Atlas *atlas): atlas(atlas) {
+Sack::Sack(Atlas *atlas, int width, int height):
+    atlas(atlas),
+    width(width),
+    height(height)
+{
     // that is all.
 }
 

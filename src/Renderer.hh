@@ -59,6 +59,14 @@ class Renderer {
         SDL_Rect panel(SDL_Rect bounds) const;
 
         /**
+         * Writes some text on the screen using a custom font.
+         * @param pos  is the top left at which to draw.
+         * @param text is the text to write.
+         * @param font is the font sheet to draw with.
+         */
+        void text(Vec pos, char const *text, SDL_Rect font) const;
+
+        /**
          * Writes some text on the screen which is not wrapped although it does
          * take note of newlines. If you want wrapped text then call some kind
          * of wrapping function yourself.

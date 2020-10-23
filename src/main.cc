@@ -17,6 +17,10 @@ char const *PIC_FILE = "assets/coom.png";
 char const *SPRITE_FILE = "assets/cooxr.csv";
 char const *FREAK_FILE = "assets/freaks.csv";
 char const *BULLET_FILE = "assets/bullets.csv";
+char const *BACKGROUND_SPRITE = "background";
+char const *PANEL_SPRITE = "panel";
+char const *SELECT_SPRITE = "select";
+char const *FONT_SPRITE = "font";
 
 /**
  * Gotta do this shit for emscripten, annoying I know.
@@ -56,7 +60,7 @@ Sack *loadSack(
     if (!texture) return NULL;
     Atlas *atlas = new Atlas(*texture);
     atlas->loadSprites(atlasFile);
-    Sack *sack = new Sack(atlas);
+    Sack *sack = new Sack(atlas, SCREEN_WIDTH, SCREEN_HEIGHT);
     sack->loadFreaks(freakFile);
     sack->loadBullets(bulletFile);
     return sack;
@@ -184,10 +188,10 @@ int main(int argc, char **argv) {
     program->renderer = new Renderer(
         *renderer,
         *sack->atlas,
-        sack->atlas->getSprite("background"),
-        sack->atlas->getSprite("panel"),
-        sack->atlas->getSprite("select"),
-        sack->atlas->getSprite("font"),
+        sack->atlas->getSprite(BACKGROUND_SPRITE),
+        sack->atlas->getSprite(PANEL_SPRITE),
+        sack->atlas->getSprite(SELECT_SPRITE),
+        sack->atlas->getSprite(FONT_SPRITE),
         4
     );
     program->realRenderer = renderer;

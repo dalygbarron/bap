@@ -76,6 +76,7 @@ class Screen {
          * Adds a border to draw to the screen's draw queue from janet.
          * @param argc is the number of arguments it is called with.
          * @param argv is the list of argumnets given.
+         * @return the stuff to send back to janet.
          */
         static Janet drawBorder(int32_t argc, Janet *argv);
 
@@ -83,6 +84,7 @@ class Screen {
          * Adds a rect to draw to the screen's draw queue from janet.
          * @param argc is the number of arguments it is called with.
          * @param argv is the list of argumnets given.
+         * @return the stuff to send back to janet.
          */
         static Janet drawRect(int32_t argc, Janet *argv);
         
@@ -90,6 +92,7 @@ class Screen {
          * Adds a panel to draw to the screen's draw queue from janet.
          * @param argc is the number of arguments it is called with.
          * @param argv is the list of argumnets given.
+         * @return the stuff to send back to janet.
          */
         static Janet drawPanel(int32_t argc, Janet *argv);
 
@@ -97,6 +100,7 @@ class Screen {
          * Adds a Text draw to the screen draw queue from janet.
          * @param argc is the number of arguments it is called with.
          * @param argv is the list of argumnets given.
+         * @return the stuff to send back to janet.
          */
         static Janet drawText(int32_t argc, Janet *argv);
 
@@ -104,8 +108,17 @@ class Screen {
          * Gives you a sprite by it's name.
          * @param argc is the number of arguments it is called with.
          * @param argv is the list of argumnets given.
+         * @return the stuff to send back to janet.
          */
         static Janet getSprite(int32_t argc, Janet *argv);
+
+        /**
+         * Tells you the dimensions of the logical screen.
+         * @param argc is the number of arguments.
+         * @param argv is the list of arguments.
+         * @return the stuff to send back to janet.
+         */
+        static Janet getScreenDimensions(int32_t argc, Janet *argv);
 
         /**
          * Adds all of the screen janet script functions to the screen module
