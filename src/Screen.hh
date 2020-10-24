@@ -1,7 +1,6 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#include "Sack.hh"
 #include "Bullet.hh"
 #include "Renderer.hh"
 #include "janet.h"
@@ -44,12 +43,6 @@ class Screen {
                 } type;
                 Screen *next;
         };
-
-        /**
-         * Makes all screens have access to the sprite atlas thing.
-         * @param sack contains all the dependencies.
-         */
-        Screen(Sack const &sack);
 
         /**
          * Deletes all the screen's shiet.
@@ -192,8 +185,6 @@ class Screen {
         static void initScripting();
 
     protected:
-        Sack const &sack;
-
         /**
          * Loads a script that contains a function that takes a pointer to this
          * screen as an argument.
@@ -217,13 +208,11 @@ class BlankScreen: public Screen {
     public:
         /**
          * Creates the blank screen by providing the script it will run.
-         * @param sack   contains shiet.
          * @param script is the path to the script it will run.
          * @param argc   is the number of arguments to the script to add.
          * @param argv   is the list of arguments to the script.
          */
         BlankScreen(
-            Sack const &sack,
             char const *script,
             int argc,
             char const **argv
@@ -255,24 +244,6 @@ class PlatformScreen: public Screen {
 };
 
 /**
- * A screen where you design a platform level.
- */
-class DesignScreen: public Screen {
-    public:
-        /**
-         * Creates the screen and a default level to edit.
-         * @param sack is the sack.
-         */
-        DesignScreen(Sack const &sack);
-
-	int getTimestep() const override;
-
-	void customUpdate() override;
-
-	void customRender(Renderer const &renderer) const override;
-};
-
-/**
  * A screen which makes a bunch of stuff fly around the screen wahooo.
  */
 class TestScreen: public Screen {
@@ -281,15 +252,14 @@ class TestScreen: public Screen {
 
 	/**
 	 * Creates a nice test screen.
-         * @param sack contains all the dependencies.
 	 * @param n    is the number of objects to test.
 	 */
-        TestScreen(Sack const &sack, int n);
+        TestScreen(int n);
 
 	/**
 	 * Deletes the bullet array.
 	 */
-	~TestScreen();
+	virtual ~TestScreen();
 
 	int getTimestep() const override;
 

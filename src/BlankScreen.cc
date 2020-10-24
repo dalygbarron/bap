@@ -3,12 +3,7 @@
 
 #define STEP 33
 
-BlankScreen::BlankScreen(
-    Sack const &sack,
-    char const *script,
-    int argc,
-    char const **argv
-): Screen(sack) {
+BlankScreen::BlankScreen(char const *script, int argc, char const **argv) {
     this->script = this->loadFiber(script, argc, argv);
 }
 

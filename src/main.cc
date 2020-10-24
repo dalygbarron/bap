@@ -1,5 +1,6 @@
 #include "Util.hh"
 #include "Screen.hh"
+#include "Config.hh"
 #include "janet.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -9,13 +10,6 @@
     #include <emscripten/html5.h>
 #endif
 #include <stdio.h>
-
-int const SCREEN_WIDTH = 768;
-int const SCREEN_HEIGHT = 480;
-int const SCREEN_STACK_MAX = 16;
-float const  FPS_RATE = 5000;
-char const *PIC_FILE = "assets/coom.png";
-char const *SPRITE_FILE = "assets/cooxr.csv";
 
 /**
  * Gotta do this shit for emscripten, annoying I know.
@@ -31,7 +25,7 @@ class ProgramState {
         int screen;
         SDL_Renderer *realRenderer;
         Renderer *renderer;
-        Screen *screens[SCREEN_STACK_MAX];
+        Screen *screens[Config::SCREEN_STACK_MAX];
 
         /**
          * Gives you the current screen on top of the stack.
@@ -42,28 +36,6 @@ class ProgramState {
             return NULL;
         }
 };
-
-/**
- * Loads in a sack.
- * @param renderer   is the renderer which is needed to load textures.
- * @param picFile    is the path to the game's texture atlas picture.
- * @param atlasFile  is the path to the file that describes the game's sprites.
- * @return the sack unless it was unable to load the texture which I think it
- *         the only thing that absolutely has to succeed. If other stuff fucks
- *         up it will just run without it and crash later lol.
- */
-Sack *loadSack(
-    SDL_Renderer &renderer,
-    char const *picFile,
-    char const *atlasFile
-) {
-    SDL_Texture *texture = Util::loadTexture(picFile, renderer);
-    if (!texture) return NULL;
-    Atlas *atlas = new Atlas(*texture);
-    atlas->loadSprites(atlasFile);
-    Sack *sack = new Sack(atlas, SCREEN_WIDTH, SCREEN_HEIGHT);
-    return sack;
-}
 
 /**
  * The main loop of the program.
@@ -100,18 +72,20 @@ void loop(void *data) {
                 program->screens[program->screen] = operation.next;
                 step = operation.next->getTimestep();
                 break;
+            case Screen::TransferOperation::NONE:
+                break;
         }
     }
     if (program->screen < 0) {
         program->running = false;
         return;
     }
-    if (program->fpsTimer >= FPS_RATE) {
+    if (program->fpsTimer >= Config::FPS_RATE) {
         SDL_LogInfo(
             SDL_LOG_CATEGORY_APPLICATION,
             "%.1f fps\n",
             (float)(program->iteration - program->startIteration) /
-                (FPS_RATE / 1000)
+                (Config::FPS_RATE / 1000)
         );
         program->startIteration = program->iteration;
         program->fpsTimer = 0;
@@ -141,8 +115,8 @@ int main(int argc, char **argv) {
         "BAP",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT,
+        Config::SCREEN_WIDTH,
+        Config::SCREEN_HEIGHT,
         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
     );
     if (!window) {
@@ -181,30 +155,28 @@ int main(int argc, char **argv) {
         );
         return 1;
     }
-    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-    janet_init();
-    Screen::initScripting();
-    Sack *sack = loadSack(
-        *renderer,
-        PIC_FILE,
-        SPRITE_FILE
+    SDL_RenderSetLogicalSize(
+        renderer,
+        Config::SCREEN_WIDTH,
+        Config::SCREEN_HEIGHT
     );
-    if (!sack) {
+    if (!Config::init()) {
         SDL_LogCritical(
             SDL_LOG_CATEGORY_APPLICATION,
-            "Couldn't load sack\n"
+            "Couldn't init config\n"
         );
         return 1;
     }
+    janet_init();
+    Screen::initScripting();
     char const *message = "you are a nerd";
     BlankScreen *start = new BlankScreen(
-        *sack,
         "assets/janet/init.janet",
         0,
         NULL
     );
     ProgramState *program = new ProgramState();
-    program->renderer = new Renderer(*renderer, *sack->atlas);
+    program->renderer = new Renderer(*renderer);
     program->realRenderer = renderer;
     program->running = true;
     program->time = SDL_GetTicks();

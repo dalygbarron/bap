@@ -9,14 +9,12 @@
  */
 class Renderer {
     public:
-        Atlas const &atlas;
-
         /**
          * Creates the renderer.
          * @param renderer   is the sdl renderer thingy.
          * @param atlas      is the texture atlas for sprite drawing.
          */
-        Renderer(SDL_Renderer &renderer, Atlas const &atlas);
+        Renderer(SDL_Renderer &renderer);
 
         /**
          * Draws a border in the given bounds rather than around it.

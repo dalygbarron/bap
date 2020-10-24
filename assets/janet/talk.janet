@@ -5,6 +5,7 @@
     (def box (get-sprite screen "panel"))
     (def font (get-sprite screen "font"))
     (while true
+           (print "hit")
            (draw-text screen
                       (junk/draw-panel screen [128 400 512 80])
                       font

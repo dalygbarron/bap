@@ -45,9 +45,11 @@
 (defn draw-panel
       "Draws a panel with default border and background and returns inner bounds"
       [screen bounds]
+      (def border (get-sprite config/border-sprite))
+      (def panel (get-sprite config/panel-sprite))
       (draw-border screen bounds config/border-sprite config/border-width)
       (def inner-bounds (shrink-rect bounds config/border-width))
-      (if (and (inner-bounds 0) (inner-bounds 1))
-        (draw-rect screen inner-bounds config/panel-sprite))
+      (if (and (vectored i (> (inner-bounds i) 0)))
+        (draw-rect screen inner-bounds panel))
       inner-bounds)
 

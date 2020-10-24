@@ -1,13 +1,9 @@
 #include "Screen.hh"
+#include "Config.hh"
 
 #define STEP 17
 
-TestScreen::TestScreen(Sack const &sack, int n):
-    Screen(sack),
-    n(n)
-{
-    int width = sack.atlas->getWidth();
-    int height = sack.atlas->getHeight();
+TestScreen::TestScreen(int n): n(n) {
     this->bullets = new Instance<Bullet>[n];
     for (int i = 0; i < n; i++) {
 	this->bullets[i].alive = true;
@@ -17,9 +13,9 @@ TestScreen::TestScreen(Sack const &sack, int n):
 	this->bullets[i].velocity.y = rand() % 20 - 10;
 	this->bullets[i].accelerator.x = rand() % 20 - 10;
 	this->bullets[i].accelerator.y = rand() % 20 - 10;
-        this->bullets[i].model = &sack.bullets.at(0);
+        this->bullets[i].model = &Config::bullets.at(0);
     }
-    sack.playSong("assets/blowItUp.ogg");
+    Config::playSong("assets/blowItUp.ogg");
 }
     
 TestScreen::~TestScreen() {

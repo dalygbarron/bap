@@ -1,10 +1,10 @@
 (import assets/janet/config :as config)
 
 (fn [screen]
-    (file/close (file/write (file/open "brexit.janet"
-                                       :w)
-                            "this shit is real gay"))
     (replace-trans screen
                    (new-blank screen
                               config/start-script
-                              "Hello and welcome to my game")))
+                              (string "Hello and welcome to my game you "
+                                      "fucking idiot. I really hope that "
+                                      "you pay for your crimes before "
+                                      "I cathch you."))))

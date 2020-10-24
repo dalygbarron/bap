@@ -1,6 +1,6 @@
 (def font-sprite "font")
-(def panel-sprite "panel")
-(def border-sprite "border")
+(def panel-sprite "background")
+(def border-sprite "panel")
 (def border-width 4)
 (def start-script "assets/janet/talk.janet")
 (def map-dir "assets/maps/")

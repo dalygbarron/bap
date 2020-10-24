@@ -1,10 +1,7 @@
 #include "Screen.hh"
 #include "Util.hh"
+#include "Config.hh"
 #include <stdio.h>
-
-Screen::Screen(Sack const &sack): sack(sack) {
-    // that is all.
-}
 
 Screen::~Screen() {}
 
@@ -108,7 +105,6 @@ Janet Screen::newBlank(int32_t argc, Janet *argv) {
         strings[i - 2] = (char const *)janet_getcstring(argv, i);
     }
     BlankScreen *newScreen = new BlankScreen(
-        screen->sack,
         scriptName,
         argc - 2,
         strings
@@ -187,10 +183,9 @@ Janet Screen::drawText(int32_t argc, Janet *argv) {
 }
 
 Janet Screen::getSprite(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 2);
-    void *screenPointer = janet_unwrap_pointer(argv[0]);
-    char const *name = (char const *)janet_unwrap_string(argv[1]);
-    SDL_Rect sprite = ((Screen *)screenPointer)->sack.atlas->getSprite(name);
+    janet_fixarity(argc, 1);
+    char const *name = (char const *)janet_getcstring(argv, 1);
+    SDL_Rect sprite = Config::atlas->getSprite(name);
     Janet list[4];
     list[0] = janet_wrap_integer(sprite.x);
     list[1] = janet_wrap_integer(sprite.y);
@@ -200,11 +195,10 @@ Janet Screen::getSprite(int32_t argc, Janet *argv) {
 }
 
 Janet Screen::getScreenDimensions(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    void *screenPointer = janet_unwrap_pointer(argv[0]);
+    janet_fixarity(argc, 0);
     Janet items[2];
-    items[0] = janet_wrap_integer(((Screen *)screenPointer)->sack.width);
-    items[1] = janet_wrap_integer(((Screen *)screenPointer)->sack.height);
+    items[0] = janet_wrap_integer(Config::SCREEN_WIDTH);
+    items[1] = janet_wrap_integer(Config::SCREEN_HEIGHT);
     return janet_wrap_tuple(janet_tuple_n(items, 2));
 }
 
