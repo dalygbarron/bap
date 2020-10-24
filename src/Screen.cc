@@ -6,9 +6,28 @@ Screen::Screen(Sack const &sack): sack(sack) {
     // that is all.
 }
 
-int Screen::update() {
+Screen::~Screen() {}
+
+void Screen::push(Screen *screen) {
+    this->transfer.type = TransferOperation::PUSH;
+    this->transfer.next = screen;
+}
+
+void Screen::pop() {
+    this->transfer.type = TransferOperation::POP;
+}
+
+void Screen::replace(Screen *screen) {
+    this->transfer.type = TransferOperation::REPLACE;
+    this->transfer.next = screen;
+}
+
+Screen::TransferOperation Screen::update() {
     this->drawQueue.clear();
-    return this->customUpdate();
+    this->customUpdate();
+    TransferOperation currentTransfer = this->transfer;
+    this->transfer.type = TransferOperation::NONE;
+    return currentTransfer;
 }
 
 void Screen::render(Renderer const &renderer) {
@@ -25,9 +44,6 @@ void Screen::render(Renderer const &renderer) {
             case DrawOperation::RECT:
                 renderer.rect(operation.bounds, operation.sprite);
                 break;
-            case DrawOperation::PANEL:
-                renderer.panel(operation.bounds);
-                break;
             case DrawOperation::TEXT:
                 renderer.text(
                     Vec(operation.bounds.x, operation.bounds.y),
@@ -39,9 +55,7 @@ void Screen::render(Renderer const &renderer) {
     }
 }
 
-int Screen::customUpdate() {
-    return 0;
-}
+void Screen::customUpdate() {}
 
 void Screen::customRender(Renderer const &renderer) const {}
 
@@ -59,6 +73,47 @@ JanetFiber *Screen::loadFiber(char const *file, int argc, char const **argv) {
         args[i] = janet_wrap_string(janet_cstring(argv[i - 1]));
     }
     return janet_fiber(janet_unwrap_function(out), 0, argc + 1, args);
+}
+
+Janet Screen::pushTrans(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    void *screenPointer = janet_unwrap_pointer(argv[0]);
+    void *newScreenPointer = janet_unwrap_pointer(argv[1]);
+    ((Screen *)screenPointer)->push((Screen *)newScreenPointer);
+    return janet_wrap_nil();
+}
+
+Janet Screen::popTrans(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    void *screenPointer = janet_unwrap_pointer(argv[0]);
+    ((Screen *)screenPointer)->pop();
+    return janet_wrap_nil();
+}
+
+Janet Screen::replaceTrans(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    void *screenPointer = janet_unwrap_pointer(argv[0]);
+    void *newScreenPointer = janet_unwrap_pointer(argv[1]);
+    ((Screen *)screenPointer)->replace((Screen *)newScreenPointer);
+    return janet_wrap_nil();
+}
+
+Janet Screen::newBlank(int32_t argc, Janet *argv) {
+    printf("ergerger\n");
+    janet_arity(argc, 2, -1);
+    Screen *screen = (Screen *)janet_getpointer(argv, 0);
+    char const *scriptName = (char *)janet_getcstring(argv, 1);
+    char const *strings[argc - 2];
+    for (int i = 2; i < argc; i++) {
+        strings[i - 2] = (char const *)janet_getcstring(argv, i);
+    }
+    BlankScreen *newScreen = new BlankScreen(
+        screen->sack,
+        scriptName,
+        argc - 2,
+        strings
+    );
+    return janet_wrap_pointer(newScreen);
 }
 
 Janet Screen::drawBorder(int32_t argc, Janet *argv) {
@@ -91,7 +146,6 @@ Janet Screen::drawRect(int32_t argc, Janet *argv) {
     void *screenPointer = janet_unwrap_pointer(argv[0]);
     Janet const *border = janet_unwrap_tuple(argv[1]);
     Janet const *sprite = janet_unwrap_tuple(argv[2]);
-    float width = janet_unwrap_number(argv[3]);
     DrawOperation operation;
     operation.type = DrawOperation::RECT;
     operation.sprite = {
@@ -100,23 +154,6 @@ Janet Screen::drawRect(int32_t argc, Janet *argv) {
         static_cast<int>(janet_unwrap_number(sprite[2])),
         static_cast<int>(janet_unwrap_number(sprite[3]))
     };
-    operation.bounds = {
-        static_cast<int>(janet_unwrap_number(border[0])),
-        static_cast<int>(janet_unwrap_number(border[1])),
-        static_cast<int>(janet_unwrap_number(border[2])),
-        static_cast<int>(janet_unwrap_number(border[3]))
-    };
-    operation.width = width;
-    ((Screen *)screenPointer)->drawQueue.push_back(operation);
-    return janet_wrap_nil();
-}
-
-Janet Screen::drawPanel(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 2);
-    void *screenPointer = janet_unwrap_pointer(argv[0]);
-    Janet const *border = janet_unwrap_tuple(argv[1]);
-    DrawOperation operation;
-    operation.type = DrawOperation::PANEL;
     operation.bounds = {
         static_cast<int>(janet_unwrap_number(border[0])),
         static_cast<int>(janet_unwrap_number(border[1])),
@@ -173,8 +210,12 @@ Janet Screen::getScreenDimensions(int32_t argc, Janet *argv) {
 
 void Screen::initScripting() {
     JanetReg const cFunctions[] = {
+        {"new-blank", newBlank, "(screen/new-blank)\nCreates a new Blank Screen."},
+        {"push-trans", pushTrans, "(screen/push-trans)\nPuts a new screen on top of this one."},
+        {"pop-trans", popTrans, "(screen/pop-trans)\nRemoves the current screen from the screen stack."},
+        {"replace-trans", replaceTrans, "(screen/replace-trans)\nReplace the current screen with a new one"},
+        {"draw-rect", drawRect, "(screen/draw-rect)\nDraws a rectangle on the screen at the given place with the given pattern."},
         {"draw-border", drawBorder, "(screen/draw-border)\nDraws a border at the given place with the given sprite and width."},
-        {"draw-panel", drawBorder, "(screen/draw-panel)\nDraws a panel at the given place."},
         {"draw-text", drawText, "(screen/draw-text)\nDraws some text."},
         {"get-sprite", getSprite, "(screen/get-sprite)\nGives you the bounds of a sprite in a tuple like (x y w h)"},
         {"get-screen-dimensions", getScreenDimensions, "(screen/get-screen-dimensions)\nGives you the dimensions of the screen like (w h)"},

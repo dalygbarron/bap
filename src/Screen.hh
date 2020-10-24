@@ -23,7 +23,6 @@ class Screen {
                 enum {
                     BORDER,
                     RECT,
-                    PANEL,
                     TEXT
                 } type;
                 SDL_Rect sprite;
@@ -33,16 +32,54 @@ class Screen {
         };
 
         /**
+         * Represents transferring from one screen to another in some way.
+         */
+        class TransferOperation {
+            public:
+                enum {
+                    POP,
+                    PUSH,
+                    REPLACE,
+                    NONE
+                } type;
+                Screen *next;
+        };
+
+        /**
          * Makes all screens have access to the sprite atlas thing.
          * @param sack contains all the dependencies.
          */
         Screen(Sack const &sack);
 
         /**
+         * Deletes all the screen's shiet.
+         */
+        virtual ~Screen();
+
+        /**
+         * Sets this screens transfer to be pushing a new screen on top of it.
+         * @param screen is the screen to push on top.
+         */
+        void push(Screen *screen);
+
+        /**
+         * Sets this screens transfer to be it being removed from the screen
+         * stack.
+         */
+        void pop();
+
+        /**
+         * Sets this screens transfer to be replacing it with a different
+         * screen.
+         * @param screen is the replacement.
+         */
+        void replace(Screen *screen);
+
+        /**
          * Generic updating logic.
          * @return response code thing.
          */
-        int update();
+        TransferOperation update();
 
 	/**
 	 * Renders the screen.
@@ -54,7 +91,7 @@ class Screen {
 	 * Updates the screen for one timestep's worth.
 	 * @return a code meaning that the screen is finished in some way.
 	 */
-	virtual int customUpdate();
+	virtual void customUpdate();
 
         /**
          * Renders the stuff that you actually want to render in the given
@@ -73,6 +110,42 @@ class Screen {
 	virtual int getTimestep() const = 0;
 
         /**
+         * Queues the current top screen to remove itself from the screen
+         * stack.
+         * @param argc is the number of arguments it is called with.
+         * @param argv is the list of argumnets given.
+         * @return the stuff to send back to janet.
+         */
+        static Janet pushTrans(int32_t argc, Janet *argv);
+
+        /**
+         * Queues the current top screen to remove itself from the screen
+         * stack.
+         * @param argc is the number of arguments it is called with.
+         * @param argv is the list of argumnets given.
+         * @return the stuff to send back to janet.
+         */
+        static Janet popTrans(int32_t argc, Janet *argv);
+
+        /**
+         * Queues the current top screen to remove itself from the screen
+         * stack.
+         * @param argc is the number of arguments it is called with.
+         * @param argv is the list of argumnets given.
+         * @return the stuff to send back to janet.
+         */
+        static Janet replaceTrans(int32_t argc, Janet *argv);
+
+        /**
+         * Creates a blank screen with an arbitrary number of string arguments
+         * and returns a pointer to it.
+         * @param argc is the number of arguments.
+         * @param argv is the arguments.
+         * @return a pointer to the new blank screen.
+         */
+        static Janet newBlank(int32_t argc, Janet *argv);
+
+        /**
          * Adds a border to draw to the screen's draw queue from janet.
          * @param argc is the number of arguments it is called with.
          * @param argv is the list of argumnets given.
@@ -88,14 +161,6 @@ class Screen {
          */
         static Janet drawRect(int32_t argc, Janet *argv);
         
-        /**
-         * Adds a panel to draw to the screen's draw queue from janet.
-         * @param argc is the number of arguments it is called with.
-         * @param argv is the list of argumnets given.
-         * @return the stuff to send back to janet.
-         */
-        static Janet drawPanel(int32_t argc, Janet *argv);
-
         /**
          * Adds a Text draw to the screen draw queue from janet.
          * @param argc is the number of arguments it is called with.
@@ -128,7 +193,6 @@ class Screen {
 
     protected:
         Sack const &sack;
-        std::vector<DrawOperation> drawQueue;
 
         /**
          * Loads a script that contains a function that takes a pointer to this
@@ -140,6 +204,10 @@ class Screen {
          *         null.
          */
         JanetFiber *loadFiber(char const *file, int argc, char const **argv);
+
+    private:
+        std::vector<DrawOperation> drawQueue;
+        TransferOperation transfer;
 };
 
 /**
@@ -161,9 +229,14 @@ class BlankScreen: public Screen {
             char const **argv
         );
 
+        /**
+         * Deletes stuff.
+         */
+        virtual ~BlankScreen();
+
 	int getTimestep() const override;
 
-	int customUpdate() override;
+	void customUpdate() override;
 
     private:
         JanetFiber *script;
@@ -176,7 +249,7 @@ class PlatformScreen: public Screen {
     public:
 	int getTimestep() const override;
 
-	int customUpdate() override;
+	void customUpdate() override;
 
 	void customRender(Renderer const &renderer) const override;
 };
@@ -194,7 +267,7 @@ class DesignScreen: public Screen {
 
 	int getTimestep() const override;
 
-	int customUpdate() override;
+	void customUpdate() override;
 
 	void customRender(Renderer const &renderer) const override;
 };
@@ -220,7 +293,7 @@ class TestScreen: public Screen {
 
 	int getTimestep() const override;
 
-	int customUpdate() override;
+	void customUpdate() override;
 
 	void customRender(Renderer const &renderer) const override;
 

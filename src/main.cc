@@ -12,15 +12,10 @@
 
 int const SCREEN_WIDTH = 768;
 int const SCREEN_HEIGHT = 480;
+int const SCREEN_STACK_MAX = 16;
 float const  FPS_RATE = 5000;
 char const *PIC_FILE = "assets/coom.png";
 char const *SPRITE_FILE = "assets/cooxr.csv";
-char const *FREAK_FILE = "assets/freaks.csv";
-char const *BULLET_FILE = "assets/bullets.csv";
-char const *BACKGROUND_SPRITE = "background";
-char const *PANEL_SPRITE = "panel";
-char const *SELECT_SPRITE = "select";
-char const *FONT_SPRITE = "font";
 
 /**
  * Gotta do this shit for emscripten, annoying I know.
@@ -33,9 +28,19 @@ class ProgramState {
         int fpsTimer;
         int startIteration;
         int iteration;
+        int screen;
         SDL_Renderer *realRenderer;
         Renderer *renderer;
-        Screen *screen;
+        Screen *screens[SCREEN_STACK_MAX];
+
+        /**
+         * Gives you the current screen on top of the stack.
+         * @return the top screen.
+         */
+        Screen *current() {
+            if (this->screen >= 0) return this->screens[this->screen];
+            return NULL;
+        }
 };
 
 /**
@@ -43,8 +48,6 @@ class ProgramState {
  * @param renderer   is the renderer which is needed to load textures.
  * @param picFile    is the path to the game's texture atlas picture.
  * @param atlasFile  is the path to the file that describes the game's sprites.
- * @param freakFile  is the path to the file that contains the game's freaks.
- * @param bulletFile is the path to the file that contains the game's bullets.
  * @return the sack unless it was unable to load the texture which I think it
  *         the only thing that absolutely has to succeed. If other stuff fucks
  *         up it will just run without it and crash later lol.
@@ -52,17 +55,13 @@ class ProgramState {
 Sack *loadSack(
     SDL_Renderer &renderer,
     char const *picFile,
-    char const *atlasFile,
-    char const *freakFile,
-    char const *bulletFile
+    char const *atlasFile
 ) {
     SDL_Texture *texture = Util::loadTexture(picFile, renderer);
     if (!texture) return NULL;
     Atlas *atlas = new Atlas(*texture);
     atlas->loadSprites(atlasFile);
     Sack *sack = new Sack(atlas, SCREEN_WIDTH, SCREEN_HEIGHT);
-    sack->loadFreaks(freakFile);
-    sack->loadBullets(bulletFile);
     return sack;
 }
 
@@ -81,9 +80,31 @@ void loop(void *data) {
     program->updateTimer += currentTime - program->time;
     program->fpsTimer += currentTime - program->time;
     program->time = currentTime;
-    while (program->updateTimer >= program->screen->getTimestep()) {
-        program->screen->update();
-        program->updateTimer -= program->screen->getTimestep();
+    int step = program->current()->getTimestep();
+    while (program->updateTimer >= step) {
+        Screen::TransferOperation operation = program->current()->update();
+        program->updateTimer -= step;
+        switch (operation.type) {
+            case Screen::TransferOperation::POP:
+                delete program->screens[program->screen];
+                program->screen--;
+                step = program->current()->getTimestep();
+                break;
+            case Screen::TransferOperation::PUSH:
+                program->screen++;
+                program->screens[program->screen] = operation.next;
+                step = operation.next->getTimestep();
+                break;
+            case Screen::TransferOperation::REPLACE:
+                delete program->screens[program->screen];
+                program->screens[program->screen] = operation.next;
+                step = operation.next->getTimestep();
+                break;
+        }
+    }
+    if (program->screen < 0) {
+        program->running = false;
+        return;
     }
     if (program->fpsTimer >= FPS_RATE) {
         SDL_LogInfo(
@@ -96,7 +117,7 @@ void loop(void *data) {
         program->fpsTimer = 0;
     }
     SDL_RenderClear(program->realRenderer);
-    program->screen->render(*program->renderer);
+    program->current()->render(*program->renderer);
     SDL_RenderPresent(program->realRenderer);
     program->iteration++;
 }
@@ -166,9 +187,7 @@ int main(int argc, char **argv) {
     Sack *sack = loadSack(
         *renderer,
         PIC_FILE,
-        SPRITE_FILE,
-        FREAK_FILE,
-        BULLET_FILE
+        SPRITE_FILE
     );
     if (!sack) {
         SDL_LogCritical(
@@ -180,20 +199,12 @@ int main(int argc, char **argv) {
     char const *message = "you are a nerd";
     BlankScreen *start = new BlankScreen(
         *sack,
-        "assets/janet/talk.janet",
-        1,
-        &message
+        "assets/janet/init.janet",
+        0,
+        NULL
     );
     ProgramState *program = new ProgramState();
-    program->renderer = new Renderer(
-        *renderer,
-        *sack->atlas,
-        sack->atlas->getSprite(BACKGROUND_SPRITE),
-        sack->atlas->getSprite(PANEL_SPRITE),
-        sack->atlas->getSprite(SELECT_SPRITE),
-        sack->atlas->getSprite(FONT_SPRITE),
-        4
-    );
+    program->renderer = new Renderer(*renderer, *sack->atlas);
     program->realRenderer = renderer;
     program->running = true;
     program->time = SDL_GetTicks();
@@ -201,7 +212,8 @@ int main(int argc, char **argv) {
     program->fpsTimer = 0;
     program->startIteration = 0;
     program->iteration = 0;
-    program->screen = start;
+    program->screens[0] = start;
+    program->screen = 0;
     while (program->running) {
         loop(program);
         #ifdef __EMSCRIPTEN__

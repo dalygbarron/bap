@@ -15,21 +15,8 @@ class Renderer {
          * Creates the renderer.
          * @param renderer   is the sdl renderer thingy.
          * @param atlas      is the texture atlas for sprite drawing.
-         * @param background is the sprite for gui panel backgrounds.
-         * @param panelBorder is the sprite for gui panel backgrounds.
-         * @param select     is the sprite for gui selection overlay thing.
-         * @param font       is the sprite for the font sheet.
-         * @param borderSize is the thickness of the border on panels.
          */
-        Renderer(
-            SDL_Renderer &renderer,
-            Atlas const &atlas,
-            SDL_Rect background,
-            SDL_Rect panelBorder,
-            SDL_Rect select,
-            SDL_Rect font,
-            int borderSize
-        );
+        Renderer(SDL_Renderer &renderer, Atlas const &atlas);
 
         /**
          * Draws a border in the given bounds rather than around it.
@@ -52,28 +39,12 @@ class Renderer {
         void rect(SDL_Rect bounds, SDL_Rect sprite) const;
 
         /**
-         * Draws a panel of some description within the given bounds.
-         * @param bounds    is the bounds the panel fits within.
-         * @return the area inside the border.
-         */
-        SDL_Rect panel(SDL_Rect bounds) const;
-
-        /**
          * Writes some text on the screen using a custom font.
          * @param pos  is the top left at which to draw.
          * @param text is the text to write.
          * @param font is the font sheet to draw with.
          */
         void text(Vec pos, char const *text, SDL_Rect font) const;
-
-        /**
-         * Writes some text on the screen which is not wrapped although it does
-         * take note of newlines. If you want wrapped text then call some kind
-         * of wrapping function yourself.
-         * @param pos  is the place for the top left of the text.
-         * @param text is the text to write.
-         */
-        void text(Vec pos, char const *text) const;
 
         /**
          * Draws a sprite on the screen at the given point by it's middle.
@@ -84,11 +55,6 @@ class Renderer {
 
     private:
         SDL_Renderer &renderer;
-        SDL_Rect background;
-        SDL_Rect panelBorder;
-        SDL_Rect select;
-        SDL_Rect font;
-        int borderSize;
 };
 
 #endif

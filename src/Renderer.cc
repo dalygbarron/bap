@@ -1,24 +1,10 @@
 #include "Renderer.hh"
 #include "Util.hh"
 
-Renderer::Renderer(
-    SDL_Renderer &renderer,
-    Atlas const &atlas,
-    SDL_Rect background,
-    SDL_Rect panelBorder,
-    SDL_Rect select,
-    SDL_Rect font,
-    int borderSize
-):
+Renderer::Renderer(SDL_Renderer &renderer, Atlas const &atlas):
     renderer(renderer),
     atlas(atlas)
-{
-    this->background = background;
-    this->panelBorder = panelBorder;
-    this->select = select;
-    this->font = font;
-    this->borderSize = borderSize;
-}
+{}
 
 SDL_Rect Renderer::border(SDL_Rect bounds, SDL_Rect sprite, int width) const {
     if (bounds.w < width * 2 || bounds.h < width * 2) return {0, 0, 0, 0};
@@ -107,16 +93,6 @@ void Renderer::rect(SDL_Rect bounds, SDL_Rect sprite) const {
     }
 }
 
-SDL_Rect Renderer::panel(SDL_Rect bounds) const {
-    int fullBorderSize = this->borderSize * 2;
-    if (bounds.w < fullBorderSize || bounds.h < fullBorderSize) {
-        return {0, 0, 0, 0};
-    }
-    SDL_Rect inner = this->border(bounds, this->panelBorder, this->borderSize);
-    if (inner.w || inner.h) this->rect(inner, this->background);
-    return inner;
-}
-
 void Renderer::text(Vec origin, char const *text, SDL_Rect font) const {
     float originX = origin.x;
     Vec character(font.w / 16, font.h / 16);
@@ -134,10 +110,6 @@ void Renderer::text(Vec origin, char const *text, SDL_Rect font) const {
         );
         origin.x += character.iX();
     }
-}
-
-void Renderer::text(Vec origin, char const *text) const {
-    this->text(origin, text, this->font);
 }
 
 void Renderer::sprite(Vec pos, SDL_Rect const &sprite) const {
