@@ -6,8 +6,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #ifdef __EMSCRIPTEN__
-    #include <emscripten.h>
-    #include <emscripten/html5.h>
+#include <emscripten.h>
+#include <emscripten/html5.h>
 #endif
 #include <stdio.h>
 
@@ -160,7 +160,7 @@ int main(int argc, char **argv) {
         Config::SCREEN_WIDTH,
         Config::SCREEN_HEIGHT
     );
-    if (!Config::init()) {
+    if (!Config::init(*renderer)) {
         SDL_LogCritical(
             SDL_LOG_CATEGORY_APPLICATION,
             "Couldn't init config\n"

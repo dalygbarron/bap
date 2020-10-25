@@ -1,4 +1,5 @@
 #include "Config.hh"
+#include "Util.hh"
 #include "csv.h"
 #include <SDL2/SDL_mixer.h>
 #include <vector>
@@ -8,8 +9,11 @@
 
 std::string song = "";
 Mix_Music *music = NULL;
+Atlas *atlas;
+std::vector<Freak> freaks;
+std::vector<Bullet> bullets;
 
-void Config::loadFreaks(char const *file) {
+void loadFreaks(char const *file) {
     io::CSVReader<4> csv(file);
     csv.read_header(
         io::ignore_extra_column,
@@ -35,7 +39,7 @@ void Config::loadFreaks(char const *file) {
     }
 }
 
-void Config::loadBullets(char const *file) {
+void loadBullets(char const *file) {
     io::CSVReader<3> csv(file);
     csv.read_header(io::ignore_extra_column, "name", "sprite", "speed");
     std::string name;
@@ -50,6 +54,18 @@ void Config::loadBullets(char const *file) {
             speed
         );
     }
+}
+
+bool Config::init(SDL_Renderer &renderer) {
+    SDL_Texture *texture = Util::loadTexture("assets/coom.png", renderer);
+    if (!texture) {
+        return false;
+    }
+    atlas = new Atlas(*texture);
+    atlas->loadSprites("assets/cooxr.csv");
+    ::loadFreaks("assets/freaks.csv");
+    ::loadBullets("assets/bullets.csv");
+    return true;
 }
 
 void Config::playSong(char const *file) {
@@ -67,4 +83,8 @@ void Config::playSong(char const *file) {
             );
         }
     }
+}
+
+Atlas *Config::getAtlas() {
+    return atlas;
 }

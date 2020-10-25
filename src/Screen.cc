@@ -184,8 +184,8 @@ Janet Screen::drawText(int32_t argc, Janet *argv) {
 
 Janet Screen::getSprite(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    char const *name = (char const *)janet_getcstring(argv, 1);
-    SDL_Rect sprite = Config::atlas->getSprite(name);
+    char const *name = (char const *)janet_getcstring(argv, 0);
+    SDL_Rect sprite = Config::getAtlas()->getSprite(name);
     Janet list[4];
     list[0] = janet_wrap_integer(sprite.x);
     list[1] = janet_wrap_integer(sprite.y);

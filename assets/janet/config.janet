@@ -4,3 +4,4 @@
 (def border-width 4)
 (def start-script "assets/janet/talk.janet")
 (def map-dir "assets/maps/")
+(def whitespace [32 10])

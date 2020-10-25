@@ -243,32 +243,4 @@ class PlatformScreen: public Screen {
 	void customRender(Renderer const &renderer) const override;
 };
 
-/**
- * A screen which makes a bunch of stuff fly around the screen wahooo.
- */
-class TestScreen: public Screen {
-    public:
-	const int n;
-
-	/**
-	 * Creates a nice test screen.
-	 * @param n    is the number of objects to test.
-	 */
-        TestScreen(int n);
-
-	/**
-	 * Deletes the bullet array.
-	 */
-	virtual ~TestScreen();
-
-	int getTimestep() const override;
-
-	void customUpdate() override;
-
-	void customRender(Renderer const &renderer) const override;
-
-    private:
-        Instance<Bullet> *bullets;
-};
-
 #endif

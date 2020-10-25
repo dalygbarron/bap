@@ -15,20 +15,15 @@
  * glass.
  */
 namespace Config {
-    int const SCREEN_WIDTH = 768;
-    int const SCREEN_HEIGHT = 480;
-    int const SCREEN_STACK_MAX = 16;
-    float const  FPS_RATE = 5000;
-    char const *PIC_FILE = "assets/coom.png";
-    char const *SPRITE_FILE = "assets/cooxr.csv";
-    Atlas *atlas;
-    std::vector<Freak> freaks;
-    std::vector<Bullet> bullets;
+    constexpr int const SCREEN_WIDTH = 768;
+    constexpr int const SCREEN_HEIGHT = 480;
+    constexpr int const SCREEN_STACK_MAX = 8;
+    constexpr float const  FPS_RATE = 5000;
 
     /**
      * Initialises the config and loads stuff from files etc etc.
      */
-    bool init();
+    bool init(SDL_Renderer &renderer);
 
     /**
      * Loads in freaks from a file.
@@ -48,6 +43,12 @@ namespace Config {
      *             playing.
      */
     void playSong(char const *name);
+
+    /**
+     * Gives you the atlas.
+     * @return the atlas.
+     */
+    Atlas *getAtlas();
 };
 
 #endif

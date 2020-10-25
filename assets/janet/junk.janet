@@ -34,6 +34,21 @@
       [vec]
       (printf "(%d %d)" (vec 0) (vec 1)))
 
+(defn tokenise
+      "takes a string and breaks it into an array based on whitespace"
+      [text]
+      text)
+
+(defn wrap-text
+      "Takes some text and wraps it based on a given font"
+      [text font width]
+      (def buffer @"")
+      (each line
+            (string/split text "\n")
+            (progn (buffer/push-string (wrap-tokens (tokenise line) width))
+                   (buffer/push-string "\n"))
+      buffer)
+
 (defn shrink-rect
       "Takes a rectangle and shrinks it by an amount on all sides"
       [rect shrink]
@@ -47,7 +62,7 @@
       [screen bounds]
       (def border (get-sprite config/border-sprite))
       (def panel (get-sprite config/panel-sprite))
-      (draw-border screen bounds config/border-sprite config/border-width)
+      (draw-border screen bounds border config/border-width)
       (def inner-bounds (shrink-rect bounds config/border-width))
       (if (and (vectored i (> (inner-bounds i) 0)))
         (draw-rect screen inner-bounds panel))
