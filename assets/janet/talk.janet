@@ -5,7 +5,7 @@
     (def box (get-sprite "panel"))
     (def font (get-sprite "font"))
     (def width 512)
-    (def wrapped (wrap-text message font width))
+    (def wrapped (junk/wrap-text message font width))
     (while true
            (draw-text screen
                       (junk/draw-panel screen [128 400 width 80])

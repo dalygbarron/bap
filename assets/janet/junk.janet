@@ -1,6 +1,27 @@
 (import assets/janet/config :as config)
 
-(defmacro vectored [var content]
+(defn is-whitespace
+  "Evaluates to a boolean for whether given character is whitespace"
+  [c]
+  (or (= c 32) (= c 10)))
+
+(defmacro text
+  "Joins lines of text without newlines unless empty string or explicit"
+  [& str]
+  (string ;(seq [i :in str] (if (= 0 (length i))
+                              "\n"
+                              (if (is-whitespace (i -1))
+                                i
+                                (string i " "))))))
+
+(defmacro def-text
+  "Defines output of text into a constant to save space"
+  [name & str]
+  ~(def ,name (text ,;str)))
+
+(defmacro vectored
+  "Does everything twice with an index variable"
+  [var content]
   ~(tuple (do (def ,var 0) ,content)
           (do (def ,var 1) ,content)))
 
@@ -37,17 +58,37 @@
 (defn tokenise
       "takes a string and breaks it into an array based on whitespace"
       [text]
-      text)
+      (string/split " " text))
+
+(defn wrap-tokens
+      ``
+      Takes a list of tokens and merges them into one string such that they
+      do not exceed the required number of characters per line. Adds a newline
+      on the end as well.
+      ``
+      [tokens width]
+      (var i 0)
+      (var buffer (buffer/new 32))
+      (each token
+            tokens
+            [(if (< width (+ i (length token)))
+               [(set i 0)
+                (buffer/push-string buffer "\n")])
+             (set i (+ i (length token) 1))
+             (buffer/push-string buffer token)
+             (buffer/push-string buffer " ")])
+      (buffer/push-string buffer "\n")
+      buffer)
 
 (defn wrap-text
       "Takes some text and wraps it based on a given font"
       [text font width]
-      (def buffer @"")
+      (var buffer (buffer/new 256))
+      (def chars (/ width (/ (font 2) 16)))
       (each line
-            (string/split text "\n")
-            (progn (buffer/push-string (wrap-tokens (tokenise line) width))
-                   (buffer/push-string "\n"))
-      buffer)
+            (string/split "\n" text)
+            (buffer/push-string buffer (wrap-tokens (tokenise line) chars)))
+      (string buffer))
 
 (defn shrink-rect
       "Takes a rectangle and shrinks it by an amount on all sides"
