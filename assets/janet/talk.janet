@@ -1,4 +1,5 @@
 (import assets/janet/junk :as junk)
+(import assets/janet/macros :prefix "")
 
 (fn [screen message]
     (def screen-size (get-screen-dimensions))

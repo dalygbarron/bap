@@ -5,19 +5,24 @@
   [c]
   (or (= c 32) (= c 10)))
 
-(defmacro text
+(defn text*
   "Joins lines of text without newlines unless empty string or explicit"
   [& str]
   (string ;(seq [i :in str] (if (= 0 (length i))
                               "\n"
-                              (if (is-whitespace (i -1))
+                              (if (is-whitespace (i (- (length i) 1)))
                                 i
                                 (string i " "))))))
+
+(defmacro text
+  "Macro version of text*"
+  [& str]
+  (text* ;str))
 
 (defmacro def-text
   "Defines output of text into a constant to save space"
   [name & str]
-  ~(def ,name (text ,;str)))
+  ['def name (text* ;str)])
 
 (defmacro vectored
   "Does everything twice with an index variable"

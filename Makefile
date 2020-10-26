@@ -6,7 +6,7 @@ OBJ_NAME = main
 CCC=g++
 CC=gcc
 LINKER_FLAGS=-lSDL2 -lSDL2_image -lSDL2_mixer -lm -ldl
-COMPILER_FLAGS=-std=c++17
+COMPILER_FLAGS=-std=c++17 -g
 WEB_MAIN_OBJS=$(addsuffix w, $(MAIN_OBJS))
 WEB_C_OBJS=$(addsuffix w, $(C_OBJS))
 WEB_OBJ_NAME = index.html
