@@ -4,6 +4,16 @@
      "Stores wrapped texts so you don't have to save manually"
      @{})
 
+(def Knob
+     "Gui element thing"
+     @{:bounds [0 0 0 0]
+       :get-min-size (fn [self] [0 0])
+       :set-position (fn [self bounds] (set (self :bounds) bounds))})
+
+(def PanelKnob
+     "Represents a panel that fits stuff vertically"
+
+
 (defn tokenise
       "takes a string and breaks it into an array based on whitespace"
       [text]

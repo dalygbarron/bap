@@ -1,31 +1,46 @@
-Ok so the gui system is always going to be immediate mode, but there is going
-to be a 'blank screen' whose job is to run a script that draws arbitrary stuff
-so those scripts kind of work like a more fixed style fo gui. But for things
-like the level editor it will be normal immediate mode shiet.
+Whatever I wrote before, I did not do it. Essentially in the engine I have
+written a few dumb drawing things for stuff like panels and text and buttons,
+but not actual gui "system".
 
-So whether script or engine it works exactly the same except with the script of
-course it has to go through the api, it adds the calls to some kind of gui
-object thingy which contains list of the shit to draw / handle clicks for.
+The gui system will exist exclusively within the scripts themselves.
 
-Things like scrollable panels or selection lists will have to be done by
-passing a reference to a variable though I dunno how that will work exactly
-with scripts. If I can pass a reference to a variable inside the script then
-that will be cool.
+Now, what are we actually going to do in this gui system then? At this point we
+could make it retained mode if we wanted to, or we can still make it immediate
+mode. However, first we need to think about what I actually want from this
+system.
 
-When something like a button is acticvated it will have to return an id number
-or something so it will be the responsibility of the user to stop those
-clashing.
+I want to be able to position elements within their parents based on a subset
+of the variables (left, top, right, bottom, width, height), with the default
+being (left = 0, top = 0) I think that if you just set those then it should
+size itself non greedily, but if you said something like (top = 0, bottom = 0)
+it should go all the way from the top of the screen to the bottom.
 
-Ok so really I should start this by creating a test version of the level editor
-screen that just display some gui thingies.
+Actually, those values can only be for the outermost form and will in fact be
+passed in to the outer sizing function not a form's parameters.
 
+So all these nested form functions do whatever, then when they have created
+their ownership heirachy, it all goes to the placement function, and it makes
+them all take on the size and position that they are meant to have. It is
+probably best to make that a seperate step from input detection and rendering,
+because it means you can save them after positioning them since it might be
+slow I dunno.
 
-So each function returns an array of drawing instructions and click detection
-instructions. No instruction is needed for key press detection since they don't
-depend on the location on the screen.
-Yeah so when a parent function receives this list of instructions they are at
-origin 0 so it offsets them to be in the right place. I guess instead of an
-array it will have to be some kind of object that also contains the bounds of
-the object so that a parent can fit it with siblings.
+Ok so to position them we can figure out the combination of left right top etc
+shiet to figure out the complete box position and dimensions, for ones that are
+not given we can figure it out by calling a getMinimumBounds method which
+recursively finds the amount of space that is needed.
 
+text boxes need to store their original text not their wrapped text. We are
+caching wrapped text so that is ok. That way it can calculate minimum required
+dimensions correctly.
 
+yeah whatever lets blast nerds.
+
+Ok so there will be two functions: get-min-width and get-min-height which will
+be called appropriately depending on what axes were fixed. I think an axis must
+always be fixed. Well, if not it will just fill the whoel screen or something.
+
+When you call one of those functions, the other axis must be given as
+an argument, and also a maximum value must be given. No greedy sizing is neede
+I think as things take up the space they need. Images cannot auto scale, they
+will need to be their real size all the time, so they must be drawn to scale.
