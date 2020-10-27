@@ -4,10 +4,16 @@
      "Stores wrapped texts so you don't have to save manually"
      @{})
 
+(defn make-panel-sprite
+      "Makes a nice struct to represent the parts of a panel sprite"
+      [background border width]
+      {:background background :border border :width width})
+
 (def Knob
      "Gui element thing"
      @{:bounds [0 0 0 0]
-       :get-min-size (fn [self] [0 0])
+       :get-min-width (fn [self height] 0)
+       :get-min-height (fn [self width] 0)
        :set-position (fn [self bounds] (set (self :bounds) bounds))})
 
 (def PanelKnob
@@ -20,10 +26,7 @@
       (string/split " " text))
 
 (defn wrap-tokens
-      "yeet"
-      #(junk/text "Takes a list of tokens and merges them into one string such"
-      #           "that they do not exceed the required number of characters"
-      #           "per line. Adds a newline on the end as well.")
+      "takes a list of tokens and merges them with newlines to fit width"
       [tokens width]
       (var i 0)
       (var buffer (buffer/new 32))
