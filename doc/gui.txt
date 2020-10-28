@@ -44,3 +44,7 @@ When you call one of those functions, the other axis must be given as
 an argument, and also a maximum value must be given. No greedy sizing is neede
 I think as things take up the space they need. Images cannot auto scale, they
 will need to be their real size all the time, so they must be drawn to scale.
+
+Greedy knobs will be tagged as such and when the parent is doling out space it
+will first skip them, then allot their space at the end, giving them an even
+share of what is left.
