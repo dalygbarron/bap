@@ -7,9 +7,5 @@
     (def font (get-sprite "font"))
     (def width 512)
     (while true
-        (def input (gui/place (gui/panel (gui/text message)
-                                         (gui/button (gui/text "ok")))
-                              :left 128
-                              :width width
-                              :bottom 0))
+
         (yield 1)))

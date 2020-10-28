@@ -48,3 +48,7 @@ will need to be their real size all the time, so they must be drawn to scale.
 Greedy knobs will be tagged as such and when the parent is doling out space it
 will first skip them, then allot their space at the end, giving them an even
 share of what is left.
+
+Oh yeah and technically things that contain stuff are greedy when they have
+an objectively greedy child, or if they want to be I guess. A button containing
+text is not greedy, but a button containing a greedy image is greedy.

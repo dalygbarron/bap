@@ -9,17 +9,6 @@
       [background border width]
       {:background background :border border :width width})
 
-(def Knob
-     "Gui element thing"
-     @{:bounds [0 0 0 0]
-       :get-min-width (fn [self height] 0)
-       :get-min-height (fn [self width] 0)
-       :set-position (fn [self bounds] (set (self :bounds) bounds))})
-
-(def PanelKnob
-     "Represents a panel that fits stuff vertically"
-
-
 (defn tokenise
       "takes a string and breaks it into an array based on whitespace"
       [text]
