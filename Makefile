@@ -5,8 +5,8 @@ C_OBJS=$(addsuffix .o, $(C_INPUTS))
 OBJ_NAME = main
 CCC=g++
 CC=gcc
-LINKER_FLAGS=-lSDL2 -lSDL2_image -lSDL2_mixer -lm -ldl
-COMPILER_FLAGS=-std=c++17 -g
+LINKER_FLAGS=-lSDL2 -lSDL2_image -lSDL2_mixer -lm -ldl -lGL
+COMPILER_FLAGS=-std=c++17
 WEB_MAIN_OBJS=$(addsuffix w, $(MAIN_OBJS))
 WEB_C_OBJS=$(addsuffix w, $(C_OBJS))
 WEB_OBJ_NAME = index.html
@@ -36,6 +36,9 @@ $(OBJ_NAME): $(MAIN_OBJS) $(C_OBJS) assets/*
 
 $(WEB_OBJ_NAME): $(WEB_MAIN_OBJS) $(WEB_C_OBJS) assets/* script/*
 	$(WEB_CCC) $(WEB_MAIN_OBJS) $(WEB_C_OBJS) $(COMPILER_FLAGS) $(WEB_LINKER_FLAGS) -o $(WEB_OBJ_NAME)
+
+newMain: src/newMain.cc
+	$(CCC) src/newMain $(LINKER_FLAGS) $(COMPILER_FLAGS) -o newMain
 
 all: $(OBJ_NAME) $(WEB_OBJ_NAME)
 

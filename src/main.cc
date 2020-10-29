@@ -22,9 +22,7 @@ class ProgramState {
         int fpsTimer;
         int startIteration;
         int iteration;
-        int screen;
-        SDL_Renderer *realRenderer;
-        Renderer *renderer;
+        SDL_Renderer *renderer;
         Screen *screens[Config::SCREEN_STACK_MAX];
 
         /**
