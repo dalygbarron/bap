@@ -12,7 +12,7 @@ WEB_C_OBJS=$(addsuffix w, $(C_OBJS))
 WEB_OBJ_NAME = index.html
 WEB_CCC=em++
 WEB_CC=emcc
-WEB_LINKER_FLAGS=-s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s ASYNCIFY --preload-file assets -O3
+WEB_LINKER_FLAGS=-s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s ASYNCIFY --preload-file assets --preload-file script -O3 --source-map-base localhost:8888/
 
 assets/coom.png assets/cooxr.csv: sprites/*.png
 	rat -o assets/coom.png -f assets/cooxr.csv -d 1024:1024 -w csv sprites/*.png
@@ -34,7 +34,7 @@ $(OBJ_NAME): $(MAIN_OBJS) $(C_OBJS) assets/*
 %.cc.ow: %.cc
 	$(WEB_CCC) -c $^ $(COMPILER_FLAGS) -o $@
 
-$(WEB_OBJ_NAME): $(WEB_MAIN_OBJS) $(WEB_C_OBJS) assets/*
+$(WEB_OBJ_NAME): $(WEB_MAIN_OBJS) $(WEB_C_OBJS) assets/* script/*
 	$(WEB_CCC) $(WEB_MAIN_OBJS) $(WEB_C_OBJS) $(COMPILER_FLAGS) $(WEB_LINKER_FLAGS) -o $(WEB_OBJ_NAME)
 
 all: $(OBJ_NAME) $(WEB_OBJ_NAME)

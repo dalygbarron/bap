@@ -1,5 +1,3 @@
-(import assets/janet/config :as config)
-
 (defn is-whitespace
   "Evaluates to a boolean for whether given character is whitespace"
   [c]
@@ -60,3 +58,8 @@
   "prints a vector in a readable form"
   [vec]
   (printf "(%d %d)" (vec 0) (vec 1)))
+
+(defmacro set-if-more-interesting
+  "Sets the variable given if it's value is nil"
+  [name value]
+  ~(if (= ,name nil) (set ,name ,value))) 

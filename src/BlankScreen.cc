@@ -16,10 +16,16 @@ int BlankScreen::getTimestep() const {
 }
 
 void BlankScreen::customUpdate() {
-    if (janet_fiber_status(this->script) != JANET_STATUS_DEAD) {
+    JanetFiberStatus status = janet_fiber_status(this->script);
+    if (status != JANET_STATUS_DEAD && status != JANET_STATUS_ERROR) {
         Janet out;
         janet_continue(this->script, janet_wrap_nil(), &out);
+        status = janet_fiber_status(this->script);
+        if (status != JANET_STATUS_ALIVE && status != JANET_STATUS_PENDING) {
+            janet_stacktrace(this->script, out);
+        }
         return;
     }
+    printf("end\n");
     this->pop();
 }

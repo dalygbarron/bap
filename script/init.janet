@@ -1,5 +1,5 @@
-(import assets/janet/config :as config)
-(import assets/janet/junk :as junk)
+(import script/config :as config)
+(import script/junk :as junk)
 
 (junk/deft say
            "I am the greatest. I am the greatest and best man in the"

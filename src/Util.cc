@@ -25,12 +25,19 @@ SDL_Texture *Util::loadTexture(char const *file, SDL_Renderer &renderer) {
 }
 
 std::string Util::readWholeFile(char const *file) {
-    std::ifstream ifs(file, std::ios::in | std::ios::binary | std::ios::ate);
-    std::ifstream::pos_type fileSize = ifs.tellg();
-    ifs.seekg(0, std::ios::beg);
-    std::vector<char> bytes(fileSize);
-    ifs.read(bytes.data(), fileSize);
-    return std::string(bytes.data(), fileSize);
+    FILE *f = fopen(file, "rb");
+    if (f) {
+        fseek(f, 0, SEEK_END);
+        long fsize = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        char *string = (char *)malloc(fsize + 1);
+        fread(string, 1, fsize, f);
+        fclose(f);
+        string[fsize] = 0;
+        return string;
+    }
+    fprintf(stderr, "Couldn't open file %s.\n", file);
+    return NULL;
 }
 
 

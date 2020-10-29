@@ -3,7 +3,9 @@
 #include "Config.hh"
 #include <stdio.h>
 
-Screen::~Screen() {}
+Screen::~Screen() {
+    this->transfer.type = TransferOperation::NONE;
+}
 
 void Screen::push(Screen *screen) {
     this->transfer.type = TransferOperation::PUSH;
@@ -96,8 +98,7 @@ Janet Screen::replaceTrans(int32_t argc, Janet *argv) {
 }
 
 Janet Screen::newBlank(int32_t argc, Janet *argv) {
-    printf("ergerger\n");
-    janet_arity(argc, 2, -1);
+    janet_arity(argc, 3, -1);
     Screen *screen = (Screen *)janet_getpointer(argv, 0);
     char const *scriptName = (char *)janet_getcstring(argv, 1);
     char const *strings[argc - 2];

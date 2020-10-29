@@ -46,7 +46,10 @@ void loop(void *data) {
     struct ProgramState *program = (ProgramState *)data;
     SDL_Event event;
     while (SDL_PollEvent(&event) != 0) {
-        if (event.type == SDL_QUIT) program->running = false;
+        if (event.type == SDL_QUIT) {
+            program->running = false;
+            return;
+        }
     }
     int currentTime = SDL_GetTicks();
     program->updateTimer += currentTime - program->time;
@@ -75,10 +78,10 @@ void loop(void *data) {
             case Screen::TransferOperation::NONE:
                 break;
         }
-    }
-    if (program->screen < 0) {
-        program->running = false;
-        return;
+        if (program->screen < 0) {
+            program->running = false;
+            return;
+        }
     }
     if (program->fpsTimer >= Config::FPS_RATE) {
         SDL_LogInfo(
@@ -171,7 +174,7 @@ int main(int argc, char **argv) {
     Screen::initScripting();
     char const *message = "you are a nerd";
     BlankScreen *start = new BlankScreen(
-        "assets/janet/init.janet",
+        "script/init.janet",
         0,
         NULL
     );
@@ -188,12 +191,9 @@ int main(int argc, char **argv) {
     program->screen = 0;
     while (program->running) {
         loop(program);
-        #ifdef __EMSCRIPTEN__
-        emscripten_sleep(10);
-        #else
+        #ifndef __EMSCRIPTEN__
         SDL_Delay(10);
         #endif
     }
-    janet_deinit();
     return 0;
 }
