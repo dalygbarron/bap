@@ -11,7 +11,7 @@
            "up.")
 
 (fn [screen]
-    (replace-trans screen
-                   (new-blank screen
-                              config/start-script
-                              say)))
+  (replace-trans screen
+                 (new-blank screen
+                            config/start-script
+                            say)))
