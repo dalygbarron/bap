@@ -19,6 +19,7 @@ namespace Config {
     constexpr int const SCREEN_HEIGHT = 480;
     constexpr int const SCREEN_STACK_MAX = 8;
     constexpr float const  FPS_RATE = 5000;
+    constexpr float const UPDATE_RATE = 0.02f;
 
     /**
      * Initialises the config and loads stuff from files etc etc.

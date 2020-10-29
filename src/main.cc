@@ -22,19 +22,7 @@ class ProgramState {
         int fpsTimer;
         int startIteration;
         int iteration;
-        int screen;
-        SDL_Renderer *realRenderer;
-        Renderer *renderer;
-        Screen *screens[Config::SCREEN_STACK_MAX];
-
-        /**
-         * Gives you the current screen on top of the stack.
-         * @return the top screen.
-         */
-        Screen *current() {
-            if (this->screen >= 0) return this->screens[this->screen];
-            return NULL;
-        }
+        SDL_Renderer *renderer;
 };
 
 /**
@@ -55,33 +43,9 @@ void loop(void *data) {
     program->updateTimer += currentTime - program->time;
     program->fpsTimer += currentTime - program->time;
     program->time = currentTime;
-    int step = program->current()->getTimestep();
     while (program->updateTimer >= step) {
-        Screen::TransferOperation operation = program->current()->update();
-        program->updateTimer -= step;
-        switch (operation.type) {
-            case Screen::TransferOperation::POP:
-                delete program->screens[program->screen];
-                program->screen--;
-                step = program->current()->getTimestep();
-                break;
-            case Screen::TransferOperation::PUSH:
-                program->screen++;
-                program->screens[program->screen] = operation.next;
-                step = operation.next->getTimestep();
-                break;
-            case Screen::TransferOperation::REPLACE:
-                delete program->screens[program->screen];
-                program->screens[program->screen] = operation.next;
-                step = operation.next->getTimestep();
-                break;
-            case Screen::TransferOperation::NONE:
-                break;
-        }
-        if (program->screen < 0) {
-            program->running = false;
-            return;
-        }
+
+
     }
     if (program->fpsTimer >= Config::FPS_RATE) {
         SDL_LogInfo(
