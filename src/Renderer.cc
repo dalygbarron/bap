@@ -148,12 +148,8 @@ void Renderer::text(
 
 void Renderer::sprite(
     SDL_Renderer *renderer,
-    Vec pos,
+    SDL_Rect const &bounds,
     SDL_Rect const &sprite
 ) {
-    Config::getAtlas()->draw(
-        renderer,
-        {pos.iX() - sprite.w / 2, pos.iY() - sprite.h / 2, sprite.w, sprite.h},
-        sprite
-    );
+    Config::getAtlas()->draw(renderer, bounds, sprite);
 }

@@ -66,8 +66,50 @@
     (var out nil)
     (/= (inner 3) (length children))
     (each child children
-      [(junk/set-if-more-interesting out (child (tuple ;inner)))
+      [(junk/set-if-cooler out (child (tuple ;inner)))
        (+= (inner 1) (inner 3))])
+    out))
+
+(defn v-panel
+  "Creates a panel that splits into two panels vertically with a given ratio"
+  [sprite ratio a b]
+  (fn [bounds]
+    (var inner (draw-panel bounds sprite))
+    (var out nil)
+    (def portion (* (bounds 3) ratio))
+    (junk/set-if-cooler out
+                        (a (draw-panel [(bounds 0)
+                                        (bounds 1)
+                                        (bounds 2)
+                                        portion]
+                                       sprite)))
+    (junk/set-if-cooler out
+                        (b (draw-panel [(bounds 0)
+                                        (+ (bounds 1) portion)
+                                        (bounds 2)
+                                        (- (bounds 3) portion)]
+                                       sprite)))
+    out))
+
+(defn h-panel
+  "Creates a panel that splits into two panels vertically with a given ratio"
+  [sprite ratio a b]
+  (fn [bounds]
+    (var inner (draw-panel bounds sprite))
+    (var out nil)
+    (def portion (* (bounds 2) ratio))
+    (junk/set-if-cooler out
+                        (a (draw-panel [(bounds 0)
+                                        (bounds 1)
+                                        portion
+                                        (bounds 3)]
+                                       sprite)))
+    (junk/set-if-cooler out
+                        (b (draw-panel [(+ (bounds 0) portion)
+                                        (bounds 1)
+                                        (- (bounds 2) portion)
+                                        (bounds 3)]
+                                       sprite)))
     out))
 
 (defn text
@@ -77,3 +119,31 @@
     (def wrapped (wrap-text message font (bounds 2)))
     (draw-text bounds font wrapped)
     nil))
+
+(defn dyn-text
+  "Creates a function that does text which can change each time"
+  [font wrap generator]
+  (fn [bounds]
+    (def wrapped (if wrap
+                   (wrap-text (generator) font (bounds 2))
+                   (generator)))
+    (draw-text bounds font wrapped)
+    nil))
+
+(defn sprite
+  "Creates a function that draws a greedily sized sprite"
+  [pic stretch]
+  (fn [bounds]
+    (draw-sprite (if stretch
+                   bounds
+                   (do
+                     (def ratio (min (/ (bounds 2) (pic 2))
+                                     (/ (bounds 3) (pic 3))))
+                     [(bounds 0)
+                      (bounds 1)
+                      (* (pic 2) ratio)
+                      (* (pic 3) ratio)]))
+                 pic)
+    nil))
+
+

@@ -17,7 +17,7 @@ Janet drawBorder(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
     Janet const *border = janet_unwrap_tuple(argv[0]);
     Janet const *sprite = janet_unwrap_tuple(argv[1]);
-    float width = janet_unwrap_number(argv[1]);
+    float width = janet_unwrap_number(argv[2]);
     Renderer::border(
         renderer,
         {
@@ -80,6 +80,28 @@ Janet drawText(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+Janet drawSprite(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Janet const *border = janet_unwrap_tuple(argv[0]);
+    Janet const *sprite = janet_unwrap_tuple(argv[1]);
+    Renderer::sprite(
+        renderer,
+        {
+            static_cast<int>(janet_unwrap_number(border[0])),
+            static_cast<int>(janet_unwrap_number(border[1])),
+            static_cast<int>(janet_unwrap_number(border[2])),
+            static_cast<int>(janet_unwrap_number(border[3]))
+        },
+        {
+            static_cast<int>(janet_unwrap_number(sprite[0])),
+            static_cast<int>(janet_unwrap_number(sprite[1])),
+            static_cast<int>(janet_unwrap_number(sprite[2])),
+            static_cast<int>(janet_unwrap_number(sprite[3]))
+        }
+    );
+    return janet_wrap_nil();
+}
+
 Janet getSprite(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     char const *name = (char const *)janet_getcstring(argv, 0);
@@ -122,6 +144,7 @@ void initScripting() {
         {"draw-rect", drawRect, "(screen/draw-rect)\nDraws a rectangle on the screen at the given place with the given pattern."},
         {"draw-border", drawBorder, "(screen/draw-border)\nDraws a border at the given place with the given sprite and width."},
         {"draw-text", drawText, "(screen/draw-text)\nDraws some text."},
+        {"draw-sprite", drawSprite, "(screen/draw-text)\nDraws some text."},
         {"get-sprite", getSprite, "(screen/get-sprite)\nGives you the bounds of a sprite in a tuple like (x y w h)"},
         {"get-screen-dimensions", getScreenDimensions, "(screen/get-screen-dimensions)\nGives you the dimensions of the screen like (w h)"},
         {NULL, NULL, NULL}
@@ -136,6 +159,7 @@ void initScripting() {
  *             variables the loop needs between iterations.
  */
 void loop(void *data) {
+    SDL_RenderClear(renderer);
     struct ProgramState *program = (ProgramState *)data;
     SDL_Event event;
     while (SDL_PollEvent(&event) != 0) {
@@ -155,6 +179,8 @@ void loop(void *data) {
         if (status != JANET_STATUS_ALIVE && status != JANET_STATUS_PENDING) {
             janet_stacktrace(program->script, out);
         }
+    } else {
+        program->running = false;
     }
     if (program->fpsTimer >= Config::FPS_RATE) {
         printf(

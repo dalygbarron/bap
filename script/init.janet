@@ -12,8 +12,4 @@
            "up.")
 
 (fn []
-  (def fiber (fiber/new talk/main))
-  (var res true)
-  (while res
-    (set res (resume fiber say))
-    (yield 1)))
+  (talk/main say))

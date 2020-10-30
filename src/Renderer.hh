@@ -52,10 +52,14 @@ namespace Renderer {
     /**
      * Draws a sprite on the screen at the given point by it's middle.
      * @param renderer is the real sdl renderer.
-     * @param pos      is the midpoint of the sprite on the screen.
+     * @param bounds   is the midpoint of the sprite on the screen.
      * @param sprite   is the sprite to draw from the renderer's atlas.
      */
-    void sprite(SDL_Renderer *renderer, Vec pos, SDL_Rect const &sprite);
+    void sprite(
+        SDL_Renderer *renderer,
+        SDL_Rect const &bounds,
+        SDL_Rect const &sprite
+    );
 };
 
 #endif
