@@ -34,10 +34,23 @@ std::string Util::readWholeFile(char const *file) {
         fread(string, 1, fsize, f);
         fclose(f);
         string[fsize] = 0;
-        return string;
+        std::string output = string;
+        delete string;
+        return output;
     }
     fprintf(stderr, "Couldn't open file %s.\n", file);
     return NULL;
+}
+
+JanetFiber *Util::loadFiber(char const *path) {
+    Janet out;
+    JanetTable *env = janet_core_env(NULL);
+    janet_dostring(env, Util::readWholeFile(path).c_str(), "screen", &out);
+    if (!janet_checktype(out, JANET_FUNCTION)) {
+        fprintf(stderr, "SCript needs a function retard\n");
+        return NULL;
+    }
+    return janet_fiber(janet_unwrap_function(out), 0, 0, NULL);
 }
 
 

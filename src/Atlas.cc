@@ -38,7 +38,7 @@ int Atlas::getHeight() const {
 }
 
 void Atlas::draw(
-    SDL_Renderer &renderer,
+    SDL_Renderer *renderer,
     int x,
     int y,
     SDL_Rect const &sprite
@@ -50,7 +50,7 @@ void Atlas::draw(
         sprite.h
     };
     SDL_RenderCopy(
-        &renderer,
+        renderer,
         &this->texture,
         &sprite,
         &placement
@@ -58,12 +58,12 @@ void Atlas::draw(
 }
 
 void Atlas::draw(
-    SDL_Renderer &renderer,
+    SDL_Renderer *renderer,
     SDL_Rect const &destination,
     SDL_Rect const &sprite
 ) const {
     SDL_RenderCopy(
-        &renderer,
+        renderer,
         &this->texture,
         &sprite,
         &destination

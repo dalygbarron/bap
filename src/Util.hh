@@ -27,6 +27,15 @@ namespace Util {
     std::string readWholeFile(char const *file);
 
     /**
+     * Loads you a nice fiber and starts it up for you. Essentially you pass
+     * a script and the thing that the script evaluates to should be a function
+     * that can be turned into a fiber.
+     * @param path is the path to the file to load the diber from.
+     * @return a pointer to the fiber.
+     */
+    JanetFiber *loadFiber(char const *path);
+
+    /**
      * Returns the lower of two options.
      * @param a is the first option.
      * @param b is the second option.

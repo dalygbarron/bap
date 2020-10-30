@@ -1,5 +1,6 @@
 (import script/config :as config)
 (import script/junk :as junk)
+(import script/talk :as talk)
 
 (junk/deft say
            "I am the greatest. I am the greatest and best man in the"
@@ -10,8 +11,9 @@
            "and I will say nothing and they just be grateful I even showed"
            "up.")
 
-(fn [screen]
-  (replace-trans screen
-                 (new-blank screen
-                            config/start-script
-                            say)))
+(fn []
+  (def fiber (fiber/new talk/main))
+  (var res true)
+  (while res
+    (set res (resume fiber say))
+    (yield 1)))

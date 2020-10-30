@@ -55,7 +55,7 @@ class Atlas {
          * @param sprite   is the sprite to draw.
          */
         void draw(
-            SDL_Renderer &renderer,
+            SDL_Renderer *renderer,
             int x,
             int y,
             SDL_Rect const &sprite
@@ -68,7 +68,7 @@ class Atlas {
          * @param sprite is the sprite to draw.
          */
         void draw(
-            SDL_Renderer &renderer,
+            SDL_Renderer *renderer,
             SDL_Rect const &destination,
             SDL_Rect const &sprite
         ) const;

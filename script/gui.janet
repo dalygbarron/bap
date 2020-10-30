@@ -51,29 +51,29 @@
 
 (defn draw-panel
   "Draws a panel with default border and background and returns inner bounds"
-  [screen bounds sprite]
-  (draw-border screen bounds (sprite :border) (sprite :width))
+  [bounds sprite]
+  (draw-border bounds (sprite :border) (sprite :width))
   (def inner-bounds (shrink-rect bounds (sprite :width)))
   (if (and (junk/vectored i (> (inner-bounds i) 0)))
-    (draw-rect screen inner-bounds (sprite :background)))
+    (draw-rect inner-bounds (sprite :background)))
   inner-bounds)
 
 (defn panel
   "Creates a function that performs a panels rendering and logic duties"
   [sprite & children]
-  (fn [screen bounds]
-    (var inner (array ;(draw-panel screen bounds sprite)))
+  (fn [bounds]
+    (var inner (array ;(draw-panel bounds sprite)))
     (var out nil)
     (/= (inner 3) (length children))
     (each child children
-      [(junk/set-if-more-interesting out (child screen (tuple ;inner)))
+      [(junk/set-if-more-interesting out (child (tuple ;inner)))
        (+= (inner 1) (inner 3))])
     out))
 
 (defn text
   "Creates a function that performs a text's duties"
   [font message]
-  (fn [screen bounds]
+  (fn [bounds]
     (def wrapped (wrap-text message font (bounds 2)))
-    (draw-text screen bounds font wrapped)
+    (draw-text bounds font wrapped)
     nil))

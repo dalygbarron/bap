@@ -10,51 +10,6 @@
 std::string song = "";
 Mix_Music *music = NULL;
 Atlas *atlas;
-std::vector<Freak> freaks;
-std::vector<Bullet> bullets;
-
-void loadFreaks(char const *file) {
-    io::CSVReader<4> csv(file);
-    csv.read_header(
-        io::ignore_extra_column,
-        "name",
-        "sprite",
-        "behaviour",
-        "gravity"
-    );
-    std::string name, sprite, behaviour;
-    float gravity;
-    while (csv.read_row(name, sprite, behaviour, gravity)) {
-        SDL_Rect actualSprite = atlas->getSprite(sprite.c_str());
-        Freak::Behaviour actualBehaviour = Freak::stringToBehaviour(
-            behaviour
-        );
-        freaks.emplace(
-            freaks.begin(),
-            name,
-            actualSprite,
-            gravity,
-            actualBehaviour
-        );
-    }
-}
-
-void loadBullets(char const *file) {
-    io::CSVReader<3> csv(file);
-    csv.read_header(io::ignore_extra_column, "name", "sprite", "speed");
-    std::string name;
-    std::string sprite;
-    float speed;
-    while (csv.read_row(name, sprite, speed)) {
-        SDL_Rect actualSprite = atlas->getSprite(sprite.c_str());
-        bullets.emplace(
-            bullets.begin(),
-            name,
-            actualSprite,
-            speed
-        );
-    }
-}
 
 bool Config::init(SDL_Renderer &renderer) {
     SDL_Texture *texture = Util::loadTexture("assets/coom.png", renderer);
@@ -63,8 +18,6 @@ bool Config::init(SDL_Renderer &renderer) {
     }
     atlas = new Atlas(*texture);
     atlas->loadSprites("assets/cooxr.csv");
-    ::loadFreaks("assets/freaks.csv");
-    ::loadBullets("assets/bullets.csv");
     return true;
 }
 

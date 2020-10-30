@@ -2,9 +2,6 @@
 #define CONFIG_H
 
 #include "Atlas.hh"
-#include "Freak.hh"
-#include "Bullet.hh"
-#include <vector>
 
 /**
  * Stores all the global shiet. Yeah I know the nerds, geeks, degenerates and 
@@ -25,18 +22,6 @@ namespace Config {
      * Initialises the config and loads stuff from files etc etc.
      */
     bool init(SDL_Renderer &renderer);
-
-    /**
-     * Loads in freaks from a file.
-     * @param file is the path to the file to load from.
-     */
-    void loadFreaks(char const *file);
-
-    /**
-     * Loads in bullets from a file.
-     * @param file is the path to the file to load from.
-     */
-    void loadBullets(char const *file);
 
     /**
      * Plays a song unless it is already playing.
