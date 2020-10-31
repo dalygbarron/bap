@@ -58,22 +58,36 @@
     (draw-rect inner-bounds (sprite :background)))
   inner-bounds)
 
+(defn draw-sprite-aspect
+  "Draws a sprite maintaining aspect ratio or not"
+  [pic bounds stretch]
+  (draw-sprite (if stretch
+                 bounds
+                 (do
+                   (def ratio (min (/ (bounds 2) (pic 2))
+                                   (/ (bounds 3) (pic 3))))
+                   [(bounds 0)
+                    (bounds 1)
+                    (* (pic 2) ratio)
+                    (* (pic 3) ratio)]))
+               pic))
+
 (defn panel
   "Creates a function that performs a panels rendering and logic duties"
   [sprite & children]
-  (fn [bounds]
+  (fn [bounds input]
     (var inner (array ;(draw-panel bounds sprite)))
     (var out nil)
     (/= (inner 3) (length children))
     (each child children
-      [(junk/set-if-cooler out (child (tuple ;inner)))
+      [(junk/set-if-cooler out (child (tuple ;inner) input))
        (+= (inner 1) (inner 3))])
     out))
 
 (defn v-panel
   "Creates a panel that splits into two panels vertically with a given ratio"
   [sprite ratio a b]
-  (fn [bounds]
+  (fn [bounds input]
     (var inner (draw-panel bounds sprite))
     (var out nil)
     (def portion (* (bounds 3) ratio))
@@ -82,19 +96,21 @@
                                         (bounds 1)
                                         (bounds 2)
                                         portion]
-                                       sprite)))
+                                       sprite)
+                           input))
     (junk/set-if-cooler out
                         (b (draw-panel [(bounds 0)
                                         (+ (bounds 1) portion)
                                         (bounds 2)
                                         (- (bounds 3) portion)]
-                                       sprite)))
+                                       sprite)
+                           input))
     out))
 
 (defn h-panel
   "Creates a panel that splits into two panels vertically with a given ratio"
   [sprite ratio a b]
-  (fn [bounds]
+  (fn [bounds input]
     (var inner (draw-panel bounds sprite))
     (var out nil)
     (def portion (* (bounds 2) ratio))
@@ -103,47 +119,53 @@
                                         (bounds 1)
                                         portion
                                         (bounds 3)]
-                                       sprite)))
+                                       sprite)
+                           input))
     (junk/set-if-cooler out
                         (b (draw-panel [(+ (bounds 0) portion)
                                         (bounds 1)
                                         (- (bounds 2) portion)
                                         (bounds 3)]
-                                       sprite)))
+                                       sprite)
+                           input))
     out))
 
 (defn text
   "Creates a function that performs a text's duties"
   [font message]
-  (fn [bounds]
+  (fn [bounds input]
     (def wrapped (wrap-text message font (bounds 2)))
-    (draw-text bounds font wrapped)
-    nil))
-
-(defn dyn-text
-  "Creates a function that does text which can change each time"
-  [font wrap generator]
-  (fn [bounds]
-    (def wrapped (if wrap
-                   (wrap-text (generator) font (bounds 2))
-                   (generator)))
     (draw-text bounds font wrapped)
     nil))
 
 (defn sprite
   "Creates a function that draws a greedily sized sprite"
   [pic stretch]
-  (fn [bounds]
-    (draw-sprite (if stretch
-                   bounds
-                   (do
-                     (def ratio (min (/ (bounds 2) (pic 2))
-                                     (/ (bounds 3) (pic 3))))
-                     [(bounds 0)
-                      (bounds 1)
-                      (* (pic 2) ratio)
-                      (* (pic 3) ratio)]))
-                 pic)
-    nil))
+  (fn [bounds input] (draw-sprite-aspect pic bounds stretch) nil))
 
-
+(defn v-choice
+  "Creates a function that does a vertical selecty thingy"
+  [pic & children]
+  (var choice 0)
+  (fn [bounds input]
+    (if (> (length input) 0) (+= choice 1))
+    (var out nil)
+    (def inner [(+ (bounds 0) (pic 2))
+                (bounds 1)
+                (- (bounds 2) (pic 2))
+                (/ (bounds 3) (length children))])
+    (for i 0 (length children)
+      (if (and (= i choice) input)
+        (draw-sprite [(bounds 0)
+                      (+ (bounds 1) (* (inner 3) i))
+                      (pic 2)
+                      (pic 3)]
+                     pic))
+      (junk/set-if-cooler out
+                          ((children i) (junk/add-rect inner
+                                                       [0
+                                                        (* (inner 3) i)
+                                                        0
+                                                        0])
+                           input)))
+    out))

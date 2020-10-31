@@ -10,6 +10,7 @@
 #include <emscripten/html5.h>
 #endif
 #include <stdio.h>
+#include <vector>
 
 SDL_Renderer *renderer;
 
@@ -161,11 +162,14 @@ void initScripting() {
 void loop(void *data) {
     SDL_RenderClear(renderer);
     struct ProgramState *program = (ProgramState *)data;
+    std::vector<SDL_Keycode> keys;
     SDL_Event event;
     while (SDL_PollEvent(&event) != 0) {
         if (event.type == SDL_QUIT) {
             program->running = false;
             return;
+        } else if (event.type == SDL_KEYDOWN) {
+            keys.push_back(event.key.keysym.sym);
         }
     }
     int currentTime = SDL_GetTicks();
@@ -173,8 +177,16 @@ void loop(void *data) {
     program->time = currentTime;
     JanetFiberStatus status = janet_fiber_status(program->script);
     if (status != JANET_STATUS_DEAD && status != JANET_STATUS_ERROR) {
+        Janet in[keys.size()];
+        for (int i = 0; i < keys.size(); i++) {
+            in[i] = janet_wrap_number(keys[i]);
+        }
         Janet out;
-        janet_continue(program->script, janet_wrap_nil(), &out);
+        janet_continue(
+            program->script,
+            janet_wrap_tuple(janet_tuple_n(in, keys.size())),
+            &out
+        );
         status = janet_fiber_status(program->script);
         if (status != JANET_STATUS_ALIVE && status != JANET_STATUS_PENDING) {
             janet_stacktrace(program->script, out);
