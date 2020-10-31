@@ -12,13 +12,23 @@
                             (gui/text config/font speaker)
                             (gui/panel config/panel
                                        (gui/text config/font message)
-                                       (gui/v-choice config/selector
-                                                     ;(walk (fn [item]
-                                                              (gui/text config/font item))
-                                                            items))))))
+                                       (gui/h-panel config/panel
+                                                    0.5
+                                                    (gui/v-choice config/selector
+                                                                  ;(walk (fn [item]
+                                                                           (gui/text config/font item))
+                                                                         items))
+                                                    (gui/v-choice config/selector
+                                                                  (gui/text config/font "brexit")
+                                                                  (gui/text config/font "brexit 2")
+                                                                  (gui/text config/font "brexit 2")
+                                                                  (gui/text config/font "brexit 2")
+                                                                  (gui/text config/font "brexit 2")
+                                                                  (gui/text config/font "brexit")))))))
   (var input [])
   (while true
-    (if (> (length input) 0) (pp input))
+    (if (> (length input) 0) (each press input
+                               (pp (junk/key-code press))))
     (window [100 100 400 300] input)
     (set input (yield))))
 

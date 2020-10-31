@@ -148,7 +148,11 @@
   [pic & children]
   (var choice 0)
   (fn [bounds input]
-    (if (> (length input) 0) (+= choice 1))
+    (each press input
+      (case (junk/key-code press)
+        :up (-- choice)
+        :down (++ choice)))
+    (set choice (junk/wrap choice (length children)))
     (var out nil)
     (def inner [(+ (bounds 0) (pic 2))
                 (bounds 1)

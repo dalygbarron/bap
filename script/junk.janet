@@ -71,3 +71,108 @@
   "Sets the variable given if it's value is nil"
   [name value]
   ~(if (= ,name nil) (set ,name ,value))) 
+
+(defn wrap
+  "Like modulus but does what you want with negative numbers"
+  [value top]
+  (if (< value 0)
+    (- top (% (math/abs value) top))
+    (% value top)))
+
+(defn key-code
+  "Converts a key code to a nice keyword thingy"
+  [code]
+  (case code
+    0x08 :backspace
+    0x09 :tab
+    0x0D :enter
+    0x1B :escape
+    0x20 :space
+    0x21 :exclamation
+    0x22 :double-quote
+    0x23 :hash
+    0x24 :dollar
+    0x25 :percent
+    0x26 :and
+    0x27 :quote
+    0x28 :left-bracket
+    0x29 :right-bracket
+    0x2A :asterisk
+    0x2B :plus
+    0x2C :comma
+    0x2D :minus
+    0x2E :full-stop
+    0x2F :slash
+    0x30 :0
+    0x31 :1
+    0x32 :2
+    0x33 :3
+    0x34 :4
+    0x35 :5
+    0x36 :6
+    0x37 :7
+    0x38 :8
+    0x39 :9
+    0x3A :colon
+    0x3B :semicolon
+    0x3C :less
+    0x3D :equals
+    0x3E :greater
+    0x3F :question
+    0x40 :at
+    0x5B :left-square-bracket
+    0x5C :backslash
+    0x5D :right-square-bracket
+    0x5E :caret
+    0x5F :underscore
+    0x60 :backquote
+    0x61 :a
+    0x62 :b
+    0x63 :c
+    0x64 :d
+    0x65 :e
+    0x66 :f
+    0x67 :g
+    0x68 :h
+    0x69 :i
+    0x6A :j
+    0x6B :k
+    0x6C :l
+    0x6D :m
+    0x6E :n
+    0x6F :o
+    0x70 :p
+    0x71 :q
+    0x72 :r
+    0x73 :s
+    0x74 :t
+    0x75 :u
+    0x76 :v
+    0x77 :w
+    0x78 :x
+    0x79 :y
+    0x7A :z
+    0x7F :delete
+    0x4000003A :f1
+    0x4000003B :f2
+    0x4000003C :f3
+    0x4000003D :f4
+    0x4000003E :f5
+    0x4000003F :f6
+    0x40000040 :f7
+    0x40000041 :f8
+    0x40000042 :f9
+    0x40000043 :f10
+    0x40000044 :f11
+    0x40000045 :f12
+    0x4000004F :right
+    0x40000050 :left
+    0x40000051 :down
+    0x40000052 :up
+    0x400000E0 :left-ctrl
+    0x400000E1 :left-shift
+    0x400000E2 :left-alt
+    0x400000E4 :right-ctrl
+    0x400000E5 :right-shift
+    0x400000E6 :right-alt
+    :unknown))
