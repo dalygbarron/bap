@@ -27,10 +27,9 @@
                                                                   (gui/text config/font "brexit")))))))
   (var input [])
   (while true
-    (if (> (length input) 0) (each press input
-                               (pp (junk/key-code press))))
+    (if (> (length input) 0) (each press input (pp press)))
     (window [100 100 400 300] input)
-    (set input (yield))))
+    (set input (config/map-input (yield)))))
 
 (defn main
   "Runs a talking thingy"

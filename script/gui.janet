@@ -77,58 +77,44 @@
   [sprite & children]
   (fn [bounds input]
     (var inner (array ;(draw-panel bounds sprite)))
-    (var out nil)
     (/= (inner 3) (length children))
     (each child children
-      [(junk/set-if-cooler out (child (tuple ;inner) input))
-       (+= (inner 1) (inner 3))])
-    out))
+      (child (tuple ;inner) input)
+      (+= (inner 1) (inner 3)))))
 
 (defn v-panel
   "Creates a panel that splits into two panels vertically with a given ratio"
   [sprite ratio a b]
   (fn [bounds input]
-    (var inner (draw-panel bounds sprite))
-    (var out nil)
     (def portion (* (bounds 3) ratio))
-    (junk/set-if-cooler out
-                        (a (draw-panel [(bounds 0)
-                                        (bounds 1)
-                                        (bounds 2)
-                                        portion]
-                                       sprite)
-                           input))
-    (junk/set-if-cooler out
-                        (b (draw-panel [(bounds 0)
-                                        (+ (bounds 1) portion)
-                                        (bounds 2)
-                                        (- (bounds 3) portion)]
-                                       sprite)
-                           input))
-    out))
+    (->> input
+         (a (draw-panel [(bounds 0)
+                         (bounds 1)
+                         (bounds 2)
+                         portion]
+                        sprite))
+         (b (draw-panel [(bounds 0)
+                         (+ (bounds 1) portion)
+                         (bounds 2)
+                         (- (bounds 3) portion)]
+                        sprite)))))
 
 (defn h-panel
   "Creates a panel that splits into two panels vertically with a given ratio"
   [sprite ratio a b]
   (fn [bounds input]
-    (var inner (draw-panel bounds sprite))
-    (var out nil)
     (def portion (* (bounds 2) ratio))
-    (junk/set-if-cooler out
-                        (a (draw-panel [(bounds 0)
-                                        (bounds 1)
-                                        portion
-                                        (bounds 3)]
-                                       sprite)
-                           input))
-    (junk/set-if-cooler out
-                        (b (draw-panel [(+ (bounds 0) portion)
-                                        (bounds 1)
-                                        (- (bounds 2) portion)
-                                        (bounds 3)]
-                                       sprite)
-                           input))
-    out))
+    (->> input
+         (a (draw-panel [(bounds 0)
+                         (bounds 1)
+                         portion
+                         (bounds 3)]
+                        sprite))
+         (b (draw-panel [(+ (bounds 0) portion)
+                         (bounds 1)
+                         (- (bounds 2) portion)
+                         (bounds 3)]
+                        sprite)))))
 
 (defn text
   "Creates a function that performs a text's duties"
@@ -136,24 +122,20 @@
   (fn [bounds input]
     (def wrapped (wrap-text message font (bounds 2)))
     (draw-text bounds font wrapped)
-    nil))
+    input))
 
 (defn sprite
   "Creates a function that draws a greedily sized sprite"
   [pic stretch]
-  (fn [bounds input] (draw-sprite-aspect pic bounds stretch) nil))
+  (fn [bounds input]
+    (draw-sprite-aspect pic bounds stretch)
+    input))
 
 (defn v-choice
   "Creates a function that does a vertical selecty thingy"
   [pic & children]
   (var choice 0)
   (fn [bounds input]
-    (each press input
-      (case (junk/key-code press)
-        :up (-- choice)
-        :down (++ choice)))
-    (set choice (junk/wrap choice (length children)))
-    (var out nil)
     (def inner [(+ (bounds 0) (pic 2))
                 (bounds 1)
                 (- (bounds 2) (pic 2))
@@ -165,11 +147,22 @@
                       (pic 2)
                       (pic 3)]
                      pic))
-      (junk/set-if-cooler out
-                          ((children i) (junk/add-rect inner
-                                                       [0
-                                                        (* (inner 3) i)
-                                                        0
-                                                        0])
-                           input)))
+      ((children i) (junk/add-rect inner
+                                   [0
+                                    (* (inner 3) i)
+                                    0
+                                    0])))
+    (def out (filter (fn [press]
+                       (case press
+                         :ui-accept (do
+                                      (pp "BRexitiusole")
+                                      nil)
+                         :up (do
+                               (-- choice)
+                               nil)
+                         :down (do
+                                 (++ choice)
+                                 nil)
+                         true))))
+    (set choice (junk/wrap choice (length children)))
     out))
