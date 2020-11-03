@@ -1,6 +1,7 @@
 (import script/gui :as gui)
 (import script/junk :as junk)
 
+(def confirm "...")
 (def start-script "script/talk.janet")
 (def map-dir "assets/maps/")
 (def font (get-sprite "font"))

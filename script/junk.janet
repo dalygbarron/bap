@@ -37,26 +37,9 @@
   iterating over a set of things, and whenever a useful value comes up you
   can effect some side effects and then have it removed from the list so
   nobody else can have it."
-  [items & pairs]
-  (assert (even? (length pairs)))
-  (filter (fn [item]
-            ())))
-(comment
-(consume save input inputs
-         (case input
-           :ui-accept (callback)
-           :up (-- chosen)
-           :down (++ chosen)
-           save)))
-
-(do
-  ~(def save ,(gensym))
-  (filter (fn [item]
-            (case item
-              :ui-accept (do (callback) nil)
-              :up (do (callback) nil)
-              :down (do (callback) nil)
-              save)))
+  [save item list form]
+  ~(filter (fn [,item]
+             (= ,form ,save)) ,list))
 
 (defn add-rect
   "Adds two rectangles together and returns the result"

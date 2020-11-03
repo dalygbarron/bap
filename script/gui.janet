@@ -36,6 +36,14 @@
       (put wrap-cache [text font (math/ceil width)] out)
       out)))
 
+(defn make-bounds
+  "Helper to make bounding box that gui window goes into."
+  [anchor width height]
+  (def dimensions (get-screen-dimensions))
+  (def 
+  (case anchor
+    :left [0 (dimensions
+
 (defn make-panel-sprite
   "Makes a nice struct to represent the parts of a panel sprite"
   [background border width]
@@ -133,7 +141,7 @@
 
 (defn v-choice
   "Creates a function that does a vertical selecty thingy"
-  [pic & children]
+  [pic active & children]
   (var choice 0)
   (fn [bounds input]
     (def inner [(+ (bounds 0) (pic 2))
@@ -141,7 +149,7 @@
                 (- (bounds 2) (pic 2))
                 (/ (bounds 3) (length children))])
     (for i 0 (length children)
-      (if (and (= i choice) input)
+      (if (and (= i choice) input active)
         (draw-sprite [(bounds 0)
                       (+ (bounds 1) (* (inner 3) i))
                       (pic 2)
@@ -151,18 +159,15 @@
                                    [0
                                     (* (inner 3) i)
                                     0
-                                    0])))
-    (def out (filter (fn [press]
-                       (case press
-                         :ui-accept (do
-                                      (pp "BRexitiusole")
-                                      nil)
-                         :up (do
-                               (-- choice)
-                               nil)
-                         :down (do
-                                 (++ choice)
-                                 nil)
-                         true))))
+                                    0])
+       []))
+    (def out (junk/consume 'keep
+                           press
+                           input
+                           (case press
+                             :ui-accept (pp "brexit")
+                             :up (-- choice)
+                             :down (++ choice)
+                             'keep)))
     (set choice (junk/wrap choice (length children)))
     out))
