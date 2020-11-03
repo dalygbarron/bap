@@ -38,11 +38,34 @@
 
 (defn make-bounds
   "Helper to make bounding box that gui window goes into."
-  [anchor width height]
+  [anchor width protrusion]
   (def dimensions (get-screen-dimensions))
-  (def 
   (case anchor
-    :left [0 (dimensions
+    :left [
+           0
+           (/ (* (dimensions 1) width) 2)
+           (* (dimensions 0) protrusion)
+           (* (dimensions 1) width)]
+    :right [
+            (* (dimensions 0) (- 1 protrusion))
+            (/ (* (dimensions 1) width) 2)
+            (* (dimensions 0) protrusion)
+            (* (dimensions 1) width)]
+    :top [
+          0
+          (/ (* (dimensions 1) width) 2)
+          (* (dimensions 0) protrusion)
+          (* (dimensions 1) width)]
+    :bottom [
+             0
+             (/ (* (dimensions 1) width) 2)
+             (* (dimensions 0) protrusion)
+             (* (dimensions 1) width)]
+    [
+     0
+     (/ (* (dimensions 1) width) 2)
+     (* (dimensions 0) protrusion)
+     (* (dimensions 1) width)]))
 
 (defn make-panel-sprite
   "Makes a nice struct to represent the parts of a panel sprite"
@@ -68,16 +91,13 @@
 
 (defn draw-sprite-aspect
   "Draws a sprite maintaining aspect ratio or not"
-  [pic bounds stretch]
-  (draw-sprite (if stretch
-                 bounds
-                 (do
-                   (def ratio (min (/ (bounds 2) (pic 2))
-                                   (/ (bounds 3) (pic 3))))
-                   [(bounds 0)
-                    (bounds 1)
-                    (* (pic 2) ratio)
-                    (* (pic 3) ratio)]))
+  [pic bounds]
+  (def ratio (junk/fit-ratio (tuple/slice pic 2 4)
+                             (tuple/slice bounds 2 4)))
+  (draw-sprite [(bounds 0)
+                (bounds 1)
+                (* (pic 2) ratio)
+                (* (pic 3) ratio)]
                pic))
 
 (defn panel
@@ -136,7 +156,9 @@
   "Creates a function that draws a greedily sized sprite"
   [pic stretch]
   (fn [bounds input]
-    (draw-sprite-aspect pic bounds stretch)
+    (if stretch
+      (draw-sprite bounds pic)
+      (draw-sprite-aspect pic bounds))
     input))
 
 (defn v-choice
@@ -153,7 +175,7 @@
         (draw-sprite [(bounds 0)
                       (+ (bounds 1) (* (inner 3) i))
                       (pic 2)
-                      (pic 3)]
+                      (inner 3)]
                      pic))
       ((children i) (junk/add-rect inner
                                    [0

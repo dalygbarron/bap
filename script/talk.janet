@@ -15,11 +15,15 @@
                                          (gui/text config/font message)
                                          (gui/v-choice config/selector
                                                        true
+(gui/text config/font
+                                                                 config/confirm)
+(gui/text config/font
+                                                                 config/confirm)
                                                        (gui/text config/font
                                                                  config/confirm))))))
   (var input [])
   (while true
-    (window [128 280 484 200] input)
+    (window (gui/make-bounds :left 0.4 0.7) input)
     (set input (config/map-input (yield)))))
 
 (defn main

@@ -25,9 +25,9 @@
 
 (defmacro vectored
   "Does everything twice with an index variable"
-  [var content]
-  ~(tuple (do (def ,var 0) ,content)
-          (do (def ,var 1) ,content)))
+  [sym content]
+  ~(tuple (do (def ,sym 0) ,content)
+          (do (def ,sym 1) ,content)))
 
 (defmacro consume
   "Loops over a tuple or something and defines a variable with the different
@@ -74,16 +74,18 @@
                 (math/abs (in i))
                 (in i)))))
 
-(defn print-vec
-  "prints a vector in a readable form"
-  [vec]
-  (printf "(%d %d)" (vec 0) (vec 1)))
+(defn fit-ratio
+  "Finds a single amount to multiply a 2d vector by to make it fit as large as
+  possible inside the bounds of another 2d vector while maintaining it's slope"
+  [vector bounds]
+  (min (/ (bounds 0) (vector 0))
+       (/ (bounds 1) (vector 1))))
 
 (defn wrap
   "Like modulus but does what you want with negative numbers"
   [value top]
   (if (< value 0)
-    (- top (% (math/abs value) top))
+    (- top (math/abs (% value top)))
     (% value top)))
 
 (defn key-code
