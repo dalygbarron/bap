@@ -1,12 +1,12 @@
-(import script/gui :as gui)
+(import script/sprite :as sprite)
 (import script/junk :as junk)
 
 (def confirm "...")
 (def start-script "script/talk.janet")
 (def map-dir "assets/maps/")
-(def font (get-sprite "font"))
-(def selector (get-sprite "life"))
-(def panel (gui/make-panel-sprite (get-sprite "background")
+(def font (sprite/make (get-sprite "font")))
+(def selector (sprite/make (get-sprite "life")))
+(def panel (sprite/make-panel-sprite (sprite/make-animated 1 (get-sprite "background") (get-sprite "fish"))
                                   (get-sprite "panel")
                                   4))
 (defn map-input

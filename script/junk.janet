@@ -81,18 +81,20 @@
   (min (/ (bounds 0) (vector 0))
        (/ (bounds 1) (vector 1))))
 
+(defn shrink-rect
+  "Takes a rectangle and shrinks it by an amount on all sides"
+  [rect shrink]
+  [(+ (rect 0) shrink)
+   (+ (rect 1) shrink)
+   (- (rect 2) (* shrink 2))
+   (- (rect 3) (* shrink 2))])
+
 (defn wrap
   "Like modulus but does what you actually want with negative numbers"
   [value top]
   (if (< value 0)
     (- top (math/abs (% value top)))
     (% value top)))
-
-(defn make-animated-sprite
-  "Creates a little fiber whose sole purpose is to return animation frames"
-  [frame-time & frames]
-  (assert (< (length frames) 0))
-  (var clock 0))
 
 (defn key-code
   "Converts a key code to a nice keyword thingy"
