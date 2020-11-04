@@ -12,7 +12,11 @@
 #include <stdio.h>
 #include <vector>
 
+int const INDEX_DELTA = 0;
+int const INDEX_INPUT = 1;
+
 SDL_Renderer *renderer;
+JanetKV in[2];
 
 Janet drawBorder(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
@@ -141,6 +145,8 @@ class ProgramState {
  * Loads in the scripting functions yeet.
  */
 void initScripting() {
+    in[INDEX_DELTA].key = janet_ckeywordv("delta");
+    in[INDEX_INPUT].key = janet_ckeywordv("input");
     JanetReg const cFunctions[] = {
         {"draw-rect", drawRect, "(screen/draw-rect)\nDraws a rectangle on the screen at the given place with the given pattern."},
         {"draw-border", drawBorder, "(screen/draw-border)\nDraws a border at the given place with the given sprite and width."},
@@ -177,14 +183,19 @@ void loop(void *data) {
     program->time = currentTime;
     JanetFiberStatus status = janet_fiber_status(program->script);
     if (status != JANET_STATUS_DEAD && status != JANET_STATUS_ERROR) {
-        Janet in[keys.size()];
+        Janet inputs[keys.size()];
         for (int i = 0; i < keys.size(); i++) {
-            in[i] = janet_wrap_number(keys[i]);
+            inputs[i] = janet_wrap_number(keys[i]);
         }
         Janet out;
+        // TODO: calculate delta.
+        in[INDEX_DELTA].value = janet_wrap_number(0.1);
+        in[INDEX_INPUT].value = janet_wrap_tuple(
+            janet_tuple_n(inputs, keys.size())
+        );
         janet_continue(
             program->script,
-            janet_wrap_tuple(janet_tuple_n(in, keys.size())),
+            janet_wrap_struct(in),
             &out
         );
         status = janet_fiber_status(program->script);

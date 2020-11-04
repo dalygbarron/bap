@@ -15,16 +15,13 @@
                                          (gui/text config/font message)
                                          (gui/v-choice config/selector
                                                        true
-(gui/text config/font
-                                                                 config/confirm)
-(gui/text config/font
-                                                                 config/confirm)
                                                        (gui/text config/font
                                                                  config/confirm))))))
-  (var input [])
+  (var updates {:input [] :delta 0})
   (while true
-    (window (gui/make-bounds :left 0.4 0.7) input)
-    (set input (config/map-input (yield)))))
+    (window (gui/make-bounds :left 0.4 0.7) (updates :input))
+    (junk/receive input delta)
+    (def updates (yield)))
 
 (defn main
   "Runs a talking thingy"

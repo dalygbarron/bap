@@ -82,11 +82,17 @@
        (/ (bounds 1) (vector 1))))
 
 (defn wrap
-  "Like modulus but does what you want with negative numbers"
+  "Like modulus but does what you actually want with negative numbers"
   [value top]
   (if (< value 0)
     (- top (math/abs (% value top)))
     (% value top)))
+
+(defn make-animated-sprite
+  "Creates a little fiber whose sole purpose is to return animation frames"
+  [frame-time & frames]
+  (assert (< (length frames) 0))
+  (var clock 0))
 
 (defn key-code
   "Converts a key code to a nice keyword thingy"
