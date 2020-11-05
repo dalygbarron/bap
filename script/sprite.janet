@@ -1,4 +1,6 @@
-(import script/junk :as junk)
+(import script/util :as util)
+(import script/rect :as rect)
+(import script/vec :as vec)
 
 (defn cut-h
   "Takes a frame and cuts it into a number of frames horizontally"
@@ -35,15 +37,15 @@
   "Draws a panel with default border and background and returns inner bounds"
   [bounds sprite time]
   (draw-border bounds ((sprite :border) time) (sprite :width))
-  (def inner-bounds (junk/shrink-rect bounds (sprite :width)))
-  (if (and (junk/vectored i (> (inner-bounds i) 0)))
+  (def inner-bounds (rect/shrink bounds (sprite :width)))
+  (if (and ;(util/cloop 2 i (> (inner-bounds (+ i 2)) 0)))
     (draw-rect inner-bounds ((sprite :background) time)))
   inner-bounds)
 
 (defn draw-aspect
   "Draws a sprite maintaining aspect ratio or not"
   [pic bounds time]
-  (def ratio (junk/fit-ratio (tuple/slice pic 2 4) (tuple/slice bounds 2 4)))
+  (def ratio (vec/fit-ratio (tuple/slice pic 2 4) (tuple/slice bounds 2 4)))
   (draw-sprite [(bounds 0)
                 (bounds 1)
                 (* (pic 2) ratio)

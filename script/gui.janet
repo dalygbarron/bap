@@ -1,6 +1,8 @@
-(import script/junk :as junk)
+(import script/util :as util)
 (import script/sprite :as sprite)
 (import script/config :as config)
+(import script/vec :as vec)
+(import script/rect :as rect)
 
 (def- wrap-cache @{})
 
@@ -63,8 +65,7 @@
              (/ (* (dimensions 1) width) 2)
              (* (dimensions 0) protrusion)
              (* (dimensions 1) width)]
-    [
-     0
+    [0
      (/ (* (dimensions 1) width) 2)
      (* (dimensions 0) protrusion)
      (* (dimensions 1) width)]))
@@ -104,34 +105,29 @@
                                sprite
                                time)))))
 
-(defn h-panel
-  "Creates a panel that splits into two panels vertically with a given ratio"
-  [sprite ratio a b]
+(defn split-panel
+  "Creates a panel that splits two things either vertically or horizontally"
+  [sprite ratio axis a b]
+  (def axis-vector (vec/axis axis))
   (var time 0)
   (fn [delta bounds input]
     (+= time delta)
-    (def portion (* (bounds 2) ratio))
+    (def bounds-size (rect/size bounds))
+    (def pos (rect/pos bounds))
+    (def portion (rect/- bounds-size
+                         (rect/* (rect/* bounds-size [ratio ratio])
+                                 axis-vector)))
+    (def mould (rect/make (rect/+ pos (rect/- bounds-size portion)) portion))
     (->> input
-         (a delta
-            (sprite/draw-panel [(bounds 0)
-                                (bounds 1)
-                                portion
-                                (bounds 3)]
-                               sprite
-                               time))
-         (b delta
-            (sprite/draw-panel [(+ (bounds 0) portion)
-                                (bounds 1)
-                                (- (bounds 2) portion)
-                                (bounds 3)]
-                               sprite
-                               time)))))
+         (a delta (sprite/draw-panel sprite (rect/make pos portion) time))
+         (b delta (sprite/draw-panel sprite mould time)))))
 
 (defn text
   "Creates a function that performs a text's duties"
   [font message]
   (var time 0)
   (fn [delta bounds input]
+    (pp bounds)
     (+= time delta)
     (def font-frame (font time))
     (def wrapped (wrap-text message font-frame (bounds 2)))
@@ -168,17 +164,10 @@
                       (pic-frame 2)
                       (inner 3)]
                      pic-frame))
-      ((children i)
-       delta
-       (junk/add-rect inner
-                      [0
-                       (* (inner 3) i)
-                       0
-                       0])
-       []))
+      ((children i) delta (rect/+ inner [0 (* (inner 3) i) 0 0]) []))
     (def out 
       (if (not (nil? action))
-        (junk/consume 'keep
+        (util/consume 'keep
                       press
                       input
                       (case (config/map-input press)
@@ -187,5 +176,5 @@
                         :down (++ choice)
                         'keep))
         input))
-    (set choice (junk/wrap choice (length children)))
+    (set choice (util/wrap choice (length children)))
     out))

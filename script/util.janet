@@ -1,9 +1,12 @@
+# Does real basic stuff and has no dependencies at all except the engine
+# provided stuff itself.
+
 (defn is-whitespace
   "Evaluates to a boolean for whether given character is whitespace"
   [c]
   (or (= c 32) (= c 10)))
 
-(defn txt*
+(defn- txt*
   "Joins lines of text without newlines unless empty string or explicit"
   [& str]
   (string ;(seq [i :in str]
@@ -23,11 +26,14 @@
   [name & str]
   ['def name (txt* ;str)])
 
-(defmacro vectored
-  "Does everything twice with an index variable"
-  [sym content]
-  ~(tuple (do (def ,sym 0) ,content)
-          (do (def ,sym 1) ,content)))
+(defmacro cloop
+  "Repeats the given body a given number of times at compile time while
+  making it so some variable is defined for the iteration number, so it's sort
+  of like a compile time for loop for repeating the same stuff"
+  [n i body]
+  (map (fn [index]
+          ~(do (def ,i ,index) ,body))
+        (range n)))
 
 (defmacro consume
   "Loops over a tuple or something and defines a variable with the different
@@ -40,54 +46,6 @@
   [save item list form]
   ~(filter (fn [,item]
              (= ,form ,save)) ,list))
-
-(defn add-rect
-  "Adds two rectangles together and returns the result"
-  [a b]
-  [(+ (a 0) (b 0))
-   (+ (a 1) (b 1))
-   (+ (a 2) (b 2))
-   (+ (a 3) (b 3))])
-
-(defn mult-vec
-  "multiplies two 2d vectors and returns the result"
-  [a b]
-  (vectored i (* (a i) (b i))))
-
-(defn add-vec
-  "adds two 2d vectors and returns the result"
-  [a b]
-  (vectored i (+ (a i) (b i))))
-
-(defn sub-vec
-  "Subtracts one vector from another and returns the result"
-  [a b]
-  (vectored i (- (a i) (b i))))
-
-(defn sign-vec
-  "Makes the items in a vector be signed as requested in another one"
-  [in signs]
-  (vectored i
-            (if (< (signs i) 0)
-              (* (math/abs (in i)) -1)
-              (if (> (signs i) 0)
-                (math/abs (in i))
-                (in i)))))
-
-(defn fit-ratio
-  "Finds a single amount to multiply a 2d vector by to make it fit as large as
-  possible inside the bounds of another 2d vector while maintaining it's slope"
-  [vector bounds]
-  (min (/ (bounds 0) (vector 0))
-       (/ (bounds 1) (vector 1))))
-
-(defn shrink-rect
-  "Takes a rectangle and shrinks it by an amount on all sides"
-  [rect shrink]
-  [(+ (rect 0) shrink)
-   (+ (rect 1) shrink)
-   (- (rect 2) (* shrink 2))
-   (- (rect 3) (* shrink 2))])
 
 (defn wrap
   "Like modulus but does what you actually want with negative numbers"

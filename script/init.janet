@@ -1,7 +1,7 @@
-(import script/junk :as junk)
+(import script/util :as util)
 (import script/talk :as talk)
 
-(junk/deft say
+(util/deft say
            "I am the greatest. I am the greatest and best man in the"
            "world. Man I am so great it hurts my pee pee."
            ""

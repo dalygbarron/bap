@@ -1,10 +1,10 @@
-(import script/junk :as junk)
+(import script/util :as util)
 
 (defn test-consume
   "Tests that the consume macro generates what we would expect"
   []
   (def macroed
-    (macex '(junk/consume :unknown
+    (macex '(util/consume :unknown
                           input
                           inputs
                           (case input
@@ -22,4 +22,14 @@
                          :unknown)) inputs)))
     (assert (deep= macroed natural)))
 
+(defn test-cloop
+  "Tests that the cloop macro evaluates to a bunch of forms etc"
+  []
+  (def macroed [(util/cloop 3 i (* i 3))])
+  (def natural [0 3 6])
+  (pp macroed)
+  (pp natural)
+  (assert (deep= macroed natural)))
+
 (test-consume)
+(test-cloop)

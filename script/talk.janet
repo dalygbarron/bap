@@ -1,4 +1,3 @@
-(import script/junk :as junk)
 (import script/sprite :as sprite)
 (import script/gui :as gui)
 (import script/config :as config)
@@ -20,8 +19,7 @@
                                                        (fn [choice] (set death true))
                                                        (gui/text config/font
                                                                  config/confirm))))))
-  (def box (gui/make-bounds :left 0.4 0.7))
-  (gui/swipe-from :left 5 window box)
+  (def box (gui/make-bounds :centre 0.7 0.4))
   (while (not death)
     (window (updates :delta) box (updates :input))
     (set updates (yield))))

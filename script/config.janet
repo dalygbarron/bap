@@ -1,5 +1,4 @@
 (import script/sprite :as sprite)
-(import script/junk :as junk)
 
 (def confirm "...")
 (def start-script "script/talk.janet")
