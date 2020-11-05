@@ -1,5 +1,6 @@
 (import script/junk :as junk)
 (import script/sprite :as sprite)
+(import script/config :as config)
 
 (def- wrap-cache @{})
 
@@ -150,7 +151,7 @@
 
 (defn v-choice
   "Creates a function that does a vertical selecty thingy"
-  [pic active & children]
+  [pic action & children]
   (var choice 0)
   (var time 0)
   (fn [delta bounds input]
@@ -161,7 +162,7 @@
                 (- (bounds 2) (pic-frame 2))
                 (/ (bounds 3) (length children))])
     (for i 0 (length children)
-      (if (and (= i choice) input active)
+      (if (and (= i choice) (not (nil? action)))
         (draw-sprite [(bounds 0)
                       (+ (bounds 1) (* (inner 3) i))
                       (pic-frame 2)
@@ -175,13 +176,16 @@
                        0
                        0])
        []))
-    (def out (junk/consume 'keep
-                           press
-                           input
-                           (case press
-                             :ui-accept (pp "brexit")
-                             :up (-- choice)
-                             :down (++ choice)
-                             'keep)))
+    (def out 
+      (if (not (nil? action))
+        (junk/consume 'keep
+                      press
+                      input
+                      (case (config/map-input press)
+                        :jump (action choice)
+                        :up (-- choice)
+                        :down (++ choice)
+                        'keep))
+        input))
     (set choice (junk/wrap choice (length children)))
     out))

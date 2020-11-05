@@ -1,5 +1,16 @@
 (import script/junk :as junk)
 
+(defn cut-h
+  "Takes a frame and cuts it into a number of frames horizontally"
+  [frame n]
+  (def piece (/ (frame 2) n))
+  (map (fn [i]
+         [(+ (frame 0) (* piece i))
+          (frame 1)
+          piece
+          (frame 3)])
+       (range n)))
+
 (defn make
   "Makes a sprite function that only does one frame"
   [frame]
@@ -8,7 +19,7 @@
 (defn make-animated
   "Creates a little function whose sole purpose is to return animation frames"
   [frame-time & frames]
-  (assert (> (length frames) 0))
+  (assert (> (length frames) 0) "animated sprite needs frames")
   (fn [time]
     (frames (% (math/floor (/ time frame-time))
                (length frames)))))

@@ -1,4 +1,3 @@
-(import script/config :as config)
 (import script/junk :as junk)
 (import script/talk :as talk)
 
@@ -11,5 +10,6 @@
            "and I will say nothing and they just be grateful I even showed"
            "up.")
 
-(fn []
-  (talk/main say))
+(fn [] 
+    (talk/main "You are a fucking retard.")
+    (talk/main say))
