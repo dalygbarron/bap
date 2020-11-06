@@ -14,7 +14,7 @@
                             (gui/text config/font speaker)
                             (gui/v-panel config/panel
                                          0.8
-                                         (gui/text config/font message)
+                                         (gui/sprite config/selector false)
                                          (gui/v-choice config/selector
                                                        (fn [choice] (set death true))
                                                        (gui/text config/font

@@ -45,9 +45,8 @@
 (defn draw-aspect
   "Draws a sprite maintaining aspect ratio or not"
   [pic bounds time]
-  (def ratio (vec/fit-ratio (tuple/slice pic 2 4) (tuple/slice bounds 2 4)))
-  (draw-sprite [(bounds 0)
-                (bounds 1)
-                (* (pic 2) ratio)
-                (* (pic 3) ratio)]
-               (pic time)))
+  (def frame (pic time))
+  (def ratio (vec/fit-ratio (rect/size frame) (rect/size bounds)))
+  (draw-sprite (rect/make (rect/pos bounds)
+                          (vec/* (rect/size frame) [ratio ratio]))
+               frame))
