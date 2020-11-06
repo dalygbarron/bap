@@ -82,29 +82,6 @@
       (child delta (tuple ;inner) input)
       (+= (inner 1) (inner 3)))))
 
-(defn v-panel
-  "Creates a panel that splits into two panels vertically with a given ratio"
-  [sprite ratio a b]
-  (var time 0)
-  (fn [delta bounds input]
-    (+= time delta)
-    (def portion (* (bounds 3) ratio))
-    (->> input
-         (a delta
-            (sprite/draw-panel [(bounds 0)
-                                (bounds 1)
-                                (bounds 2)
-                                portion]
-                               sprite
-                               time))
-         (b delta
-            (sprite/draw-panel [(bounds 0)
-                                (+ (bounds 1) portion)
-                                (bounds 2)
-                                (- (bounds 3) portion)]
-                               sprite
-                               time)))))
-
 (defn split-panel
   "Creates a panel that splits two things either vertically or horizontally"
   [sprite ratio axis a b]
@@ -112,15 +89,16 @@
   (var time 0)
   (fn [delta bounds input]
     (+= time delta)
-    (def bounds-size (rect/size bounds))
     (def pos (rect/pos bounds))
-    (def portion (rect/- bounds-size
-                         (rect/* (rect/* bounds-size [ratio ratio])
-                                 axis-vector)))
-    (def mould (rect/make (rect/+ pos (rect/- bounds-size portion)) portion))
+    (def size (rect/size bounds))
+    (def portion (vec/- size
+                        (vec/* (vec/* size (util/cloop 2 i (- 1 ratio)))
+                               axis-vector)))
+    (def mould (rect/make (vec/+ pos (vec/* portion axis-vector))
+                          (vec/- size (vec/* portion axis-vector))))
     (->> input
-         (a delta (sprite/draw-panel sprite (rect/make pos portion) time))
-         (b delta (sprite/draw-panel sprite mould time)))))
+         (a delta (sprite/draw-panel (rect/make pos portion) sprite time))
+         (b delta (sprite/draw-panel mould sprite time)))))
 
 (defn text
   "Creates a function that performs a text's duties"

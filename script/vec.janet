@@ -41,11 +41,11 @@
 (defn axis
   "Takes a keyword what names a vector, right, and kinda just turns it into a
   two dimensional unit vector following that axis in a positive manner"
-  [axis]
-  (case axis
+  [a]
+  (case a
     :horizontal [1 0]
     :vertical [0 1]
-    (error (string/format "%s is not a valid axis" axis))))
+    (error (string/format "%q is not a valid axis" a))))
 
 (defn fit-ratio
   "Finds a single amount to multiply a 2d vector by to make it fit as large as
