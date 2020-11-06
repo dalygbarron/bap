@@ -42,33 +42,14 @@
 
 (defn make-bounds
   "Helper to make bounding box that gui window goes into."
-  [anchor width protrusion]
+  [left top right bottom]
   (def dimensions (get-screen-dimensions))
-  (case anchor
-    :left [
-           0
-           (/ (* (dimensions 1) width) 2)
-           (* (dimensions 0) protrusion)
-           (* (dimensions 1) width)]
-    :right [
-            (* (dimensions 0) (- 1 protrusion))
-            (/ (* (dimensions 1) width) 2)
-            (* (dimensions 0) protrusion)
-            (* (dimensions 1) width)]
-    :top [
-          0
-          (/ (* (dimensions 1) width) 2)
-          (* (dimensions 0) protrusion)
-          (* (dimensions 1) width)]
-    :bottom [
-             0
-             (/ (* (dimensions 1) width) 2)
-             (* (dimensions 0) protrusion)
-             (* (dimensions 1) width)]
-    [0
-     (/ (* (dimensions 1) width) 2)
-     (* (dimensions 0) protrusion)
-     (* (dimensions 1) width)]))
+  [(* left (dimensions 0))
+   (* top (dimensions 1))
+   (- (dimensions 0) (+ (* left (dimensions 0))
+                        (* right (dimensions 0))))
+   (- (dimensions 1) (+ (* top (dimensions 1))
+                        (* bottom (dimensions 1))))])
 
 (defn panel
   "Creates a function that performs a panels rendering and logic duties"

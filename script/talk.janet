@@ -22,7 +22,7 @@
                                           :vertical
                                           (gui/text config/font speaker)
                                           content-section)))
-  (def box (gui/make-bounds :left 0.4 0.7))
+  (def box (gui/make-bounds 0.15 0.6 0.15 0))
   (while (not death)
     (window (updates :delta) box (updates :input))
     (set updates (yield))))
