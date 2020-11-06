@@ -31,9 +31,9 @@
   making it so some variable is defined for the iteration number, so it's sort
   of like a compile time for loop for repeating the same stuff"
   [n i body]
-  (map (fn [index]
-          ~(do (def ,i ,index) ,body))
-        (range n)))
+  ~(tuple ;(map (fn [index]
+          (do (def ,i index) ,body))
+        (,range ,n))))
 
 (defmacro consume
   "Loops over a tuple or something and defines a variable with the different

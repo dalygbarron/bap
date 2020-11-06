@@ -25,10 +25,8 @@
 (defn test-cloop
   "Tests that the cloop macro evaluates to a bunch of forms etc"
   []
-  (def macroed [(util/cloop 3 i (* i 3))])
+  (def macroed (util/cloop 3 i (* i 3)))
   (def natural [0 3 6])
-  (pp macroed)
-  (pp natural)
   (assert (deep= macroed natural)))
 
 (test-consume)

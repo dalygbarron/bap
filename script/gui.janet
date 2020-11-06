@@ -127,7 +127,6 @@
   [font message]
   (var time 0)
   (fn [delta bounds input]
-    (pp bounds)
     (+= time delta)
     (def font-frame (font time))
     (def wrapped (wrap-text message font-frame (bounds 2)))

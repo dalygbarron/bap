@@ -41,5 +41,5 @@
   "Finds a single amount to multiply a 2d vector by to make it fit as large as
   possible inside the bounds of another 2d vector while maintaining it's slope"
   [vector bounds]
-  (min (util/cloop 2 i (/ (bounds i) (vector i)))))
+  (min ;(util/cloop 2 i (/ (bounds i) (vector i)))))
 

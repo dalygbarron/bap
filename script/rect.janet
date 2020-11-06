@@ -37,20 +37,19 @@
 (defn +
   "Adds two rectangles together and returns the result"
   [a b]
-  (printf ">%q" [(util/cloop 4 i (normal-plus (a i) (b i)))])
-  [(util/cloop 4 i (normal-plus (a i) (b i)))])
+  (util/cloop 4 i (normal-plus (a i) (b i))))
 
 (defn -
   "Subtracts a rectangle from another itemwise"
   [a b]
-  [(util/cloop 4 i (normal-minus (a i) (b i)))])
+  (util/cloop 4 i (normal-minus (a i) (b i))))
 
 (defn *
   "Multiplies two rectangles piecewise"
   [a b]
-  [(util/cloop 4 i (normal-times (a i) (b i)))])
+  (util/cloop 4 i (normal-times (a i) (b i))))
 
 (defn /
   "Divides two rectangles piecewise"
   [a b]
-  [(util/cloop 4 i (normal-div (a i) (b i)))])
+  (util/cloop 4 i (normal-div (a i) (b i))))
