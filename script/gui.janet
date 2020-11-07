@@ -136,3 +136,8 @@
         input))
     (set choice (util/wrap choice (length children)))
     out))
+
+(defn say
+  "Coroutine that has a named person saying some text and a prompt to close it"
+  [name text]
+
