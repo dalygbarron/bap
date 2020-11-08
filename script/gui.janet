@@ -139,5 +139,30 @@
 
 (defn say
   "Coroutine that has a named person saying some text and a prompt to close it"
-  [name text]
-
+  [name message & responses]
+  (def death (gensym))
+  (var choice death)
+  (var updates {:input [] :delta 0})
+  (def content-section
+    (split-panel config/panel
+                     0.8
+                     :vertical
+                     (text config/font message)
+                     (v-choice config/selector
+                               (fn [c] (set choice c))
+                               ;(if (> (length responses) 0)
+                                  (map (fn [response]
+                                         (text config/font response))
+                                       responses)
+                                  [(text config/font config/confirm)]))))
+  (def window (panel config/panel
+                         (split-panel config/panel
+                                          0.15
+                                          :vertical
+                                          (text config/font name)
+                                          content-section)))
+  (def box (make-bounds 0.15 0.55 0.15 0))
+  (while (= choice death)
+    (window (updates :delta) box (updates :input))
+    (set updates (yield)))
+  choice)
