@@ -7,4 +7,5 @@
     (set going (= (gui/say "Bongo"
                            "This is the end."
                            "Start again."
-                           "Close") 0))))
+                           "Close")
+                  0))))
