@@ -1,6 +1,6 @@
 (import script/gui :as gui)
 
-(fn [] 
+(fn []
   (var going true)
   (while going
     (gui/say "Program" "Welcome to test. Press x to continue.")
