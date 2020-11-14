@@ -160,6 +160,26 @@ void initScripting() {
     janet_cfuns(env, "screen", cFunctions);
 }
 
+bool init(int width, int height) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        return false;
+    }
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    window = SDL_CreateWindow(
+        "BAP",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        width,
+        height,
+        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN
+    );
+    if (!window) {
+        return false;
+    }
+    return true;
+}
+
 /**
  * The main loop of the program.
  * @param data is meant to be a program state object which contains all the
