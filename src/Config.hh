@@ -17,7 +17,6 @@ namespace Config {
     constexpr int const SCREEN_STACK_MAX = 8;
     constexpr float const FPS_RATE = 5000;
     constexpr float const UPDATE_RATE = 0.02f;
-    Atlas *atlas;
     SDL_Renderer *renderer;
 
     /**

@@ -2,7 +2,7 @@
 #include "Util.hh"
 #include "Config.hh"
 
-SDL_Rect Renderer::border(SDL_Rect bounds, SDL_Rect sprite, int width) {
+SDL_Rect Renderer::border(SDL_Texture *texture, SDL_Rect bounds, SDL_Rect sprite, int width) {
     if (bounds.w < width * 2 || bounds.h < width * 2) return {0, 0, 0, 0};
     // corners
     Config::getAtlas()->draw(
@@ -116,8 +116,18 @@ void Renderer::text(Vec origin, char const *text, SDL_Rect font) {
             continue;
         }
         Config::getAtlas()->draw(
-            {origin.iX(), origin.iY(), character.iX(), character.iY()},
-            {font.x + character.iX() * (c % 16), font.y + character.iY() * (c / 16), character.iX(), character.iY()}
+            {
+                origin.iX(),
+                origin.iY(),
+                character.iX(),
+                character.iY()
+            },
+            {
+                font.x + character.iX() * (c % 16),
+                font.y + character.iY() * (c / 16),
+                character.iX(),
+                character.iY()
+            }
         );
         origin.x += character.iX();
     }
