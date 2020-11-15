@@ -1,5 +1,6 @@
 #include "Api.hh"
 #include "Config.hh"
+#include "Renderer.hh"
 
 Janet drawBorder(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
@@ -7,7 +8,6 @@ Janet drawBorder(int32_t argc, Janet *argv) {
     Janet const *sprite = janet_unwrap_tuple(argv[1]);
     float width = janet_unwrap_number(argv[2]);
     Renderer::border(
-        renderer,
         {
             static_cast<int>(janet_unwrap_number(border[0])),
             static_cast<int>(janet_unwrap_number(border[1])),
@@ -30,7 +30,6 @@ Janet drawRect(int32_t argc, Janet *argv) {
     Janet const *border = janet_unwrap_tuple(argv[0]);
     Janet const *sprite = janet_unwrap_tuple(argv[1]);
     Renderer::rect(
-        renderer,
         {
             static_cast<int>(janet_unwrap_number(border[0])),
             static_cast<int>(janet_unwrap_number(border[1])),
@@ -52,7 +51,6 @@ Janet drawText(int32_t argc, Janet *argv) {
     Janet const *border = janet_unwrap_tuple(argv[0]);
     Janet const *font = janet_unwrap_tuple(argv[1]);
     Renderer::text(
-        renderer,
         Vec(
             static_cast<int>(janet_unwrap_number(border[0])),
             static_cast<int>(janet_unwrap_number(border[1]))
@@ -73,7 +71,6 @@ Janet drawSprite(int32_t argc, Janet *argv) {
     Janet const *border = janet_unwrap_tuple(argv[0]);
     Janet const *sprite = janet_unwrap_tuple(argv[1]);
     Renderer::sprite(
-        renderer,
         {
             static_cast<int>(janet_unwrap_number(border[0])),
             static_cast<int>(janet_unwrap_number(border[1])),
@@ -113,7 +110,7 @@ Janet getScreenDimensions(int32_t argc, Janet *argv) {
 /**
  * Loads in the scripting functions yeet and sets up globals and stuff.
  */
-void Api::initScripting() {
+void Api::init() {
     JanetReg const cFunctions[] = {
         {"draw-rect", drawRect, "(screen/draw-rect)\nDraws a rectangle on the screen at the given place with the given pattern."},
         {"draw-border", drawBorder, "(screen/draw-border)\nDraws a border at the given place with the given sprite and width."},

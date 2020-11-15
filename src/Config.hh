@@ -12,11 +12,13 @@
  * glass.
  */
 namespace Config {
-    constexpr int const SCREEN_WIDTH = 768;
-    constexpr int const SCREEN_HEIGHT = 480;
+    constexpr int const SCREEN_WIDTH = 1024;
+    constexpr int const SCREEN_HEIGHT = 600;
     constexpr int const SCREEN_STACK_MAX = 8;
-    constexpr float const  FPS_RATE = 5000;
+    constexpr float const FPS_RATE = 5000;
     constexpr float const UPDATE_RATE = 0.02f;
+    Atlas *atlas;
+    SDL_Renderer *renderer;
 
     /**
      * Initialises the config and loads stuff from files etc etc.
@@ -29,12 +31,6 @@ namespace Config {
      *             playing.
      */
     void playSong(char const *name);
-
-    /**
-     * Gives you the atlas.
-     * @return the atlas.
-     */
-    Atlas *getAtlas();
 };
 
 #endif

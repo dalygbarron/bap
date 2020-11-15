@@ -9,15 +9,9 @@
 
 std::string song = "";
 Mix_Music *music = NULL;
-Atlas *atlas;
 
 bool Config::init(SDL_Renderer &renderer) {
-    SDL_Texture *texture = Util::loadTexture("assets/coom.png", renderer);
-    if (!texture) {
-        return false;
-    }
-    atlas = new Atlas(*texture);
-    atlas->loadSprites("assets/cooxr.csv");
+    Config::renderer = &renderer;
     return true;
 }
 
@@ -36,8 +30,4 @@ void Config::playSong(char const *file) {
             );
         }
     }
-}
-
-Atlas *Config::getAtlas() {
-    return atlas;
 }

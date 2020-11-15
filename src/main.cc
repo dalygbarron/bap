@@ -1,6 +1,7 @@
 #include "Util.hh"
 #include "Config.hh"
 #include "Renderer.hh"
+#include "Api.hh"
 #include "janet.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -54,7 +55,8 @@ bool init(int width, int height) {
     context = SDL_GL_CreateContext(window);
     in[INDEX_DELTA].key = janet_ckeywordv("delta");
     in[INDEX_INPUT].key = janet_ckeywordv("input");
-    Api::initScripting();
+    janet_init();
+    Api::init();
     return true;
 }
 
@@ -164,8 +166,6 @@ int main(int argc, char **argv) {
         printf("Couldn't init config\n");
         return 1;
     }
-    janet_init();
-    initScripting();
     ProgramState *program = new ProgramState();
     program->script = Util::loadFiber("script/init.janet");
     program->running = true;

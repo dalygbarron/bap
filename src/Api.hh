@@ -4,7 +4,7 @@
 #include "janet.h"
 
 namespace Api {
-    void initScripting();
+    void init();
 };
 
 #endif
