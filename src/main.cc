@@ -6,6 +6,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #include <emscripten/html5.h>
@@ -15,6 +17,19 @@
 
 int const INDEX_DELTA = 0;
 int const INDEX_INPUT = 1;
+
+const GLchar* vertexSource =
+    "attribute vec4 position;    \n"
+    "void main()                  \n"
+    "{                            \n"
+    "   gl_Position = vec4(position.xyz, 1.0);  \n"
+    "}";
+const GLchar* fragmentSource =
+    "precision mediump float;\n"
+    "void main()                                  \n"
+    "{                                            \n"
+    "  gl_FragColor = vec4 (1.0, 1.0, 1.0, 1.0 );\n"
+    "}";
 
 SDL_Window *window;
 SDL_GLContext context;
@@ -35,28 +50,67 @@ class ProgramState {
         JanetFiber *script;
 };
 
-bool init(int width, int height) {
+bool init() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         return false;
     }
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
     window = SDL_CreateWindow(
         "BAP",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        width,
-        height,
+        Config::SCREEN_WIDTH,
+        Config::SCREEN_HEIGHT,
         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN
     );
     if (!window) {
         return false;
     }
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetSwapInterval(0);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     context = SDL_GL_CreateContext(window);
-    in[INDEX_DELTA].key = janet_ckeywordv("delta");
-    in[INDEX_INPUT].key = janet_ckeywordv("input");
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, 0.0, 1.0, -1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        printf("ERror initialising opengl\n");
+        return false;
+    }
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+        printf("SDL_image couldn't init because: %s", IMG_GetError());
+        return 1;
+    }
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("SDL_Mixer couldn't init because: %s", Mix_GetError());
+    }
+    SDL_Renderer *renderer = SDL_CreateRenderer(
+	window,
+	-1,
+	SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+    );
+    if (!renderer) {
+        printf("Couldn't start renderer because: %s\n", SDL_GetError());
+        return 1;
+    }
+    SDL_RenderSetLogicalSize(
+        renderer,
+        Config::SCREEN_WIDTH,
+        Config::SCREEN_HEIGHT
+    );
+    if (!Config::init(*renderer)) {
+        printf("Couldn't init config\n");
+        return 1;
+    }
     janet_init();
     Api::init();
+    in[INDEX_DELTA].key = janet_ckeywordv("delta");
+    in[INDEX_INPUT].key = janet_ckeywordv("input");
     return true;
 }
 
@@ -66,7 +120,8 @@ bool init(int width, int height) {
  *             variables the loop needs between iterations.
  */
 void loop(void *data) {
-    SDL_RenderClear(renderer);
+    glClearColor(1.0f, 0.8f, 0.4f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
     struct ProgramState *program = (ProgramState *)data;
     std::vector<SDL_Keycode> keys;
     SDL_Event event;
@@ -114,7 +169,7 @@ void loop(void *data) {
         program->startIteration = program->iteration;
         program->fpsTimer = 0;
     }
-    SDL_RenderPresent(renderer);
+    SDL_GL_SwapWindow(window);
     program->iteration++;
 }
 
@@ -125,45 +180,7 @@ void loop(void *data) {
  * @return the return code of the program.
  */
 int main(int argc, char **argv) {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("SDL could not initialise because: %s\n", SDL_GetError());
-        return 1;
-    }
-    SDL_Window *window = SDL_CreateWindow(
-        "BAP",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        Config::SCREEN_WIDTH,
-        Config::SCREEN_HEIGHT,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
-    );
-    if (!window) {
-        printf("Window couldn't be created because: %s", SDL_GetError());
-        return 1;
-    }
-    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-        printf("SDL_image couldn't init because: %s", IMG_GetError());
-        return 1;
-    }
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        printf("SDL_Mixer couldn't init because: %s", Mix_GetError());
-    }
-    renderer = SDL_CreateRenderer(
-	window,
-	-1,
-	SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
-    );
-    if (!renderer) {
-        printf("Couldn't start renderer because: %s\n", SDL_GetError());
-        return 1;
-    }
-    SDL_RenderSetLogicalSize(
-        renderer,
-        Config::SCREEN_WIDTH,
-        Config::SCREEN_HEIGHT
-    );
-    if (!Config::init(*renderer)) {
-        printf("Couldn't init config\n");
+    if (!init()) {
         return 1;
     }
     ProgramState *program = new ProgramState();

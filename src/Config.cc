@@ -7,6 +7,7 @@
 #include <iostream>
 #include <iostream>
 
+SDL_Renderer *Config::renderer = NULL;
 std::string song = "";
 Mix_Music *music = NULL;
 

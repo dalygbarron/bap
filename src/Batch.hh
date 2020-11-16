@@ -1,6 +1,13 @@
 #ifndef BATCH_H
 #define BATCH_H
 
+#include <SDL2/SDL.h>
+#define GL_GLEXT_PROTOTYPES 1
+#include <SDL2/SDL_opengles2.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <vector>
+
 /**
  * batches draws of stuff from a texture.
  */
@@ -22,12 +29,35 @@ class Batch {
         Batch(SDL_Texture *texture);
 
         /**
-         * Adds a texture
-        add(SDL_Rect src, SDL_Rect dst);
+         * Destroys the texture and the batch.
+         */
+        ~Batch();
+
+        /**
+         * Draws a nice sprite centred for you.
+         * @param x        is the x position to draw.
+         * @param y        is the y position to draw.
+         * @param sprite   is the sprite to draw.
+         */
+        void draw(int x, int y, SDL_Rect const &sprite);
+
+        /**
+         * Draws a sprite and stretches it to the given bounds.
+         * @param destination is the rectangle to draw it to.
+         * @param sprite is the sprite to draw.
+         */
+        void draw(SDL_Rect const &destination, SDL_Rect const &sprite);
+
+        /**
+         * Actually draws the content of this batch onto the screen.
+         */
+        void render();
 
     private:
         std::vector<SDL_Rect> items;
-
+        SDL_Texture *texture;
+        GLuint vao;
+        GLuint vbo;
 };
 
 #endif

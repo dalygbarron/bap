@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "Atlas.hh"
+#include <SDL2/SDL.h>
 
 /**
  * Stores all the global shiet. Yeah I know the nerds, geeks, degenerates and 
@@ -17,7 +17,7 @@ namespace Config {
     constexpr int const SCREEN_STACK_MAX = 8;
     constexpr float const FPS_RATE = 5000;
     constexpr float const UPDATE_RATE = 0.02f;
-    SDL_Renderer *renderer;
+    extern SDL_Renderer *renderer;
 
     /**
      * Initialises the config and loads stuff from files etc etc.
