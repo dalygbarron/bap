@@ -22,14 +22,13 @@ const GLchar* vertexSource =
     "attribute vec4 position;    \n"
     "void main()                  \n"
     "{                            \n"
-    "   gl_Position = vec4(position.xyz, 1.0);  \n"
-    "}";
+    "   gl_Position = position;\n"
+    "}\n";
 const GLchar* fragmentSource =
-    "precision mediump float;\n"
     "void main()                                  \n"
     "{                                            \n"
-    "  gl_FragColor = vec4 (1.0, 1.0, 1.0, 1.0 );\n"
-    "}";
+    "  gl_FragColor = vec4(gl_FragCoord.x / 600.0, gl_FragCoord.y / 600.0, 0.0, 1.0 );\n"
+    "}\n";
 
 SDL_Window *window;
 SDL_GLContext context;
@@ -71,17 +70,12 @@ bool init() {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     context = SDL_GL_CreateContext(window);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0.0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, 0.0, 1.0, -1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     GLenum error = glGetError();
     if (error != GL_NO_ERROR) {
         printf("ERror initialising opengl\n");
         return false;
     }
+    SDL_GL_MakeCurrent(window, context);
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
         printf("SDL_image couldn't init because: %s", IMG_GetError());
         return 1;
@@ -103,10 +97,11 @@ bool init() {
         Config::SCREEN_WIDTH,
         Config::SCREEN_HEIGHT
     );
-    if (!Config::init(*renderer)) {
-        printf("Couldn't init config\n");
-        return 1;
-    }
+    GLuint defaultShader = Util::createShaderProgram(
+        Util::createShader(GL_VERTEX_SHADER, vertexSource),
+        Util::createShader(GL_FRAGMENT_SHADER, fragmentSource)
+    );
+    Config::init(renderer, defaultShader);
     janet_init();
     Api::init();
     in[INDEX_DELTA].key = janet_ckeywordv("delta");
@@ -120,8 +115,11 @@ bool init() {
  *             variables the loop needs between iterations.
  */
 void loop(void *data) {
+    // glViewport(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT);
+    // SDL_GL_MakeCurrent(window, context);
     glClearColor(1.0f, 0.8f, 0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+    glUseProgram(Config::defaultShader);
     struct ProgramState *program = (ProgramState *)data;
     std::vector<SDL_Keycode> keys;
     SDL_Event event;

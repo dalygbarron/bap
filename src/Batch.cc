@@ -1,7 +1,7 @@
 #include "Batch.hh"
 #include "Config.hh"
 
-GLfloat vertices[] = {0.0f, 0.5f, 0.5f, -0.5f, -0.5f, -0.5f};
+GLfloat vertices[] = {0.0f, 0.5f, 0.5f, -0.5f, -0.5f, -0.5f, 100, 100, 120, 120, 100, 120};
 
 Batch::Batch(SDL_Texture *texture) {
     this->texture = texture;
@@ -44,5 +44,7 @@ void Batch::render() {
     glBindVertexArrayOES(this->vao);
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, 0, 0, 0);
+    glEnableVertexAttribArray(0);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 }
-

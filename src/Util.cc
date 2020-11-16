@@ -3,6 +3,51 @@
 #include <fstream>
 #include <vector>
 
+GLuint Util::createShader(GLenum type, char const *src) {
+    GLuint shader;
+    GLint compiled;
+    shader = glCreateShader(type);
+    if (shader == 0) return 0;
+    glShaderSource(shader, 1, &src, NULL);
+    glCompileShader(shader);
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+    if (!compiled) {
+        GLint infoLen = 0;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
+        if (infoLen > 1) {
+            char *infoLog = new char[infoLen];
+            glGetShaderInfoLog(shader, infoLen, NULL, infoLog);
+            printf("Error compiling shader:\n%s\n%s\n", src, infoLog);
+            delete[] infoLog;
+        }
+    }
+    return shader;
+}
+
+GLuint Util::createShaderProgram(GLuint vertex, GLuint fragment) {
+    GLint linked;
+    GLuint program = glCreateProgram();
+    if (program == 0) return 0;
+    glAttachShader(program, vertex);
+    glAttachShader(program, fragment);
+    glBindAttribLocation(program, 0, "position");
+    glLinkProgram(program);
+    glGetProgramiv(program, GL_LINK_STATUS, &linked);
+    if (!linked) {
+        GLint infoLen = 0;
+        glGetShaderiv(program, GL_INFO_LOG_LENGTH, &infoLen);
+        if (infoLen > 1) {
+            char *infoLog = new char[infoLen];
+            glGetProgramInfoLog(program, infoLen, NULL, infoLog);
+            printf("Error compiling shader:\n%s\n", infoLog);
+            delete[] infoLog;
+        }
+        glDeleteProgram(program);
+        return 0;
+    }
+    return program;
+}
+
 SDL_Texture *Util::loadTexture(char const *file, SDL_Renderer &renderer) {
     SDL_Texture *newTexture = NULL;
     SDL_Surface *loadedSurface = IMG_Load(file);

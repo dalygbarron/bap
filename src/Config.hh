@@ -2,6 +2,8 @@
 #define CONFIG_H
 
 #include <SDL2/SDL.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 /**
  * Stores all the global shiet. Yeah I know the nerds, geeks, degenerates and 
@@ -18,11 +20,12 @@ namespace Config {
     constexpr float const FPS_RATE = 5000;
     constexpr float const UPDATE_RATE = 0.02f;
     extern SDL_Renderer *renderer;
+    extern GLuint defaultShader;
 
     /**
      * Initialises the config and loads stuff from files etc etc.
      */
-    bool init(SDL_Renderer &renderer);
+    void init(SDL_Renderer *renderer, GLuint defaultShader);
 
     /**
      * Plays a song unless it is already playing.

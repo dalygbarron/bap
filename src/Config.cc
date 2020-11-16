@@ -8,12 +8,13 @@
 #include <iostream>
 
 SDL_Renderer *Config::renderer = NULL;
+GLuint Config::defaultShader = 0;
 std::string song = "";
 Mix_Music *music = NULL;
 
-bool Config::init(SDL_Renderer &renderer) {
-    Config::renderer = &renderer;
-    return true;
+void Config::init(SDL_Renderer *renderer, GLuint defaultShader) {
+    Config::renderer = renderer;
+    Config::defaultShader = defaultShader;
 }
 
 void Config::playSong(char const *file) {

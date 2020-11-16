@@ -4,12 +4,31 @@
 #include "janet.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#define GL_GLEXT_PROTOTYPES 1
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <string>
 
 /**
  * Contains some utility stuff.
  */
 namespace Util {
+    /**
+     * Converts some text into a shader.
+     * @param type is the type of shader.
+     * @param src  is the source code of the shader.
+     * @return the id of the created shader or 0 on error.
+     */
+    GLuint createShader(GLenum type, char const *src);
+
+    /**
+     * Creates a shader program with a vertex shader and a fragment shader.
+     * @param vertex   is the vertex shader.
+     * @param fragment is the fragment shader.
+     * @return the id of the program created unless it's 0 which means fail.
+     */
+    GLuint createShaderProgram(GLuint vertex, GLuint fragment);
+
     /**
      * Loads in a texture for enjoyment.
      * @param file     is the name of the file to load.

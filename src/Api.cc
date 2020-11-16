@@ -15,7 +15,9 @@ Janet loadBatch(int32_t argc, Janet *argv) {
 
 Janet renderBatch(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Batch *batch = (Batch *)
+    Batch *batch = (Batch *)janet_getpointer(argv, 0);
+    batch->render();
+    return janet_wrap_nil();
 }
 
 Janet drawBorder(int32_t argc, Janet *argv) {

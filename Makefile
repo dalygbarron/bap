@@ -5,14 +5,14 @@ C_OBJS=$(addsuffix .o, $(C_INPUTS))
 OBJ_NAME = main
 CCC=g++
 CC=gcc
-LINKER_FLAGS=-lSDL2 -lSDL2_image -lSDL2_mixer -lm -ldl -framework OpenGL
-COMPILER_FLAGS=-std=c++17 -g -I /System/Library/Frameworks/OpenGL.framework
+LINKER_FLAGS=-lSDL2 -lSDL2_image -lSDL2_mixer -lm -ldl -lGL
+COMPILER_FLAGS=-std=c++17 -g -I /System/Library/Frameworks/OpenGL.framework -Wfatal-errors
 WEB_MAIN_OBJS=$(addsuffix w, $(MAIN_OBJS))
 WEB_C_OBJS=$(addsuffix w, $(C_OBJS))
 WEB_OBJ_NAME = index.html
 WEB_CCC=em++
 WEB_CC=emcc
-WEB_LINKER_FLAGS=-s USE_WEBGL2=2 -s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s ASYNCIFY --preload-file assets --preload-file script -O3 --source-map-base localhost:8888/
+WEB_LINKER_FLAGS=-s USE_WEBGL2=2 -s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]'  -s ASYNCIFY --preload-file assets --preload-file script -O3 --source-map-base localhost:8888/
 
 assets/coom.png assets/cooxr.csv: sprites/*.png
 	rat -o assets/coom.png -f assets/cooxr.csv -d 1024:1024 -w csv sprites/*.png
