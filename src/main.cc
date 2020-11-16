@@ -115,7 +115,7 @@ bool init() {
  *             variables the loop needs between iterations.
  */
 void loop(void *data) {
-    // glViewport(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT);
+    // glViewport(1, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT);
     // SDL_GL_MakeCurrent(window, context);
     glClearColor(1.0f, 0.8f, 0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

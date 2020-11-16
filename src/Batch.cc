@@ -9,7 +9,6 @@ Batch::Batch(SDL_Texture *texture) {
     glBindVertexArrayOES(this->vao);
     glGenBuffers(1, &this->vbo);
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
-
 }
 
 Batch::~Batch() {

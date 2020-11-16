@@ -32,11 +32,10 @@ namespace Util {
     /**
      * Loads in a texture for enjoyment.
      * @param file     is the name of the file to load.
-     * @param renderer is the renderer graphics object thingy.
-     * @return the created texture in the case that it was ok, otherwise it
+     * @return the id of the texture in the case that it was ok, otherwise it
      *         will fail.
      */
-    SDL_Texture *loadTexture(char const *file, SDL_Renderer &renderer);
+    GLuint loadTexture(char const *file);
 
     /**
      * Reads you a whole file.

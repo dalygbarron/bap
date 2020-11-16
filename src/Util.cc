@@ -48,8 +48,8 @@ GLuint Util::createShaderProgram(GLuint vertex, GLuint fragment) {
     return program;
 }
 
-SDL_Texture *Util::loadTexture(char const *file, SDL_Renderer &renderer) {
-    SDL_Texture *newTexture = NULL;
+GLuint Util::loadTexture(char const *file) {
+    GLuint texture = 0;
     SDL_Surface *loadedSurface = IMG_Load(file);
     if (loadedSurface == NULL) {
 	fprintf(
@@ -60,11 +60,10 @@ SDL_Texture *Util::loadTexture(char const *file, SDL_Renderer &renderer) {
 	);
 	return NULL;
     }
-    newTexture = SDL_CreateTextureFromSurface(&renderer, loadedSurface);
-    if (newTexture == NULL) {
-	fprintf(stderr, "Creating texture failed because: %s\n", SDL_GetError());
-	return NULL;
-    }
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    this is the file I was ripping off lets get back to that tomorrow
+    https://gist.github.com/mortennobel/0e9e90c9bbc61cc99d5c3e9c038d8115
     SDL_FreeSurface(loadedSurface);
     return newTexture;
 }
