@@ -1,6 +1,7 @@
 (fn []
   (var going true)
-  (def batch (load-batch "assets/coom.png"))
+  (def texture (load-texture "assets/coom.png"))
+  (def batch (create-batch texture))
   (while going
     (render-batch batch)
     (yield 1)))

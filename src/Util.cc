@@ -58,14 +58,43 @@ GLuint Util::loadTexture(char const *file) {
 	    file,
 	    IMG_GetError()
 	);
-	return NULL;
+	return 0;
     }
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    this is the file I was ripping off lets get back to that tomorrow
-    https://gist.github.com/mortennobel/0e9e90c9bbc61cc99d5c3e9c038d8115
+    int format;
+    SDL_Surface *formattedSurface;
+    if (loadedSurface->format->BytesPerPixel == 3) {
+        formattedSurface = SDL_ConvertSurfaceFormat(
+            loadedSurface,
+            SDL_PIXELFORMAT_RGB24,
+            0
+        );
+        format = GL_RGB;
+    } else {
+        formattedSurface = SDL_ConvertSurfaceFormat(
+            loadedSurface,
+            SDL_PIXELFORMAT_ARGB32,
+            0
+        );
+        format = GL_RGBA;
+    }
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        format,
+        formattedSurface->w,
+        formattedSurface->h,
+        0,
+        format,
+        GL_UNSIGNED_BYTE,
+        formattedSurface->pixels
+    );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    SDL_FreeSurface(formattedSurface);
     SDL_FreeSurface(loadedSurface);
-    return newTexture;
+    return texture;
 }
 
 std::string Util::readWholeFile(char const *file) {

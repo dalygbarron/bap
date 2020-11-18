@@ -3,16 +3,12 @@
 
 GLfloat vertices[] = {0.0f, 0.5f, 0.5f, -0.5f, -0.5f, -0.5f, 100, 100, 120, 120, 100, 120};
 
-Batch::Batch(SDL_Texture *texture) {
+Batch::Batch(GLuint texture) {
     this->texture = texture;
     glGenVertexArraysOES(1, &this->vao);
     glBindVertexArrayOES(this->vao);
     glGenBuffers(1, &this->vbo);
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
-}
-
-Batch::~Batch() {
-    SDL_DestroyTexture(this->texture);
 }
 
 void Batch::draw(int x, int y, SDL_Rect const &sprite) {
@@ -22,21 +18,21 @@ void Batch::draw(int x, int y, SDL_Rect const &sprite) {
         sprite.w,
         sprite.h
     };
-    SDL_RenderCopy(
-        Config::renderer,
-        this->texture,
-        &sprite,
-        &placement
-    );
+    //SDL_RenderCopy(
+    //    Config::renderer,
+    //    this->texture,
+    //    &sprite,
+    //    &placement
+    //);
 }
 
 void Batch::draw(SDL_Rect const &destination, SDL_Rect const &sprite) {
-    SDL_RenderCopy(
-        Config::renderer,
-        this->texture,
-        &sprite,
-        &destination
-    );
+    //SDL_RenderCopy(
+    //    Config::renderer,
+    //    this->texture,
+    //    &sprite,
+    //    &destination
+    //);
 }
 
 void Batch::render() {
@@ -45,5 +41,6 @@ void Batch::render() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, 0, 0, 0);
     glEnableVertexAttribArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }

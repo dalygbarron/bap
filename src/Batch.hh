@@ -26,12 +26,7 @@ class Batch {
          * Creates the batch by setting the texture that it uses.
          * @param texture is the texture.
          */
-        Batch(SDL_Texture *texture);
-
-        /**
-         * Destroys the texture and the batch.
-         */
-        ~Batch();
+        Batch(GLuint texture);
 
         /**
          * Draws a nice sprite centred for you.
@@ -55,7 +50,7 @@ class Batch {
 
     private:
         std::vector<SDL_Rect> items;
-        SDL_Texture *texture;
+        GLuint texture;
         GLuint vao;
         GLuint vbo;
 };
