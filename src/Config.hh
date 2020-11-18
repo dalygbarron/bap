@@ -1,9 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include "gl.hh"
 #include <SDL2/SDL.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 
 /**
  * Stores all the global shiet. Yeah I know the nerds, geeks, degenerates and 

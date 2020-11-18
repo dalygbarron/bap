@@ -2,12 +2,11 @@
 #include "Config.hh"
 #include "Renderer.hh"
 #include "Api.hh"
+#include "gl.hh"
 #include "janet.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #include <emscripten/html5.h>

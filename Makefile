@@ -5,7 +5,7 @@ C_OBJS=$(addsuffix .o, $(C_INPUTS))
 OBJ_NAME = main
 CCC=g++
 CC=gcc
-LINKER_FLAGS=-lSDL2 -lSDL2_image -lSDL2_mixer -lm -ldl -lGL
+LINKER_FLAGS=-lSDL2 -lSDL2_image -lSDL2_mixer -lm -ldl -framework OpenGL
 COMPILER_FLAGS=-std=c++17 -g -I /System/Library/Frameworks/OpenGL.framework -Wfatal-errors
 WEB_MAIN_OBJS=$(addsuffix w, $(MAIN_OBJS))
 WEB_C_OBJS=$(addsuffix w, $(C_OBJS))

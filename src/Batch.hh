@@ -1,11 +1,8 @@
 #ifndef BATCH_H
 #define BATCH_H
 
+#include "gl.hh"
 #include <SDL2/SDL.h>
-#define GL_GLEXT_PROTOTYPES 1
-#include <SDL2/SDL_opengles2.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 #include <vector>
 
 /**
