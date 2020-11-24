@@ -11,15 +11,6 @@
 class Batch {
     public:
         /**
-         * A sprite to be drawn on the screen at a certai nspot.
-         */
-        class Sprite {
-            public:
-                SDL_Rect src;
-                SDL_Rect dst;
-        };
-
-        /**
          * Creates the batch by setting the texture that it uses.
          * @param texture is the texture.
          */
@@ -46,7 +37,8 @@ class Batch {
         void render();
 
     private:
-        std::vector<SDL_Rect> items;
+        float *items;
+        int n;
         GLuint texture;
         GLuint vao;
         GLuint vbo;
