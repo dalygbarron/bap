@@ -6,7 +6,7 @@ OBJ_NAME = main
 CCC=g++
 CC=gcc
 LINKER_FLAGS=-lSDL2 -lSDL2_image -lSDL2_mixer -lm -ldl -framework OpenGL
-COMPILER_FLAGS=-std=c++17 -g -I /System/Library/Frameworks/OpenGL.framework -Wfatal-errors
+COMPILER_FLAGS=-std=c++17 -g -I /System/Library/Frameworks/OpenGL.framework -Wfatal-errors -Wno-deprecated
 WEB_MAIN_OBJS=$(addsuffix w, $(MAIN_OBJS))
 WEB_C_OBJS=$(addsuffix w, $(C_OBJS))
 WEB_OBJ_NAME = index.html

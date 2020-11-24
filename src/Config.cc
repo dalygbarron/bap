@@ -7,15 +7,11 @@
 #include <iostream>
 #include <iostream>
 
-SDL_Renderer *Config::renderer = NULL;
-GLuint Config::defaultShader = 0;
+SDL_Window *Config::window = NULL;
+SDL_GLContext Config::context;
 std::string song = "";
 Mix_Music *music = NULL;
 
-void Config::init(SDL_Renderer *renderer, GLuint defaultShader) {
-    Config::renderer = renderer;
-    Config::defaultShader = defaultShader;
-}
 
 void Config::playSong(char const *file) {
     if (!music || strcmp(song.c_str(), file) != 0) {

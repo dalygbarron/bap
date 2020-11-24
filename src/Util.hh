@@ -28,14 +28,6 @@ namespace Util {
     GLuint createShaderProgram(GLuint vertex, GLuint fragment);
 
     /**
-     * Loads in a texture for enjoyment.
-     * @param file     is the name of the file to load.
-     * @return the id of the texture in the case that it was ok, otherwise it
-     *         will fail.
-     */
-    GLuint loadTexture(char const *file);
-
-    /**
      * Reads you a whole file.
      * @param file is the file to read.
      * @return a string object of the file so no ownership shit to deal with.

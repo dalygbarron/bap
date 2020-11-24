@@ -4,9 +4,10 @@
 #include "Util.hh"
 
 Janet createBatch(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    GLuint texture = (GLuint)janet_getinteger(argv, 0);
-    return janet_wrap_pointer(new Batch(texture));
+    janet_fixarity(argc, 2);
+    Texture *texture = (Texture *)janet_getpointer(argv, 0);
+    int32_t max = janet_getinteger(argv, 1);
+    return janet_wrap_pointer(new Batch(texture, max));
 }
 
 Janet renderBatch(int32_t argc, Janet *argv) {
@@ -23,20 +24,46 @@ Janet freeBatch(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+Janet drawRectToBatch(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 9);
+    Batch *batch = (Batch *)janet_getpointer(argv, 0);
+    SDL_Rect dst = {
+        janet_getinteger(argv, 1),
+        janet_getinteger(argv, 2),
+        janet_getinteger(argv, 3),
+        janet_getinteger(argv, 4)
+    };
+    SDL_Rect src = {
+        janet_getinteger(argv, 5),
+        janet_getinteger(argv, 6),
+        janet_getinteger(argv, 7),
+        janet_getinteger(argv, 8)
+    };
+    batch->draw(dst, src);
+    return janet_wrap_nil();
+}
+
+Janet clearBatch(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Batch *batch = (Batch *)janet_getpointer(argv, 0);
+    batch->clear();
+    return janet_wrap_nil();
+}
+
 Janet loadTexture(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     char const *filename = (char *)janet_getcstring(argv, 0);
-    GLuint texture = Util::loadTexture(filename);
-    if (texture == 0) {
+    Texture *texture = Texture::loadTexture(filename);
+    if (texture == NULL) {
         janet_panicf("%s is not a valid filename", filename);
     }
-    return janet_wrap_integer(texture);
+    return janet_wrap_pointer(texture);
 }
 
 Janet freeTexture(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    GLuint texture = (GLuint)janet_getinteger(argv, 0);
-    glDeleteTextures(1, &texture);
+    Texture *texture = (Texture *)janet_getpointer(argv, 0);
+    delete texture;
     return janet_wrap_nil();
 }
 
@@ -149,6 +176,8 @@ void Api::init() {
         {"load-texture", loadTexture, "(api/load-batch)\nDraws a rectangle on the screen at the given place with the given pattern."},
         {"free-texture", freeTexture, "(api/render-batch)\nRenders a batch."},
         {"create-batch", createBatch, "(api/load-batch)\nDraws a rectangle on the screen at the given place with the given pattern."},
+        {"draw-rect-to-batch", drawRectToBatch, "(api/draw-rect-to-batch)\nRenders a batch."},
+        {"clear-batch", clearBatch, "(api/clear-batch)\nRenders a batch."},
         {"render-batch", renderBatch, "(api/render-batch)\nRenders a batch."},
         {"free-batch", freeBatch, "(api/load-batch)\nDraws a rectangle on the screen at the given place with the given pattern."},
         {"draw-rect", drawRect, "(screen/draw-rect)\nDraws a rectangle on the screen at the given place with the given pattern."},

@@ -48,55 +48,6 @@ GLuint Util::createShaderProgram(GLuint vertex, GLuint fragment) {
     return program;
 }
 
-GLuint Util::loadTexture(char const *file) {
-    GLuint texture = 0;
-    SDL_Surface *loadedSurface = IMG_Load(file);
-    if (loadedSurface == NULL) {
-	fprintf(
-            stderr,
-	    "Loading image '%s' failed because: %s\n",
-	    file,
-	    IMG_GetError()
-	);
-	return 0;
-    }
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    int format;
-    SDL_Surface *formattedSurface;
-    if (loadedSurface->format->BytesPerPixel == 3) {
-        formattedSurface = SDL_ConvertSurfaceFormat(
-            loadedSurface,
-            SDL_PIXELFORMAT_RGB24,
-            0
-        );
-        format = GL_RGB;
-    } else {
-        formattedSurface = SDL_ConvertSurfaceFormat(
-            loadedSurface,
-            SDL_PIXELFORMAT_ARGB32,
-            0
-        );
-        format = GL_RGBA;
-    }
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        format,
-        formattedSurface->w,
-        formattedSurface->h,
-        0,
-        format,
-        GL_UNSIGNED_BYTE,
-        formattedSurface->pixels
-    );
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    SDL_FreeSurface(formattedSurface);
-    SDL_FreeSurface(loadedSurface);
-    return texture;
-}
-
 std::string Util::readWholeFile(char const *file) {
     FILE *f = fopen(file, "rb");
     if (f) {

@@ -18,13 +18,8 @@ namespace Config {
     constexpr int const SCREEN_STACK_MAX = 8;
     constexpr float const FPS_RATE = 5000;
     constexpr float const UPDATE_RATE = 0.02f;
-    extern SDL_Renderer *renderer;
-    extern GLuint defaultShader;
-
-    /**
-     * Initialises the config and loads stuff from files etc etc.
-     */
-    void init(SDL_Renderer *renderer, GLuint defaultShader);
+    extern SDL_GLContext context;
+    extern SDL_Window *window;
 
     /**
      * Plays a song unless it is already playing.
