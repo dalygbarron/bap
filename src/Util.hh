@@ -73,6 +73,14 @@ namespace Util {
      * @return true if it is whitespace.
      */
     bool white(char c);
+
+    /**
+     * Tells you the dimensions of the screen. Obviously please don't call this
+     * until you have initialised opengl and co.
+     * @return a rectangle that depicts where the window is on the screen and
+     *         it's dimensions.
+     */
+    SDL_Rect getScreen();
 };
 
 #endif

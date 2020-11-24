@@ -37,11 +37,12 @@ class Batch {
         void render();
 
     private:
+        int const max;
         float *items;
         int n;
         GLuint texture;
-        GLuint vao;
-        GLuint vbo;
+        GLuint buffer;
+        Texture *texture;
 };
 
 #endif

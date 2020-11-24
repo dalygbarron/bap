@@ -20,17 +20,34 @@ class Shader {
             "}";
 
         /**
-         * Creates the shader with the source of the vertex shader and the
-         * fragment shader.
-         * @param vertexSrc   is the source code of the vertex shader.
-         * @param fragmentSrc is the source code of the fragment shader.
-         */
-        Shader(char const *vertexSrc, char const *fragmentSrc);
-
-        /**
          * Frees the gl junk.
          */
         ~Shader();
+
+        /**
+         * Binds the shader.
+         */
+        void bind();
+
+        /**
+         * Creates a shader based on the source of a vertex shader and
+         * a fragment shader.
+         * @param vertexSrc   is the vertex shader.
+         * @param fragmentSrc is the fragment shader.
+         * @return the new shader unless it failed in which case you get null.
+         */
+        static Shader *createShader(
+            char const *vertexSrc,
+            char const *fragmentSrc
+        );
+
+        /**
+         * Binds the default shader and returns it. If this is the first time
+         * this is called then it creates the default shader. Don't call this
+         * before stuff has been set up.
+         * @return the default shader.
+         */
+        static Shader *bindDefaultShader();
 
     private:
         GLuint program;
@@ -39,6 +56,12 @@ class Shader {
         GLuint invTextureSizeLoc;
         GLuint invWindowSizeLoc;
         GLuint samplerLoc;
+
+        /**
+         * Secret constructor that just takes the program.
+         * @param program is the compiled shader program.
+         */
+        Shader(GLuint program);
 };
 
 

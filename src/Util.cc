@@ -140,3 +140,9 @@ int Util::max(int a, int b) {
 bool Util::white(char c) {
     return c == ' ' || c == '\n';
 }
+
+SDL_Rect Util::getScreen() {
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    return {viewport[0], viewport[1], viewport[2], viewport[3]};
+}
