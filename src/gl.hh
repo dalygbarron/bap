@@ -12,7 +12,8 @@
 void glGenVertexArraysOES(GLsizei n, GLuint *ids);
 void glBindVertexArrayOES(GLuint id);
 #else
-#include <gl/gl.h>
-#include <gl/glu.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glu.h>
 #endif
 #endif

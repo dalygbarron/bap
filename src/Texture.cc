@@ -25,14 +25,14 @@ Texture *Texture::loadTexture(char const *file) {
     if (loadedSurface->format->BytesPerPixel == 3) {
         formattedSurface = SDL_ConvertSurfaceFormat(
             loadedSurface,
-            SDL_PIXELFORMAT_RGB24,
+            SDL_PIXELFORMAT_RGBA32,
             0
         );
         format = GL_RGB;
     } else {
         formattedSurface = SDL_ConvertSurfaceFormat(
             loadedSurface,
-            SDL_PIXELFORMAT_ARGB32,
+            SDL_PIXELFORMAT_RGBA32,
             0
         );
         format = GL_RGBA;

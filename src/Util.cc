@@ -1,4 +1,5 @@
 #include "Util.hh"
+#include "gl.hh"
 #include <iostream>
 #include <fstream>
 #include <vector>

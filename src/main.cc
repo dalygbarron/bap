@@ -61,11 +61,6 @@ bool init() {
     }
     SDL_GL_MakeCurrent(Config::window, Config::context);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    printf("%d\n", glGetError());
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
         printf("SDL_image couldn't init because: %s", IMG_GetError());
         return 1;

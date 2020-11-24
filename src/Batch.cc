@@ -88,5 +88,4 @@ void Batch::render() {
     );
     glDrawArrays(GL_TRIANGLES, 0, this->n * 6);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArrayOES(0);
 }

@@ -1,5 +1,6 @@
 #include "Shader.hh"
 #include "Util.hh"
+#include "gl.hh"
 
 Shader::~Shader() {
 
