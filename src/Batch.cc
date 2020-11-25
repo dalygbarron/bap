@@ -14,6 +14,15 @@ Batch::Batch(Texture *texture, int max):
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * max * 12, NULL, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, this->buffers[Batch::TEXTURE_BUFFER]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * max * 12, NULL, GL_DYNAMIC_DRAW);
+    Shader *shader = Shader::bindDefaultShader();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, this->texture->glTexture);
+    glUniform1i(shader->getSamplerLoc(), 0);
+    glUniform2f(
+        shader->getInvTextureSizeLoc(),
+        1.0f / texture->width,
+        1.0f / texture->height
+    );
 }
 
 Batch::~Batch() {
@@ -78,14 +87,5 @@ void Batch::render() {
     glEnableVertexAttribArray(shader->getTextureCoordLoc());
     // TODO: use different texture slots to save time when using
     //       more than one texture.
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, this->texture->glTexture);
-    glUniform1i(shader->getSamplerLoc(), 0);
-    glUniform2f(
-        shader->getInvTextureSizeLoc(),
-        1.0f / texture->width,
-        1.0f / texture->height
-    );
     glDrawArrays(GL_TRIANGLES, 0, this->n * 6);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

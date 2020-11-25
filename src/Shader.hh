@@ -18,7 +18,7 @@ class Shader {
 
         constexpr static char const * const DEFAULT_FRAGMENT =
             "uniform sampler2D sampler;"
-            "varying vec2 vTextureCoord;"
+            "varying mediump vec2 vTextureCoord;"
             "void main() {"
             "gl_FragColor = texture2D(sampler, vTextureCoord);"
             "}";

@@ -44,6 +44,14 @@ namespace Util {
     JanetFiber *loadFiber(char const *path);
 
     /**
+     * Returns the lower of two floats.
+     * @param a is the first option.
+     * @param b is the second option.
+     * @return the lower of a and b.
+     */
+    float min(float a, float b);
+
+    /**
      * Returns the lower of two options.
      * @param a is the first option.
      * @param b is the second option.
@@ -73,6 +81,13 @@ namespace Util {
      *         it's dimensions.
      */
     SDL_Rect getScreen();
+
+    /**
+     * Recentres the screen after it gets resized.
+     * @param width is the width of the window now.
+     * @param height is the height of the window now.
+     */
+    void centre(int width, int height);
 };
 
 #endif

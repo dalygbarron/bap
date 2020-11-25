@@ -54,6 +54,16 @@
     (- top (math/abs (% value top)))
     (% value top)))
 
+(defn each-line
+  "Iterates over every line of a file and calls the given function on it,
+  loading the file from a path"
+  [filename func]
+  (with [file (file/open filename :r)]
+    (var line (file/read file :line))
+    (while (not (nil? line))
+      (func line)
+      (set line (file/read file :line)))))
+
 (defn key-code
   "Converts a key code to a nice keyword thingy"
   [code]

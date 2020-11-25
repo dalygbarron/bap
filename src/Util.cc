@@ -1,4 +1,5 @@
 #include "Util.hh"
+#include "Config.hh"
 #include "gl.hh"
 #include <iostream>
 #include <fstream>
@@ -78,6 +79,10 @@ JanetFiber *Util::loadFiber(char const *path) {
     return janet_fiber(janet_unwrap_function(out), 0, 0, NULL);
 }
 
+float Util::min(float a, float b) {
+    if (a < b) return a;
+    return b;
+}
 
 int Util::min(int a, int b) {
     if (a < b) return a;
@@ -97,4 +102,14 @@ SDL_Rect Util::getScreen() {
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     return {viewport[0], viewport[1], viewport[2], viewport[3]};
+}
+
+void Util::centre(int width, int height) {
+    float ratio = Util::min(
+        width / (float)Config::SCREEN_WIDTH,
+        height / (float)Config::SCREEN_HEIGHT
+    );
+    int ratioWidth = (int)Config::SCREEN_WIDTH * ratio;
+    int ratioHeight = (int)Config::SCREEN_HEIGHT * ratio;
+    glViewport(width / 2 - ratioWidth / 2, height / 2 - ratioHeight / 2, ratioWidth, ratioHeight);
 }

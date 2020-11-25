@@ -53,3 +53,12 @@
   [vector bounds]
   (min ;(/ bounds vector)))
 
+(defn floor
+  "Returns the given vector with both it's dimensions floored into an int"
+  [vector]
+  (util/cloop 2 i (math/floor (vector i))))
+
+(defn wrap
+  "wraps a vector between 0 and another vector ya know what I mean"
+  [vector inside]
+  (util/cloop 2 i (util/wrap (vector i) (inside i))))

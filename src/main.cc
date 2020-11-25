@@ -43,7 +43,7 @@ bool init() {
         SDL_WINDOWPOS_UNDEFINED,
         Config::SCREEN_WIDTH,
         Config::SCREEN_HEIGHT,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN
+        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
     );
     if (!Config::window) {
         return false;
@@ -60,6 +60,8 @@ bool init() {
         return false;
     }
     SDL_GL_MakeCurrent(Config::window, Config::context);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
         printf("SDL_image couldn't init because: %s", IMG_GetError());
@@ -73,6 +75,10 @@ bool init() {
     in[INDEX_DELTA].key = janet_ckeywordv("delta");
     in[INDEX_INPUT].key = janet_ckeywordv("input");
     return true;
+}
+
+void centre() {
+
 }
 
 /**
@@ -89,6 +95,10 @@ void loop(void *data) {
         if (event.type == SDL_QUIT) {
             program->running = false;
             return;
+        } else if (event.type == SDL_WINDOWEVENT &&
+            event.window.event == SDL_WINDOWEVENT_RESIZED
+        ) {
+            Util::centre(event.window.data1, event.window.data2);
         } else if (event.type == SDL_KEYDOWN) {
             keys.push_back(event.key.keysym.sym);
         }

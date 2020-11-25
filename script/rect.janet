@@ -53,3 +53,8 @@
   "Divides two rectangles piecewise"
   [a b]
   (util/cloop 4 i (normal-div (a i) (b i))))
+
+(defn floor
+  "Returns the given rect with all it's bits floored"
+  [vector]
+  (util/cloop 4 i (math/floor (vector i))))
